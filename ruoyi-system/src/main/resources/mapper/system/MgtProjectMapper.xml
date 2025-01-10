@@ -1,0 +1,995 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.MgtProjectMapper">
+	
+	<resultMap type="MgtProject" id="MgtProjectResult">
+		<result property="projectId" column="project_id" />
+		<result property="pid" column="pid" />
+		<result property="projectName" column="project_name" />
+		<result property="projectSn" column="project_sn" />
+		<result property="projectLocation" column="project_location" />
+		<result property="guaranteeDate" column="guarantee_date" />
+		<result property="defectLiabilityDate" column="defect_liability_date" />
+		<result property="paymentMethod" column="payment_method" />
+		<result property="contractingCompany" column="contracting_company" />
+		<result property="constructionCompany" column="construction_company" />
+		<result property="surveyCompany" column="survey_company" />
+		<result property="designCompany" column="design_company" />
+		<result property="supervisionCompany" column="supervision_company" />
+		<result property="auditCompany" column="audit_company" />
+		<result property="creatingExcellence" column="creating_excellence" />
+		<result property="contractingMode" column="contracting_mode" />
+		<result property="settlementStatus" column="settlement_status" />
+		<result property="commencementDate" column="commencement_date" />
+		<result property="completionDate" column="completion_date" />
+		<result property="status" column="status" />
+		<result property="projectLeader" column="project_leader" />
+		<result property="jindieProjectName" column="jindie_project_name" />
+		<result property="deptId" column="dept_id" />
+		<result property="userId" column="user_id" />
+		<result property="createBy" column="create_by" />
+		<result property="createTime" column="create_time" />
+		<result property="updateBy" column="update_by" />
+		<result property="updateTime" column="update_time" />
+		<result property="projectGroup" column="project_group" />
+		<association property="projectLeaderUser" column="project_leader" javaType="SysUserVo"
+					 select="selectProjectLeaderUserById" />
+		<association property="pMgtProject" column="pid" javaType="MgtProject"
+					 select="selectPMgtProjectByPid" />
+		<collection property="mgtProjectAttachmentsList" column="project_id" javaType="java.util.List"
+					ofType="com.ruoyi.system.domain.MgtProjectAttachments"
+					select="selectMgtProjectAttachmentsList" />
+		<collection property="projectTeamUser" column="project_id" javaType="java.util.List"
+					ofType="SysUserVo"
+					select="selectMgtProjectUserList" />
+	</resultMap>
+	
+	<resultMap type="SysUserVo" id="SysUserVoResult">
+		<id property="userId" column="user_id" />
+		<result property="deptId" column="dept_id" />
+		<result property="userName" column="user_name" />
+		<result property="deptName" column="dept_name" />
+		<result property="phonenumber" column="phonenumber" />
+	</resultMap>
+	
+	<resultMap type="MgtProjectAttachments" id="MgtProjectAttachmentsResult">
+		<result property="attachmentsId" column="attachments_id" />
+		<result property="projectId" column="project_id" />
+		<result property="fileName" column="file_name" />
+		<result property="file" column="file" />
+		<result property="deptId" column="dept_id" />
+		<result property="userId" column="user_id" />
+		<result property="createBy" column="create_by" />
+		<result property="createTime" column="create_time" />
+		<result property="updateBy" column="update_by" />
+		<result property="updateTime" column="update_time" />
+	</resultMap>
+	
+	<sql id="selectMgtProjectVo">
+		select a.*
+		from mgt_project a
+	</sql>
+	
+	<sql id="selectDistinctMgtProjectVo">
+		select DISTINCT a.project_id,
+						a.pid,
+						a.project_name,
+						a.project_sn,
+						a.project_location,
+						a.guarantee_date,
+						a.defect_liability_date,
+						a.payment_method,
+						a.contracting_company,
+						a.construction_company,
+						a.survey_company,
+						a.design_company,
+						a.supervision_company,
+						a.audit_company,
+						a.creating_excellence,
+						a.contracting_mode,
+						a.settlement_status,
+						a.commencement_date,
+						a.completion_date,
+						a.status,
+						a.project_leader,
+						a.dept_id,
+						a.user_id,
+						a.create_by,
+						a.create_time,
+						a.update_by,
+						a.update_time,
+						a.fid,
+						a.fnumber,
+						a.project_group
+		from mgt_project a
+	</sql>
+	
+	<select id="selectMgtProjectList" parameterType="MgtProject" resultMap="MgtProjectResult">
+		<include refid="selectMgtProjectVo" />
+		<where>
+			<if test="projectIds != null and !projectIds.isEmpty()">
+				and a.project_id in
+				<foreach item="projectId" collection="projectIds" open="(" separator="," close=")">
+					#{projectId}
+				</foreach>
+			</if>
+			<if test="projectId != null  and projectId != ''">and a.project_id = #{projectId}</if>
+			<if test="projectName != null and projectName != ''">and a.project_name like concat('%', #{projectName},'%')
+			</if>
+			<if test="projectSn != null and projectSn != ''">and a.project_sn like concat('%', #{projectSn},'%')
+			</if>
+			<if test="pid != null">and a.pid = #{pid}</if>
+			<if test="contractingMode != null  and contractingMode != ''">and a.contracting_mode = #{contractingMode}
+			</if>
+			<if test="settlementStatus != null  and settlementStatus != ''">and a.settlement_status =
+				#{settlementStatus}
+			</if>
+			<if test="settlementStatuses != null and !settlementStatuses.isEmpty()">
+				AND a.settlement_status IN
+				<foreach item="status" collection="settlementStatuses" open="(" separator="," close=")">
+					#{status}
+				</foreach>
+			</if>
+			<if test="projectLeader != null">
+				and a.project_leader = #{projectLeader}
+			</if>
+			<if test="guaranteeDate != null and guaranteeDate != ''">
+				and a.guarantee_date = #{guaranteeDate}
+			</if>
+			<if test="projectGroup != null and projectGroup != ''">
+				and a.project_group = #{projectGroup}
+			</if>
+			<if test="defectLiabilityDate != null and defectLiabilityDate != ''">
+				and a.defect_liability_date = #{defectLiabilityDate}
+			</if>
+			<if test="jindieProjectNameNot != null and jindieProjectNameNot != ''">
+				and a.jindie_project_name IS NOT NULL AND a.jindie_project_name != ''
+			</if>
+			<if test="params.beginCompletionDate != null and params.beginCompletionDate != '' and params.endCompletionDate != null and params.endCompletionDate != ''">
+				and a.commencement_date &gt;= #{params.beginCompletionDate}
+				and a.completion_date &lt;= #{params.endCompletionDate}
+			</if>
+			<!-- 数据范围过滤 -->
+			${params.dataScope}
+		</where>
+		ORDER BY a.create_time DESC
+	</select>
+	
+	<select id="selectProjectListWithMonthsReport" parameterType="ProjectVo" resultMap="MgtProjectResult">
+		<include refid="selectDistinctMgtProjectVo" />
+		left join mgt_construction_plan cp on a.project_id = cp.project_id
+		<choose>
+			<when test="include == null or include == '' or include == 0">
+				left join mgt_project_months_report d on a.project_id = d.project_id
+			</when>
+			<otherwise>
+				inner join mgt_project_months_report d on a.project_id = d.project_id
+			</otherwise>
+		</choose>
+		<where>
+			and cp.data_status = 1
+			<if test="dataStatus != null and dataStatus != ''">
+				and d.data_status = #{dataStatus}
+			</if>
+			<if test="projectName != null and projectName != ''">
+				and a.project_name like concat('%', #{projectName},'%')
+			</if>
+			<if test="contractingMode != null and contractingMode != ''">
+				and a.contracting_mode = #{contractingMode}
+			</if>
+			<if test="include != null and include == 0 and fillingStartDate != null and fillingStartDate != ''">
+				and ( d.months_id IS NULL OR (
+				d.months_id IS NOT NULL
+				and d.filling_start_date NOT BETWEEN #{fillingStartDate} and #{fillingEndDate}
+				))
+			</if>
+			<!--            <if test="fillingStartDate != null and fillingStartDate != ''">-->
+			<!--                and d.filling_start_date not between #{fillingStartDate} and #{fillingEndDate}-->
+			<!--            </if>-->
+			<!-- 数据范围过滤 -->
+			${params.dataScope}
+		</where>
+	</select>
+	
+	<select id="selectProjectListWithConstructionPlan" parameterType="ProjectVo" resultMap="MgtProjectResult">
+		<include refid="selectDistinctMgtProjectVo" />
+		<choose>
+			<when test="include == null or include == ''">
+				left join mgt_construction_plan d on a.project_id = d.project_id
+			</when>
+			<when test="include != null and include == 0">
+				left join mgt_construction_plan d on a.project_id = d.project_id
+			</when>
+			<otherwise>
+				inner join mgt_construction_plan d on a.project_id = d.project_id
+			</otherwise>
+		</choose>
+		<where>
+			<if test="dataStatus != null and dataStatus != ''">
+				and d.data_status = #{dataStatus}
+			</if>
+			<if test="include != null and include == 0">
+				and d.plan_id IS NULL
+			</if>
+			<if test="projectName != null  and projectName != ''">and a.project_name like concat('%',
+				#{projectName},'%')
+			</if>
+			<if test="contractingMode != null  and contractingMode != ''">and a.contracting_mode = #{contractingMode}
+			</if>
+			<!-- 数据范围过滤 -->
+			${params.dataScope}
+		</where>
+	</select>
+	
+	<select id="selectProjectListWithProcurementPlan" parameterType="ProjectVo" resultMap="MgtProjectResult">
+		<include refid="selectDistinctMgtProjectVo" />
+		<choose>
+			<when test="include == null or include == ''">
+				left join mgt_procurement_plan d on a.project_id = d.project_id
+			</when>
+			<when test="include != null and include == 0">
+				left join mgt_procurement_plan d on a.project_id = d.project_id
+			</when>
+			<otherwise>
+				inner join mgt_procurement_plan d on a.project_id = d.project_id
+			</otherwise>
+		</choose>
+		<where>
+			<if test="include != null and include == 0">
+				and d.plan_id IS NULL
+			</if>
+			<if test="projectName != null  and projectName != ''">and a.project_name like concat('%',
+				#{projectName},'%')
+			</if>
+			<if test="contractingMode != null  and contractingMode != ''">and a.contracting_mode = #{contractingMode}
+			</if>
+			<!-- 数据范围过滤 -->
+			${params.dataScope}
+		</where>
+	</select>
+	
+	<select id="selectProjectListWithProjectBudget" parameterType="ProjectVo" resultMap="MgtProjectResult">
+		<include refid="selectDistinctMgtProjectVo" />
+		<choose>
+			<when test="include == null or include == ''">
+				left join mgt_project_budget d on a.project_id = d.project_id
+			</when>
+			<when test="include != null and include == 0">
+				left join mgt_project_budget d on a.project_id = d.project_id
+			</when>
+			<otherwise>
+				inner join mgt_project_budget d on a.project_id = d.project_id
+			</otherwise>
+		</choose>
+		<where>
+			<if test="budgetDataStatusZb != null and budgetDataStatusZb != ''">
+				and d.data_status_zb = #{budgetDataStatusZb}
+			</if>
+			<if test="budgetDataStatusZr != null and budgetDataStatusZr != ''">
+				and d.data_status_zr = #{budgetDataStatusZr}
+			</if>
+			<if test="budgetDataStatusMb != null and budgetDataStatusMb != ''">
+				and d.data_status_mb = #{budgetDataStatusMb}
+			</if>
+			<if test="include != null and include == 0">
+				and d.budget_id IS NULL
+			</if>
+			<if test="projectName != null  and projectName != ''">and a.project_name like concat('%',
+				#{projectName},'%')
+			</if>
+			<if test="contractingMode != null  and contractingMode != ''">and a.contracting_mode = #{contractingMode}
+			</if>
+			<!-- 数据范围过滤 -->
+			${params.dataScope}
+		</where>
+	</select>
+	
+	<select id="selectProjectListWithDailyReport" parameterType="ProjectVo" resultMap="MgtProjectResult">
+		<include refid="selectDistinctMgtProjectVo" />
+		<choose>
+			<when test="include == null or include == ''">
+				left join mgt_project_daily_report d on a.project_id = d.project_id
+			</when>
+			<when test="include != null and include == 0">
+				left join mgt_project_daily_report d on a.project_id = d.project_id
+			</when>
+			<otherwise>
+				inner join mgt_project_daily_report d on a.project_id = d.project_id
+			</otherwise>
+		</choose>
+		<where>
+			<if test="dataStatus != null and dataStatus != ''">
+				and d.data_status = #{dataStatus}
+			</if>
+			<if test="include != null and include == 0">
+				and d.daily_id IS NULL
+			</if>
+			<if test="projectName != null  and projectName != ''">and a.project_name like concat('%',
+				#{projectName},'%')
+			</if>
+			<if test="contractingMode != null  and contractingMode != ''">and a.contracting_mode = #{contractingMode}
+			</if>
+			<!-- 数据范围过滤 -->
+			${params.dataScope}
+		</where>
+	</select>
+	
+	<select id="selectProjectListWithDesignMaterials" parameterType="ProjectVo" resultMap="MgtProjectResult">
+		<include refid="selectDistinctMgtProjectVo" />
+		<choose>
+			<when test="include == null or include == ''">
+				left join mgt_design_materials d on a.project_id = d.project_id
+			</when>
+			<when test="include != null and include == 0">
+				left join mgt_design_materials d on a.project_id = d.project_id
+			</when>
+			<otherwise>
+				inner join mgt_design_materials d on a.project_id = d.project_id
+			</otherwise>
+		</choose>
+		<where>
+			<if test="dataStatus != null and dataStatus != ''">
+				and d.data_status = #{dataStatus}
+			</if>
+			<if test="include != null and include == 0">
+				and d.materials_id IS NULL
+			</if>
+			<if test="projectName != null  and projectName != ''">and a.project_name like concat('%',
+				#{projectName},'%')
+			</if>
+			<if test="contractingMode != null  and contractingMode != ''">and a.contracting_mode = #{contractingMode}
+			</if>
+			<!-- 数据范围过滤 -->
+			${params.dataScope}
+		</where>
+	</select>
+	
+	<select id="selectProjectListWithCollectionPlan" parameterType="ProjectVo" resultMap="MgtProjectResult">
+		<include refid="selectDistinctMgtProjectVo" />
+		<choose>
+			<when test="include != null and include == '0'">
+				left join mgt_collection_plan d on a.project_id = d.project_id
+			</when>
+			<when test="include != null and include == '1'">
+				inner join mgt_collection_plan d on a.project_id = d.project_id
+			</when>
+			<otherwise>
+				left join mgt_collection_plan d on a.project_id = d.project_id
+			</otherwise>
+		</choose>
+		<where>
+			<if test="dataStatus != null and dataStatus != ''">
+				and d.data_status = #{dataStatus} and d.status = 0
+			</if>
+			<if test="include != null and include == 0">
+				and d.plan_id IS NULL
+			</if>
+			<if test="collectionPlanType != null and collectionPlanType != ''">
+				and d.type = #{collectionPlanType}
+			</if>
+			<if test="projectName != null  and projectName != ''">and a.project_name like concat('%',
+				#{projectName},'%')
+			</if>
+			<if test="contractingMode != null  and contractingMode != ''">and a.contracting_mode = #{contractingMode}
+			</if>
+			<!-- 数据范围过滤 -->
+			${params.dataScope}
+		</where>
+	</select>
+	
+	<select id="selectProjectListWithAttendance" parameterType="ProjectVo" resultMap="MgtProjectResult">
+		<include refid="selectDistinctMgtProjectVo" />
+		<choose>
+			<when test="include == null or include == ''">
+				left join attendance d on a.project_id = d.project_id
+			</when>
+			<when test="include != null and include == 0">
+				left join attendance d on a.project_id = d.project_id
+			</when>
+			<otherwise>
+				inner join attendance d on a.project_id = d.project_id
+			</otherwise>
+		</choose>
+		<where>
+			<if test="include != null and include == 0">
+				and d.id IS NULL
+			</if>
+			<if test="projectName != null  and projectName != ''">and a.project_name like concat('%',
+				#{projectName},'%')
+			</if>
+			<if test="contractingMode != null  and contractingMode != ''">and a.contracting_mode = #{contractingMode}
+			</if>
+			<!-- 数据范围过滤 -->
+			${params.dataScope}
+		</where>
+	</select>
+	
+	<select id="selectProjectListWithAttendanceManger" parameterType="ProjectVo" resultMap="MgtProjectResult">
+		<include refid="selectDistinctMgtProjectVo" />
+		<choose>
+			<when test="include == null or include == ''">
+				left join attendance_manger d on a.project_id = d.project_id
+			</when>
+			<when test="include != null and include == 0">
+				left join attendance_manger d on a.project_id = d.project_id
+			</when>
+			<otherwise>
+				inner join attendance_manger d on a.project_id = d.project_id
+			</otherwise>
+		</choose>
+		<where>
+			<if test="include != null and include == 0">
+				and d.id IS NULL
+			</if>
+			<if test="projectName != null  and projectName != ''">and a.project_name like concat('%',
+				#{projectName},'%')
+			</if>
+			<if test="contractingMode != null  and contractingMode != ''">and a.contracting_mode = #{contractingMode}
+			</if>
+			<!-- 数据范围过滤 -->
+			${params.dataScope}
+		</where>
+	</select>
+	
+	<select id="selectProjectListWithSelfChecking" parameterType="ProjectVo" resultMap="MgtProjectResult">
+		<include refid="selectDistinctMgtProjectVo" />
+		<choose>
+			<when test="include == null or include == ''">
+				left join self_checking d on a.project_id = d.project_id
+			</when>
+			<when test="include != null and include == 0">
+				left join self_checking d on a.project_id = d.project_id
+			</when>
+			<otherwise>
+				inner join self_checking d on a.project_id = d.project_id
+			</otherwise>
+		</choose>
+		<where>
+			<if test="include != null and include == 0">
+				and d.id IS NULL
+			</if>
+			<if test="changeStatus != null and !changeStatus.isEmpty()">
+				AND d.change_status IN
+				<foreach item="status" collection="changeStatus" open="(" separator="," close=")">
+					#{status}
+				</foreach>
+			</if>
+			<if test="projectName != null  and projectName != ''">and a.project_name like concat('%',
+				#{projectName},'%')
+			</if>
+			<if test="contractingMode != null  and contractingMode != ''">and a.contracting_mode = #{contractingMode}
+			</if>
+			<!-- 数据范围过滤 -->
+			${params.dataScope}
+		</where>
+	</select>
+	
+	<select id="selectProjectListWithQualityForm" parameterType="ProjectVo" resultMap="MgtProjectResult">
+		<include refid="selectDistinctMgtProjectVo" />
+		<choose>
+			<when test="include == null or include == ''">
+				left join quality_form d on a.project_id = d.project_id
+			</when>
+			<when test="include != null and include == 0">
+				left join quality_form d on a.project_id = d.project_id
+			</when>
+			<otherwise>
+				inner join quality_form d on a.project_id = d.project_id
+			</otherwise>
+		</choose>
+		<where>
+			<if test="include != null and include == 0">
+				and d.id IS NULL
+			</if>
+			<if test="changeStatus != null and !changeStatus.isEmpty()">
+				AND d.change_status IN
+				<foreach item="status" collection="changeStatus" open="(" separator="," close=")">
+					#{status}
+				</foreach>
+			</if>
+			<if test="projectName != null  and projectName != ''">and a.project_name like concat('%',
+				#{projectName},'%')
+			</if>
+			<if test="contractingMode != null  and contractingMode != ''">and a.contracting_mode = #{contractingMode}
+			</if>
+			<!-- 数据范围过滤 -->
+			${params.dataScope}
+		</where>
+	</select>
+	
+	<select id="selectProjectListWithMorningMeeting" parameterType="ProjectVo" resultMap="MgtProjectResult">
+		<include refid="selectDistinctMgtProjectVo" />
+		<choose>
+			<when test="include == null or include == ''">
+				left join morning_meeting d on a.project_id = d.project_id
+			</when>
+			<when test="include != null and include == 0">
+				left join morning_meeting d on a.project_id = d.project_id
+			</when>
+			<otherwise>
+				inner join morning_meeting d on a.project_id = d.project_id
+			</otherwise>
+		</choose>
+		<where>
+			<if test="include != null and include == 0">
+				and d.id IS NULL
+			</if>
+			<if test="projectName != null  and projectName != ''">and a.project_name like concat('%',
+				#{projectName},'%')
+			</if>
+			<if test="contractingMode != null  and contractingMode != ''">and a.contracting_mode = #{contractingMode}
+			</if>
+			<if test="fillingStartDate != null and fillingEndDate != null ">
+				and d.upload_time between #{fillingStartDate} and #{fillingEndDate}
+			</if>
+			<!-- 数据范围过滤 -->
+			${params.dataScope}
+		</where>
+	</select>
+	
+	<select id="selectProjectListWithContracts" parameterType="ProjectVo" resultMap="MgtProjectResult">
+		<include refid="selectDistinctMgtProjectVo" />
+		<choose>
+			<when test="include == null or include == ''">
+				left join projectcontracts d on a.project_id = d.project_id
+			</when>
+			<when test="include != null and include == 0">
+				left join projectcontracts d on a.project_id = d.project_id
+			</when>
+			<otherwise>
+				inner join projectcontracts d on a.project_id = d.project_id
+			</otherwise>
+		</choose>
+		<where>
+			<if test="include != null and include == 0">
+				and d.id IS NULL
+			</if>
+			<if test="projectName != null  and projectName != ''">and a.project_name like concat('%',
+				#{projectName},'%')
+			</if>
+			<if test="contractingMode != null  and contractingMode != ''">and a.contracting_mode = #{contractingMode}
+			</if>
+			<!-- 数据范围过滤 -->
+			${params.dataScope}
+		</where>
+	</select>
+	
+	<select id="selectProjectListWithMaterialsContracts" parameterType="ProjectVo" resultMap="MgtProjectResult">
+		<include refid="selectDistinctMgtProjectVo" />
+		<choose>
+			<when test="include == null or include == ''">
+				left join materialscontracts d on a.project_id = d.project_id
+			</when>
+			<when test="include != null and include == 0">
+				left join materialscontracts d on a.project_id = d.project_id
+			</when>
+			<otherwise>
+				inner join materialscontracts d on a.project_id = d.project_id
+			</otherwise>
+		</choose>
+		<where>
+			<if test="include != null and include == 0">
+				and d.id IS NULL
+			</if>
+			<if test="projectName != null  and projectName != ''">and a.project_name like concat('%',
+				#{projectName},'%')
+			</if>
+			<if test="contractingMode != null  and contractingMode != ''">and a.contracting_mode = #{contractingMode}
+			</if>
+			<!-- 数据范围过滤 -->
+			${params.dataScope}
+		</where>
+	</select>
+	
+	<select id="selectProjectListWithSubContract" parameterType="ProjectVo" resultMap="MgtProjectResult">
+		<include refid="selectDistinctMgtProjectVo" />
+		<choose>
+			<when test="include == null or include == ''">
+				left join subcontract d on a.project_id = d.project_id
+			</when>
+			<when test="include != null and include == 0">
+				left join subcontract d on a.project_id = d.project_id
+			</when>
+			<otherwise>
+				inner join subcontract d on a.project_id = d.project_id
+			</otherwise>
+		</choose>
+		<where>
+			<if test="include != null and include == 0">
+				and d.id IS NULL
+			</if>
+			<if test="projectName != null  and projectName != ''">and a.project_name like concat('%',
+				#{projectName},'%')
+			</if>
+			<if test="contractingMode != null  and contractingMode != ''">and a.contracting_mode = #{contractingMode}
+			</if>
+			<!-- 数据范围过滤 -->
+			<if test="dataScope">
+				${params.dataScope}
+			</if>
+		</where>
+	</select>
+	
+	<select id="selectProjectListWithProjectCost" parameterType="ProjectVo" resultMap="MgtProjectResult">
+		<include refid="selectDistinctMgtProjectVo" />
+		<choose>
+			<when test="include == null or include == ''">
+				left join mgt_project_cost d on a.project_id = d.project_id
+			</when>
+			<when test="include != null and include == 0">
+				left join mgt_project_cost d on a.project_id = d.project_id
+			</when>
+			<otherwise>
+				inner join mgt_project_cost d on a.project_id = d.project_id
+			</otherwise>
+		</choose>
+		<where>
+			<if test="include != null and include == 0">
+				and d.cost_id IS NULL
+			</if>
+			<if test="projectName != null  and projectName != ''">and a.project_name like concat('%',
+				#{projectName},'%')
+			</if>
+			<!-- 数据范围过滤 -->
+			${params.dataScope}
+		</where>
+	</select>
+	
+	<select id="selectProjectListWithAcceptance" parameterType="ProjectVo" resultMap="MgtProjectResult">
+		<include refid="selectDistinctMgtProjectVo" />
+		<choose>
+			<when test="include == null or include == ''">
+				left join mgt_acceptance d on a.project_id = d.project_id
+			</when>
+			<when test="include != null and include == 0">
+				left join mgt_acceptance d on a.project_id = d.project_id
+			</when>
+			<otherwise>
+				inner join mgt_acceptance d on a.project_id = d.project_id
+			</otherwise>
+		</choose>
+		<where>
+			<if test="include != null and include == 0">
+				and d.acceptance_id IS NULL
+			</if>
+			<if test="projectName != null  and projectName != ''">and a.project_name like concat('%',
+				#{projectName},'%')
+			</if>
+			<!-- 数据范围过滤 -->
+			${params.dataScope}
+		</where>
+	</select>
+	
+	<select id="selectProjectListWithSelfCheckingCp" parameterType="ProjectVo" resultMap="MgtProjectResult">
+		<include refid="selectDistinctMgtProjectVo" />
+		<choose>
+			<when test="include == null or include == ''">
+				left join self_checking_cp d on a.project_id = d.project_id
+			</when>
+			<when test="include != null and include == 0">
+				left join self_checking_cp d on a.project_id = d.project_id
+			</when>
+			<otherwise>
+				inner join self_checking_cp d on a.project_id = d.project_id
+			</otherwise>
+		</choose>
+		<where>
+			<if test="include != null and include == 0">
+				and d.id IS NULL
+			</if>
+			<if test="changeStatus != null and !changeStatus.isEmpty()">
+				AND d.change_status IN
+				<foreach item="status" collection="changeStatus" open="(" separator="," close=")">
+					#{status}
+				</foreach>
+			</if>
+			<if test="projectName != null  and projectName != ''">and a.project_name like concat('%',
+				#{projectName},'%')
+			</if>
+			<if test="contractingMode != null  and contractingMode != ''">and a.contracting_mode = #{contractingMode}
+			</if>
+			<!-- 数据范围过滤 -->
+			${params.dataScope}
+		</where>
+	</select>
+	
+	<select id="selectMgtProjectByProjectId" parameterType="Long" resultMap="MgtProjectResult">
+		<include refid="selectMgtProjectVo" />
+		where a.project_id = #{projectId}
+	</select>
+	
+	<select id="selectMgtProjectByProjectSn" parameterType="Long" resultMap="MgtProjectResult">
+		<include refid="selectMgtProjectVo" />
+		where a.project_sn = #{projectSn}
+	</select>
+	
+	<select id="selectMgtProjectByProjectName" parameterType="String" resultMap="MgtProjectResult">
+		<include refid="selectMgtProjectVo" />
+		where a.project_name = #{projectName}
+	</select>
+	
+	<select id="selectMgtProjectByPid" parameterType="Long" resultMap="MgtProjectResult">
+		<include refid="selectMgtProjectVo" />
+		where a.pid = #{pid}
+	</select>
+	
+	<select id="selectMgtProjectByPIds" parameterType="Long" resultMap="MgtProjectResult">
+		<include refid="selectMgtProjectVo" />
+		where a.pid in
+		<foreach item="projectId" collection="projectIds" open="(" separator="," close=")">
+			#{projectId}
+		</foreach>
+	</select>
+	
+	<insert id="insertMgtProject" parameterType="MgtProject" useGeneratedKeys="true" keyProperty="projectId">
+		insert into mgt_project
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="pid != null">pid,</if>
+			<if test="projectName != null and projectName != ''">project_name,</if>
+			<if test="projectSn != null">project_sn,</if>
+			<if test="projectLocation != null and projectLocation != ''">project_location,</if>
+			<if test="guaranteeDate != null">guarantee_date,</if>
+			<if test="defectLiabilityDate != null">defect_liability_date,</if>
+			<if test="paymentMethod != null">payment_method,</if>
+			<if test="contractingCompany != null and contractingCompany != ''">contracting_company,</if>
+			<if test="constructionCompany != null and constructionCompany != ''">construction_company,</if>
+			<if test="surveyCompany != null and surveyCompany != ''">survey_company,</if>
+			<if test="designCompany != null and designCompany != ''">design_company,</if>
+			<if test="supervisionCompany != null and supervisionCompany != ''">supervision_company,</if>
+			<if test="auditCompany != null and auditCompany != ''">audit_company,</if>
+			<if test="creatingExcellence != null and creatingExcellence != ''">creating_excellence,</if>
+			<if test="contractingMode != null and contractingMode != ''">contracting_mode,</if>
+			<if test="settlementStatus != null and settlementStatus != ''">settlement_status,</if>
+			<if test="commencementDate != null">commencement_date,</if>
+			<if test="completionDate != null">completion_date,</if>
+			<if test="status != null">status,</if>
+			<if test="projectLeader != null">project_leader,</if>
+			<if test="deptId != null">dept_id,</if>
+			<if test="userId != null">user_id,</if>
+			<if test="createBy != null">create_by,</if>
+			<if test="createTime != null">create_time,</if>
+			<if test="updateBy != null">update_by,</if>
+			<if test="updateTime != null">update_time,</if>
+			<if test="projectGroup != null">project_group,</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="pid != null">#{pid},</if>
+			<if test="projectName != null and projectName != ''">#{projectName},</if>
+			<if test="projectSn != null">#{projectSn},</if>
+			<if test="projectLocation != null and projectLocation != ''">#{projectLocation},</if>
+			<if test="guaranteeDate != null">#{guaranteeDate},</if>
+			<if test="defectLiabilityDate != null">#{defectLiabilityDate},</if>
+			<if test="paymentMethod != null">#{paymentMethod},</if>
+			<if test="contractingCompany != null and contractingCompany != ''">#{contractingCompany},</if>
+			<if test="constructionCompany != null and constructionCompany != ''">#{constructionCompany},</if>
+			<if test="surveyCompany != null and surveyCompany != ''">#{surveyCompany},</if>
+			<if test="designCompany != null and designCompany != ''">#{designCompany},</if>
+			<if test="supervisionCompany != null and supervisionCompany != ''">#{supervisionCompany},</if>
+			<if test="auditCompany != null and auditCompany != ''">#{auditCompany},</if>
+			<if test="creatingExcellence != null and creatingExcellence != ''">#{creatingExcellence},</if>
+			<if test="contractingMode != null and contractingMode != ''">#{contractingMode},</if>
+			<if test="settlementStatus != null and settlementStatus != ''">#{settlementStatus},</if>
+			<if test="commencementDate != null">#{commencementDate},</if>
+			<if test="completionDate != null">#{completionDate},</if>
+			<if test="status != null">#{status},</if>
+			<if test="projectLeader != null">#{projectLeader},</if>
+			<if test="deptId != null">#{deptId},</if>
+			<if test="userId != null">#{userId},</if>
+			<if test="createBy != null">#{createBy},</if>
+			<if test="createTime != null">#{createTime},</if>
+			<if test="updateBy != null">#{updateBy},</if>
+			<if test="updateTime != null">#{updateTime},</if>
+			<if test="projectGroup != null">#{projectGroup},</if>
+		</trim>
+	</insert>
+	
+	<update id="updateMgtProject" parameterType="MgtProject">
+		update mgt_project
+		<trim prefix="SET" suffixOverrides=",">
+			<if test="pid != null">pid = #{pid},</if>
+			<if test="projectName != null and projectName != ''">project_name = #{projectName},</if>
+			<if test="projectSn != null">project_sn = #{projectSn},</if>
+			<if test="projectLocation != null and projectLocation != ''">project_location = #{projectLocation},</if>
+			<if test="guaranteeDate != null">guarantee_date = #{guaranteeDate},</if>
+			<if test="defectLiabilityDate != null">defect_liability_date = #{defectLiabilityDate},</if>
+			<if test="paymentMethod != null">payment_method = #{paymentMethod},</if>
+			<if test="contractingCompany != null and contractingCompany != ''">contracting_company = #{contractingCompany},
+			</if>
+			<if test="constructionCompany != null and constructionCompany != ''">construction_company = #{constructionCompany},
+			</if>
+			<if test="surveyCompany != null and surveyCompany != ''">survey_company = #{surveyCompany},</if>
+			<if test="designCompany != null and designCompany != ''">design_company = #{designCompany},</if>
+			<if test="auditCompany != null and auditCompany != ''">audit_company = #{auditCompany},</if>
+			<if test="supervisionCompany != null and supervisionCompany != ''">supervision_company = #{supervisionCompany},
+			</if>
+			<if test="creatingExcellence != null and creatingExcellence != ''">creating_excellence = #{creatingExcellence},
+			</if>
+			<if test="contractingMode != null and contractingMode != ''">contracting_mode = #{contractingMode},</if>
+			<if test="settlementStatus != null and settlementStatus != ''">settlement_status = #{settlementStatus},</if>
+			<if test="commencementDate != null">commencement_date = #{commencementDate},</if>
+			<if test="completionDate != null">completion_date = #{completionDate},</if>
+			<if test="status != null">status = #{status},</if>
+			<if test="projectLeader != null">project_leader = #{projectLeader},</if>
+			<if test="deptId != null">dept_id = #{deptId},</if>
+			<if test="userId != null">user_id = #{userId},</if>
+			<if test="createBy != null">create_by = #{createBy},</if>
+			<if test="createTime != null">create_time = #{createTime},</if>
+			<if test="updateBy != null">update_by = #{updateBy},</if>
+			<if test="updateTime != null">update_time = #{updateTime},</if>
+			<if test="fid != null">fid = #{fid},</if>
+			<if test="fnumber != null">fnumber = #{fnumber},</if>
+			<if test="projectGroup != null">project_group = #{projectGroup},</if>
+		</trim>
+		where project_id = #{projectId}
+	</update>
+	
+	<delete id="deleteMgtProjectByProjectId" parameterType="Long">
+		delete
+		from mgt_project
+		where project_id = #{projectId}
+	</delete>
+	
+	<delete id="deleteMgtProjectByProjectIds" parameterType="String">
+		delete from mgt_project where project_id in
+		<foreach item="projectId" collection="array" open="(" separator="," close=")">
+			#{projectId}
+		</foreach>
+	</delete>
+	
+	<select id="selectMgtProjectAttachmentsList" resultType="MgtProjectAttachments"
+			resultMap="MgtProjectAttachmentsResult">
+		select b.attachments_id,
+			   b.project_id,
+			   b.file_name,
+			   b.file,
+			   b.dept_id,
+			   b.user_id,
+			   b.create_by,
+			   b.create_time,
+			   b.update_by,
+			   b.update_time
+		from mgt_project_attachments b
+		where b.project_id = #{projectId}
+	</select>
+	
+	<select id="selectMgtProjectUserList" resultType="SysUserVo"
+			resultMap="SysUserVoResult">
+		select u.user_id, u.dept_id, u.nick_name as user_name, u.phonenumber, d.dept_name
+		from mgt_project_user pu
+				 left join sys_user u on u.user_id = pu.user_id
+				 left join sys_dept d on u.dept_id = d.dept_id
+		where pu.project_id = #{projectId}
+	</select>
+	
+	<select id="selectProjectLeaderUserById" parameterType="Long" resultType="SysUserVo"
+			resultMap="SysUserVoResult">
+		select u.user_id, u.dept_id, u.nick_name as user_name, u.phonenumber, d.dept_name
+		from sys_user u
+				 left join sys_dept d on u.dept_id = d.dept_id
+		WHERE u.user_id = #{projectLeader}
+	</select>
+	
+	<select id="selectPMgtProjectByPid" parameterType="Long" resultType="MgtProject"
+			resultMap="MgtProjectResult">
+		<include refid="selectMgtProjectVo" />
+		WHERE a.project_id = #{pid}
+	</select>
+	
+	<select id="selectMgtProjectListByProjectIds" parameterType="java.util.Set"
+			resultMap="MgtProjectResult">
+		<include refid="selectMgtProjectVo" />
+		where a.project_id in
+		<foreach collection="projectIds" item="projectId" open="(" separator="," close=")">
+			#{projectId}
+		</foreach>
+	</select>
+	
+	<select id="selectPermissionProjectIdsByUserId" parameterType="java.lang.Long" resultType="java.lang.Long">
+		SELECT project_id
+		FROM mgt_project
+		WHERE contracting_mode = 0
+		  AND project_id IN (SELECT project_id
+							 FROM mgt_project_user
+							 WHERE user_id = #{userId}
+							 UNION
+							 SELECT project_id
+							 FROM mgt_project
+							 WHERE project_leader = #{userId})
+	</select>
+	
+	<select id="selectProjectKanbanZHGL" parameterType="String" resultType="java.util.Map">
+		SELECT
+		p.project_id,
+		p.project_name,
+		COALESCE(SUM(pc.project_price), 0) AS project_price,
+		COALESCE(SUM(mpc.total_all_month), 0) AS total_all_month,
+		COALESCE(SUM(mpc.sub_all_month), 0) AS sub_all_month,
+		COALESCE(SUM(CASE WHEN mcp.type = 0 AND mcp.data_status = 1 THEN mcp.actual_collection_amount ELSE 0 END), 0) AS
+		collection_amount,
+		COALESCE(SUM(CASE WHEN mcp.type = 1 AND mcp.data_status = 1 THEN mcp.actual_collection_amount ELSE 0 END), 0) AS
+		payment_amount
+		FROM
+		mgt_project p
+		LEFT JOIN
+		projectcontracts pc ON pc.project_id = p.project_id
+		LEFT JOIN
+		mgt_project_cost mpc ON mpc.project_id = p.project_id
+		LEFT JOIN
+		mgt_collection_plan mcp ON mcp.project_id = p.project_id
+		WHERE
+		1=1
+		<if test="projectIds != null and projectIds.size > 0">
+			AND p.project_id IN
+			<foreach collection="projectIds" item="id" open="(" separator="," close=")">
+				#{id}
+			</foreach>
+		</if>
+		GROUP BY
+		p.project_id
+	</select>
+	
+	<select id="selectProjectKanbanXMZHGL" resultType="java.util.Map">
+		SELECT p.project_id,
+			   p.project_name,
+			   COALESCE(SUM(CASE
+								WHEN mpc.filling_date BETWEEN #{startDate} AND #{endDate}
+									THEN COALESCE(mpc.sub_all_month, 0)
+								ELSE 0 END), 0) AS zb_amount,
+		
+			   COALESCE(SUM(CASE
+								WHEN mpc.filling_date BETWEEN #{startDate} AND #{endDate}
+									THEN COALESCE(mpc.total_all_month, 0)
+								ELSE 0 END), 0) AS fb_amount,
+		
+			   COALESCE(SUM(CASE
+								WHEN mrt.create_time BETWEEN #{startDate} AND #{endDate}
+									THEN COALESCE(mrt.invoice_amount, 0)
+								ELSE 0 END), 0) AS kp_amount,
+		
+			   COALESCE(SUM(CASE
+								WHEN mre.create_time BETWEEN #{startDate} AND #{endDate}
+									THEN COALESCE(mre.invoice_amount, 0)
+								ELSE 0 END), 0) AS sp_amount,
+		
+			   COALESCE(SUM(CASE
+								WHEN mcp.type = 0 AND mcp.data_status = 1 AND
+									 mcp.filling_date BETWEEN #{startDate} AND #{endDate}
+									THEN COALESCE(mcp.actual_collection_amount, 0)
+								ELSE 0 END), 0) AS hk_amount,
+		
+			   COALESCE(SUM(CASE
+								WHEN mcp.type = 1 AND mcp.data_status = 1 AND
+									 mcp.filling_date BETWEEN #{startDate} AND #{endDate}
+									THEN COALESCE(mcp.actual_collection_amount, 0)
+								ELSE 0 END), 0) AS fk_amount
+		FROM mgt_project p
+				 LEFT JOIN mgt_project_cost mpc ON mpc.project_id = p.project_id
+				 LEFT JOIN mgt_collection_plan mcp ON mcp.project_id = p.project_id
+				 LEFT JOIN mgt_collection_invoice_registration mrt ON mrt.project_id = p.project_id
+				 LEFT JOIN mgt_collection_invoice_receipt mre ON mre.project_id = p.project_id
+		WHERE p.project_id = #{projectId}
+		  AND p.contracting_mode = 0
+		GROUP BY p.project_id, p.project_name
+	</select>
+	
+	<select id="getMinCommencementDate" resultType="Date">
+		SELECT MIN(commencement_date) AS commencement_date
+		FROM mgt_project
+		WHERE contracting_mode = 0
+		<if test="projectIds != null and !projectIds.isEmpty()">
+			AND project_id IN
+			<foreach item="id" collection="projectIds" open="(" separator="," close=")">
+				#{id}
+			</foreach>
+		</if>
+	</select>
+	
+	<select id="countProjectsByDate" resultType="int">
+		SELECT COUNT(*)
+		FROM mgt_project
+		WHERE create_time BETWEEN #{startDate} AND #{endDate}
+	</select>
+
+</mapper>

@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.MaterialscontractsMapper">
+
+    <resultMap type="Materialscontracts" id="MaterialscontractsResult">
+        <result property="id"    column="id"    />
+        <result property="projectName"    column="project_name"    />
+        <result property="projectId"    column="project_id"    />
+        <result property="projectmsg"    column="projectmsg"    />
+        <result property="contractingUnit"    column="contracting_unit"    />
+        <result property="constructionUnit"    column="construction_unit"    />
+        <result property="projectStatus"    column="project_status"    />
+        <result property="startTime"    column="start_time"    />
+        <result property="endTime"    column="end_time"    />
+        <result property="htId"    column="ht_id"    />
+        <result property="htName"    column="ht_name"    />
+        <result property="projectDate"    column="project_date"    />
+        <result property="projectPrice"    column="project_price"    />
+        <result property="jContact"    column="j_contact"    />
+        <result property="jPhone"    column="j_phone"    />
+        <result property="yContact"    column="y_contact"    />
+        <result property="yPhone"    column="y_phone"    />
+        <result property="warrantyPeropd"    column="warranty_peropd"    />
+        <result property="warrantyPrice"    column="warranty_price"    />
+        <result property="performancePay"    column="performance_pay"    />
+        <result property="htFile"    column="ht_file"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="userId"    column="user_id"    />
+        <result property="deptId"    column="dept_id"    />
+
+        <association property="mgtProject" column="project_id" javaType="MgtProject"
+                     select="selectProjectById"/>
+
+        <collection property="mgtOaContracts" column="id" javaType="java.util.List"
+                    ofType="MgtOaContracts"
+                    select="selectMgtOaContracts"/>
+
+        <collection property="mgtOtherContracts" column="id" javaType="java.util.List"
+                    ofType="MgtOtherContracts"
+                    select="selectMgtOtherContracts"/>
+
+<!--        <collection property="mgtProject" column="project_id" javaType="java.util.List"-->
+<!--                    ofType="MgtProject"-->
+<!--                    select="selectMgtProject"/>-->
+
+
+
+    </resultMap>
+
+    <sql id="selectMaterialscontractsVo">
+        select id, project_name, project_id, projectmsg, contracting_unit, construction_unit, project_status, start_time, end_time, ht_id, ht_name, project_date, project_price, j_contact, j_phone, y_contact, y_phone, warranty_peropd, warranty_price, performance_pay, ht_file, create_time, user_id, dept_id from materialscontracts
+    </sql>
+
+    <select id="selectMaterialscontractsList" parameterType="Materialscontracts" resultMap="MaterialscontractsResult">
+        <include refid="selectMaterialscontractsVo"/>
+        <where>
+            <if test="projectName != null  and projectName != ''"> and project_name like concat('%', #{projectName}, '%')</if>
+            <if test="projectStatus != null  and projectStatus != ''"> and project_status = #{projectStatus}</if>
+            <if test="params.beginProjectDate != null and params.beginProjectDate != '' and params.endProjectDate != null and params.endProjectDate != ''"> and project_date between #{params.beginProjectDate} and #{params.endProjectDate}</if>
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="deptId != null "> and dept_id = #{deptId}</if>
+        </where>
+    </select>
+
+    <select id="selectMaterialscontractsById" parameterType="Long" resultMap="MaterialscontractsResult">
+        <include refid="selectMaterialscontractsVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertMaterialscontracts" parameterType="Materialscontracts" useGeneratedKeys="true" keyProperty="id">
+        insert into materialscontracts
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="projectName != null">project_name,</if>
+            <if test="projectId != null">project_id,</if>
+            <if test="projectmsg != null">projectmsg,</if>
+            <if test="contractingUnit != null">contracting_unit,</if>
+            <if test="constructionUnit != null">construction_unit,</if>
+            <if test="projectStatus != null">project_status,</if>
+            <if test="startTime != null">start_time,</if>
+            <if test="endTime != null">end_time,</if>
+            <if test="htId != null">ht_id,</if>
+            <if test="htName != null">ht_name,</if>
+            <if test="projectDate != null">project_date,</if>
+            <if test="projectPrice != null">project_price,</if>
+            <if test="jContact != null">j_contact,</if>
+            <if test="jPhone != null">j_phone,</if>
+            <if test="yContact != null">y_contact,</if>
+            <if test="yPhone != null">y_phone,</if>
+            <if test="warrantyPeropd != null">warranty_peropd,</if>
+            <if test="warrantyPrice != null">warranty_price,</if>
+            <if test="performancePay != null">performance_pay,</if>
+            <if test="htFile != null">ht_file,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="deptId != null">dept_id,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="projectName != null">#{projectName},</if>
+            <if test="projectId != null">#{projectId},</if>
+            <if test="projectmsg != null">#{projectmsg},</if>
+            <if test="contractingUnit != null">#{contractingUnit},</if>
+            <if test="constructionUnit != null">#{constructionUnit},</if>
+            <if test="projectStatus != null">#{projectStatus},</if>
+            <if test="startTime != null">#{startTime},</if>
+            <if test="endTime != null">#{endTime},</if>
+            <if test="htId != null">#{htId},</if>
+            <if test="htName != null">#{htName},</if>
+            <if test="projectDate != null">#{projectDate},</if>
+            <if test="projectPrice != null">#{projectPrice},</if>
+            <if test="jContact != null">#{jContact},</if>
+            <if test="jPhone != null">#{jPhone},</if>
+            <if test="yContact != null">#{yContact},</if>
+            <if test="yPhone != null">#{yPhone},</if>
+            <if test="warrantyPeropd != null">#{warrantyPeropd},</if>
+            <if test="warrantyPrice != null">#{warrantyPrice},</if>
+            <if test="performancePay != null">#{performancePay},</if>
+            <if test="htFile != null">#{htFile},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="deptId != null">#{deptId},</if>
+        </trim>
+    </insert>
+
+    <update id="updateMaterialscontracts" parameterType="Materialscontracts">
+        update materialscontracts
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="projectName != null">project_name = #{projectName},</if>
+            <if test="projectId != null">project_id = #{projectId},</if>
+            <if test="projectmsg != null">projectmsg = #{projectmsg},</if>
+            <if test="contractingUnit != null">contracting_unit = #{contractingUnit},</if>
+            <if test="constructionUnit != null">construction_unit = #{constructionUnit},</if>
+            <if test="projectStatus != null">project_status = #{projectStatus},</if>
+            <if test="startTime != null">start_time = #{startTime},</if>
+            <if test="endTime != null">end_time = #{endTime},</if>
+            <if test="htId != null">ht_id = #{htId},</if>
+            <if test="htName != null">ht_name = #{htName},</if>
+            <if test="projectDate != null">project_date = #{projectDate},</if>
+            <if test="projectPrice != null">project_price = #{projectPrice},</if>
+            <if test="jContact != null">j_contact = #{jContact},</if>
+            <if test="jPhone != null">j_phone = #{jPhone},</if>
+            <if test="yContact != null">y_contact = #{yContact},</if>
+            <if test="yPhone != null">y_phone = #{yPhone},</if>
+            <if test="warrantyPeropd != null">warranty_peropd = #{warrantyPeropd},</if>
+            <if test="warrantyPrice != null">warranty_price = #{warrantyPrice},</if>
+            <if test="performancePay != null">performance_pay = #{performancePay},</if>
+            <if test="htFile != null">ht_file = #{htFile},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteMaterialscontractsById" parameterType="Long">
+        delete from materialscontracts where id = #{id}
+    </delete>
+
+    <delete id="deleteMaterialscontractsByIds" parameterType="String">
+        delete from materialscontracts where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectMgtOaContracts" resultType="MgtOaContracts">
+        select oa.*
+        from mgt_oa_contracts oa
+        where oa.materials_contract_id = #{id}
+    </select>
+
+    <select id="selectMgtOtherContracts" resultType="MgtOtherContracts">
+        select ot.*
+        from mgt_other_contracts ot
+        where ot.materials_contract_id = #{id}
+    </select>
+
+<!--    <select id="selectMgtProject" resultType="MgtProject">-->
+<!--        select pro.*-->
+<!--        from mgt_project pro-->
+<!--        where pro.project_id = #{id}-->
+<!--    </select>-->
+
+    <select id="selectProjectById" parameterType="Long" resultType="MgtProject">
+        SELECT p.*
+        FROM mgt_project p
+        WHERE p.project_id = #{projectId}
+    </select>
+
+</mapper>

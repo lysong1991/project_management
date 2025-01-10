@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.AttendanceMapper">
+
+    <resultMap type="Attendance" id="AttendanceResult">
+        <result property="id" column="id"/>
+        <result property="projectId" column="project_id"/>
+        <result property="leaderId" column="leader_id"/>
+        <result property="workerNum" column="worker_num"/>
+        <result property="file" column="file"/>
+        <result property="createTime" column="create_time"/>
+        <result property="userId" column="user_id"/>
+        <result property="deptId" column="dept_id"/>
+        <association property="mgtProject" column="project_id" javaType="MgtProject"
+                     select="selectProject"/>
+        <association property="leaderUser" column="leader_id" javaType="SysUserVo"
+                     select="selectLeaderUser"/>
+        <collection property="attendanceWorker" column="id" javaType="java.util.List"
+                    ofType="AttendanceWorker"
+                    select="selectAttendanceWorker"/>
+    </resultMap>
+
+    <resultMap type="MgtProject" id="MgtProjectResult">
+        <result property="projectId" column="project_id"/>
+        <result property="pid" column="pid"/>
+        <result property="projectName" column="project_name"/>
+        <result property="projectSn" column="project_sn"/>
+        <result property="status" column="status"/>
+        <result property="projectLeader" column="project_leader"/>
+        <association property="projectLeaderUser" column="project_leader" javaType="SysUserVo"
+                     select="selectProjectLeaderUser"/>
+    </resultMap>
+
+    <resultMap type="SysUserVo" id="SysUserVoResult">
+        <id property="userId" column="user_id"/>
+        <result property="deptId" column="dept_id"/>
+        <result property="userName" column="user_name"/>
+        <result property="deptName" column="dept_name"/>
+        <result property="phonenumber" column="phonenumber"/>
+    </resultMap>
+
+    <sql id="selectAttendanceVo">
+        select id,
+               project_id,
+               leader_id,
+               worker_num,
+               file,
+               create_time,
+               user_id,
+               dept_id
+        from attendance
+    </sql>
+
+    <select id="selectAttendanceList" parameterType="Attendance" resultMap="AttendanceResult">
+        <include refid="selectAttendanceVo"/>
+        <where>
+            <if test="projectId != null ">and project_id = #{projectId}</if>
+            <if test="leaderId != null ">and leader_id = #{leaderId}</if>
+            <if test="workerNum != null ">and worker_num = #{workerNum}</if>
+            <if test="file != null  and file != ''">and file = #{file}</if>
+            <if test="userId != null ">and user_id = #{userId}</if>
+            <if test="deptId != null ">and dept_id = #{deptId}</if>
+        </where>
+    </select>
+
+    <select id="selectAttendanceById" parameterType="Long" resultMap="AttendanceResult">
+        <include refid="selectAttendanceVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertAttendance" parameterType="Attendance" useGeneratedKeys="true" keyProperty="id">
+        insert into attendance
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="projectId != null">project_id,</if>
+            <if test="leaderId != null">leader_id,</if>
+            <if test="workerNum != null">worker_num,</if>
+            <if test="file != null">file,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="deptId != null">dept_id,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="projectId != null">#{projectId},</if>
+            <if test="leaderId != null">#{leaderId},</if>
+            <if test="workerNum != null">#{workerNum},</if>
+            <if test="file != null">#{file},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="deptId != null">#{deptId},</if>
+        </trim>
+    </insert>
+
+    <update id="updateAttendance" parameterType="Attendance">
+        update attendance
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="projectId != null">project_id = #{projectId},</if>
+            <if test="leaderId != null">leader_id = #{leaderId},</if>
+            <if test="workerNum != null">worker_num = #{workerNum},</if>
+            <if test="file != null">file = #{file},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteAttendanceById" parameterType="Long">
+        delete
+        from attendance
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteAttendanceByIds" parameterType="String">
+        delete from attendance where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectProject" parameterType="Long" resultType="MgtProject"
+            resultMap="MgtProjectResult">
+        SELECT p.*
+        FROM mgt_project p
+        WHERE p.project_id = #{projectId}
+    </select>
+
+    <select id="selectLeaderUser" parameterType="Long" resultType="SysUserVo"
+            resultMap="SysUserVoResult">
+        select u.user_id, u.dept_id, u.nick_name as user_name, u.phonenumber, d.dept_name
+        from sys_user u
+                 left join sys_dept d on u.dept_id = d.dept_id
+        WHERE u.user_id = #{leaderId}
+    </select>
+
+    <select id="selectProjectLeaderUser" parameterType="Long" resultType="SysUserVo"
+            resultMap="SysUserVoResult">
+        select u.user_id, u.dept_id, u.nick_name as user_name, u.phonenumber, d.dept_name
+        from sys_user u
+                 left join sys_dept d on u.dept_id = d.dept_id
+        WHERE u.user_id = #{projectLeader}
+    </select>
+
+    <select id="selectAttendanceWorker" resultType="AttendanceWorker">
+        select *
+        from attendance_worker
+        where attendance_id = #{id}
+    </select>
+
+</mapper>

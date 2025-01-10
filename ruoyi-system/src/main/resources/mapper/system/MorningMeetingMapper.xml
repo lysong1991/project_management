@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.MorningMeetingMapper">
+	
+	<resultMap type="MorningMeeting" id="MorningMeetingResult">
+		<result property="id" column="id" />
+		<result property="projectId" column="project_id" />
+		<result property="projectName" column="project_name" />
+		<result property="leaderId" column="leader_id" />
+		<result property="leaderName" column="leader_name" />
+		<result property="attendees" column="attendees" />
+		<result property="uploadTime" column="upload_time" />
+		<result property="explan" column="explan" />
+		<result property="disclosure" column="disclosure" />
+		<result property="createTime" column="create_time" />
+		<result property="userId" column="user_id" />
+		<result property="deptId" column="dept_id" />
+		<result property="attach1" column="attach1" />
+		<result property="attach2" column="attach2" />
+		<association property="mgtProject" column="project_id" javaType="MgtProject"
+					 select="selectProjectById" />
+	</resultMap>
+	
+	<resultMap type="MgtProject" id="MgtProjectResult">
+		<result property="projectId" column="project_id" />
+		<result property="pid" column="pid" />
+		<result property="projectName" column="project_name" />
+		<result property="projectSn" column="project_sn" />
+		<result property="projectLocation" column="project_location" />
+		<result property="guaranteeDate" column="guarantee_date" />
+		<result property="defectLiabilityDate" column="defect_liability_date" />
+		<result property="paymentMethod" column="payment_method" />
+		<result property="contractingCompany" column="contracting_company" />
+		<result property="constructionCompany" column="construction_company" />
+		<result property="surveyCompany" column="survey_company" />
+		<result property="designCompany" column="design_company" />
+		<result property="supervisionCompany" column="supervision_company" />
+		<result property="creatingExcellence" column="creating_excellence" />
+		<result property="contractingMode" column="contracting_mode" />
+		<result property="settlementStatus" column="settlement_status" />
+		<result property="commencementDate" column="commencement_date" />
+		<result property="completionDate" column="completion_date" />
+		<result property="status" column="status" />
+		<result property="projectLeader" column="project_leader" />
+		<result property="jindieProjectName" column="jindie_project_name" />
+		<result property="deptId" column="dept_id" />
+		<result property="userId" column="user_id" />
+		<result property="createBy" column="create_by" />
+		<result property="createTime" column="create_time" />
+		<result property="updateBy" column="update_by" />
+		<result property="updateTime" column="update_time" />
+		<association property="projectLeaderUser" column="project_leader" javaType="SysUserVo"
+					 select="selectProjectLeaderUserById" />
+	</resultMap>
+	
+	<resultMap type="SysUserVo" id="SysUserVoResult">
+		<id property="userId" column="user_id" />
+		<result property="deptId" column="dept_id" />
+		<result property="userName" column="user_name" />
+		<result property="deptName" column="dept_name" />
+		<result property="phonenumber" column="phonenumber" />
+	</resultMap>
+	
+	<sql id="selectMorningMeetingVo">
+		select id,
+			   project_id,
+			   project_name,
+			   leader_id,
+			   leader_name,
+			   attendees,
+			   upload_time,
+			   explan,
+			   disclosure,
+			   create_time,
+			   user_id,
+			   dept_id,
+			   attach1,
+			   attach2
+		from morning_meeting
+	</sql>
+	
+	<select id="selectMorningMeetingList" parameterType="MorningMeeting" resultMap="MorningMeetingResult">
+		<include refid="selectMorningMeetingVo" />
+		<where>
+			<if test="projectId != null  and projectId != ''">and project_id = #{projectId}</if>
+			<if test="projectName != null  and projectName != ''">and project_name like concat('%', #{projectName},
+				'%')
+			</if>
+			<if test="leaderId != null ">and leader_id = #{leaderId}</if>
+			<if test="leaderName != null  and leaderName != ''">and leader_name like concat('%', #{leaderName}, '%')
+			</if>
+			<if test="attendees != null  and attendees != ''">and attendees = #{attendees}</if>
+			<if test="params.beginUploadTime != null and params.beginUploadTime != '' and params.endUploadTime != null and params.endUploadTime != ''">
+				and upload_time between #{params.beginUploadTime} and #{params.endUploadTime}
+			</if>
+			<if test="explan != null  and explan != ''">and explan = #{explan}</if>
+			<if test="uploadTime != null  and uploadTime != ''">and upload_time = #{uploadTime}</if>
+			<if test="disclosure != null  and disclosure != ''">and disclosure = #{disclosure}</if>
+			<if test="userId != null ">and user_id = #{userId}</if>
+			<if test="deptId != null ">and dept_id = #{deptId}</if>
+			<if test="attach1 != null  and attach1 != ''">and attach1 = #{attach1}</if>
+			<if test="attach2 != null  and attach2 != ''">and attach2 = #{attach2}</if>
+		</where>
+	</select>
+	
+	<select id="selectMorningMeetingById" parameterType="Long" resultMap="MorningMeetingResult">
+		<include refid="selectMorningMeetingVo" />
+		where id = #{id}
+	</select>
+	
+	<insert id="insertMorningMeeting" parameterType="MorningMeeting" useGeneratedKeys="true" keyProperty="id">
+		insert into morning_meeting
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="projectId != null">project_id,</if>
+			<if test="projectName != null">project_name,</if>
+			<if test="leaderId != null">leader_id,</if>
+			<if test="leaderName != null">leader_name,</if>
+			<if test="attendees != null">attendees,</if>
+			<if test="uploadTime != null">upload_time,</if>
+			<if test="explan != null">explan,</if>
+			<if test="disclosure != null">disclosure,</if>
+			<if test="createTime != null">create_time,</if>
+			<if test="userId != null">user_id,</if>
+			<if test="deptId != null">dept_id,</if>
+			<if test="attach1 != null">attach1,</if>
+			<if test="attach2 != null">attach2,</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="projectId != null">#{projectId},</if>
+			<if test="projectName != null">#{projectName},</if>
+			<if test="leaderId != null">#{leaderId},</if>
+			<if test="leaderName != null">#{leaderName},</if>
+			<if test="attendees != null">#{attendees},</if>
+			<if test="uploadTime != null">#{uploadTime},</if>
+			<if test="explan != null">#{explan},</if>
+			<if test="disclosure != null">#{disclosure},</if>
+			<if test="createTime != null">#{createTime},</if>
+			<if test="userId != null">#{userId},</if>
+			<if test="deptId != null">#{deptId},</if>
+			<if test="attach1 != null">#{attach1},</if>
+			<if test="attach2 != null">#{attach2},</if>
+		</trim>
+	</insert>
+	
+	<update id="updateMorningMeeting" parameterType="MorningMeeting">
+		update morning_meeting
+		<trim prefix="SET" suffixOverrides=",">
+			<if test="projectId != null">project_id = #{projectId},</if>
+			<if test="projectName != null">project_name = #{projectName},</if>
+			<if test="leaderId != null">leader_id = #{leaderId},</if>
+			<if test="leaderName != null">leader_name = #{leaderName},</if>
+			<if test="attendees != null">attendees = #{attendees},</if>
+			<if test="uploadTime != null">upload_time = #{uploadTime},</if>
+			<if test="explan != null">explan = #{explan},</if>
+			<if test="disclosure != null">disclosure = #{disclosure},</if>
+			<if test="createTime != null">create_time = #{createTime},</if>
+			<if test="userId != null">user_id = #{userId},</if>
+			<if test="deptId != null">dept_id = #{deptId},</if>
+			<if test="attach1 != null">attach1 = #{attach1},</if>
+			<if test="attach2 != null">attach2 = #{attach2},</if>
+		</trim>
+		where id = #{id}
+	</update>
+	
+	<delete id="deleteMorningMeetingById" parameterType="Long">
+		delete
+		from morning_meeting
+		where id = #{id}
+	</delete>
+	
+	<delete id="deleteMorningMeetingByIds" parameterType="String">
+		delete from morning_meeting where id in
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+	
+	<select id="selectProjectById" parameterType="Long" resultType="MgtProject" resultMap="MgtProjectResult">
+		SELECT p.*
+		FROM mgt_project p
+		WHERE p.project_id = #{projectId}
+	</select>
+	
+	<select id="selectProjectLeaderUserById" parameterType="Long" resultType="SysUserVo"
+			resultMap="SysUserVoResult">
+		select u.user_id, u.dept_id, u.nick_name as user_name, u.phonenumber, d.dept_name
+		from sys_user u
+				 left join sys_dept d on u.dept_id = d.dept_id
+		WHERE u.user_id = #{projectLeader}
+	</select>
+
+</mapper>

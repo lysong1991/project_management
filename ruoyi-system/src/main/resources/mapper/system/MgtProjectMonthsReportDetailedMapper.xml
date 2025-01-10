@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.MgtProjectMonthsReportDetailedMapper">
+
+    <resultMap type="MgtProjectMonthsReportDetailed" id="MgtProjectMonthsReportDetailedResult">
+        <result property="detailedId" column="detailed_id"/>
+        <result property="monthsId" column="months_id"/>
+        <result property="projectId" column="project_id"/>
+        <result property="planId" column="plan_id"/>
+        <result property="planDetailedId" column="plan_detailed_id"/>
+        <result property="startTime" column="start_time"/>
+        <result property="endTime" column="end_time"/>
+        <result property="content" column="content"/>
+        <result property="progress" column="progress"/>
+        <result property="commencementDate" column="commencement_date"/>
+        <result property="completionDate" column="completion_date"/>
+        <result property="fillingDate" column="filling_date"/>
+        <result property="jobContent" column="job_content"/>
+        <result property="completeContent" column="complete_content"/>
+        <result property="differentialAnalysis" column="differential_analysis"/>
+        <result property="unfinishedBusiness" column="unfinished_business"/>
+        <result property="actualProgress" column="actual_progress"/>
+        <result property="file" column="file"/>
+        <result property="completionStatus" column="completion_status"/>
+        <result property="deptId" column="dept_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <sql id="selectMgtProjectMonthsReportDetailedVo">
+        select a.*
+        from mgt_project_months_report_detailed a
+    </sql>
+
+    <select id="selectMgtProjectMonthsReportDetailedList" parameterType="MgtProjectMonthsReportDetailed"
+            resultMap="MgtProjectMonthsReportDetailedResult">
+        <include refid="selectMgtProjectMonthsReportDetailedVo"/>
+        <where>
+            <if test="monthsId != null ">and a.months_id = #{monthsId}</if>
+            <if test="projectId != null ">and a.project_id = #{projectId}</if>
+            <if test="planId != null ">and a.plan_id = #{planId}</if>
+            <if test="planDetailedId != null ">and a.plan_detailed_id = #{planDetailedId}</if>
+            <if test="commencementDate != null ">and a.commencement_date = #{commencementDate}</if>
+            <if test="completionDate != null ">and a.completion_date = #{completionDate}</if>
+            <if test="fillingDate != null ">and a.filling_date = #{fillingDate}</if>
+            <if test="completionStatus != null  and completionStatus != ''">and a.completion_status =
+                #{completionStatus}
+            </if>
+        </where>
+        ORDER BY a.create_time DESC
+    </select>
+
+    <select id="selectMgtProjectMonthsReportDetailedByDetailedId" parameterType="Long"
+            resultMap="MgtProjectMonthsReportDetailedResult">
+        <include refid="selectMgtProjectMonthsReportDetailedVo"/>
+        where a.detailed_id = #{detailedId}
+    </select>
+
+    <insert id="insertMgtProjectMonthsReportDetailed" parameterType="MgtProjectMonthsReportDetailed"
+            useGeneratedKeys="true" keyProperty="detailedId">
+        insert into mgt_project_months_report_detailed
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="monthsId != null">months_id,</if>
+            <if test="projectId != null">project_id,</if>
+            <if test="planId != null">plan_id,</if>
+            <if test="planDetailedId != null">plan_detailed_id,</if>
+            <if test="startTime != null">start_time,</if>
+            <if test="endTime != null">end_time,</if>
+            <if test="content != null">content,</if>
+            <if test="progress != null">progress,</if>
+            <if test="commencementDate != null">commencement_date,</if>
+            <if test="completionDate != null">completion_date,</if>
+            <if test="fillingDate != null">filling_date,</if>
+            <if test="jobContent != null">job_content,</if>
+            <if test="completeContent != null">complete_content,</if>
+            <if test="differentialAnalysis != null">differential_analysis,</if>
+            <if test="unfinishedBusiness != null">unfinished_business,</if>
+            <if test="actualProgress != null">actual_progress,</if>
+            <if test="file != null">file,</if>
+            <if test="completionStatus != null">completion_status,</if>
+            <if test="deptId != null">dept_id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="monthsId != null">#{monthsId},</if>
+            <if test="projectId != null">#{projectId},</if>
+            <if test="planId != null">#{planId},</if>
+            <if test="planDetailedId != null">#{planDetailedId},</if>
+            <if test="startTime != null">#{startTime},</if>
+            <if test="endTime != null">#{endTime},</if>
+            <if test="content != null">#{content},</if>
+            <if test="progress != null">#{progress},</if>
+            <if test="commencementDate != null">#{commencementDate},</if>
+            <if test="completionDate != null">#{completionDate},</if>
+            <if test="fillingDate != null">#{fillingDate},</if>
+            <if test="jobContent != null">#{jobContent},</if>
+            <if test="completeContent != null">#{completeContent},</if>
+            <if test="differentialAnalysis != null">#{differentialAnalysis},</if>
+            <if test="unfinishedBusiness != null">#{unfinishedBusiness},</if>
+            <if test="actualProgress != null">#{actualProgress},</if>
+            <if test="file != null">#{file},</if>
+            <if test="completionStatus != null">#{completionStatus},</if>
+            <if test="deptId != null">#{deptId},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <insert id="batchMgtProjectMonthsReportDetailed">
+        insert into mgt_project_months_report_detailed( detailed_id,
+        months_id,
+        project_id,
+        plan_id,
+        plan_detailed_id,
+        start_time,
+        end_time,
+        content,
+        progress,
+        commencement_date,
+        completion_date,
+        filling_date,
+        job_content,
+        complete_content,
+        differential_analysis,
+        unfinished_business,
+        actual_progress,
+        file,
+        completion_status,
+        dept_id,
+        user_id,
+        create_by,
+        create_time,
+        update_by,
+        update_time)
+        values
+        <foreach item="item" index="index" collection="list" separator=",">
+            ( #{item.detailedId}, #{item.monthsId}, #{item.projectId}, #{item.planId}, #{item.planDetailedId},
+            #{item.startTime},#{item.endTime},#{item.content},#{item.progress},
+            #{item.commencementDate},#{item.completionDate},#{item.fillingDate},#{item.jobContent},#{item.completeContent},
+            #{item.differentialAnalysis}, #{item.unfinishedBusiness}, #{item.actualProgress}, #{item.file},
+            #{item.completionStatus}, #{item.deptId}, #{item.userId}, #{item.createBy},#{item.createTime},
+            #{item.updateBy}, #{item.updateTime})
+        </foreach>
+    </insert>
+
+    <update id="updateMgtProjectMonthsReportDetailed" parameterType="MgtProjectMonthsReportDetailed">
+        update mgt_project_months_report_detailed
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="monthsId != null">months_id = #{monthsId},</if>
+            <if test="projectId != null">project_id = #{projectId},</if>
+            <if test="planId != null">plan_id = #{planId},</if>
+            <if test="planDetailedId != null">plan_detailed_id = #{planDetailedId},</if>
+            <if test="startTime != null">start_time = #{startTime},</if>
+            <if test="endTime != null">end_time = #{endTime},</if>
+            <if test="content != null">content = #{content},</if>
+            <if test="progress != null">progress = #{progress},</if>
+            <if test="commencementDate != null">commencement_date = #{commencementDate},</if>
+            <if test="completionDate != null">completion_date = #{completionDate},</if>
+            <if test="fillingDate != null">filling_date = #{fillingDate},</if>
+            <if test="jobContent != null">job_content = #{jobContent},</if>
+            <if test="completeContent != null">complete_content = #{completeContent},</if>
+            <if test="differentialAnalysis != null">differential_analysis = #{differentialAnalysis},</if>
+            <if test="unfinishedBusiness != null">unfinished_business = #{unfinishedBusiness},</if>
+            <if test="actualProgress != null">actual_progress = #{actualProgress},</if>
+            <if test="file != null">file = #{file},</if>
+            <if test="completionStatus != null">completion_status = #{completionStatus},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where detailed_id = #{detailedId}
+    </update>
+
+    <delete id="deleteMgtProjectMonthsReportDetailedByDetailedId" parameterType="Long">
+        delete
+        from mgt_project_months_report_detailed
+        where detailed_id = #{detailedId}
+    </delete>
+
+    <delete id="deleteMgtProjectMonthsReportDetailedByDetailedIds" parameterType="String">
+        delete from mgt_project_months_report_detailed where detailed_id in
+        <foreach item="detailedId" collection="array" open="(" separator="," close=")">
+            #{detailedId}
+        </foreach>
+    </delete>
+
+    <delete id="deleteMgtProjectBudgetDetailedByMonthsId" parameterType="Long">
+        delete
+        from mgt_project_months_report_detailed
+        where months_id = #{monthsId}
+    </delete>
+
+</mapper>

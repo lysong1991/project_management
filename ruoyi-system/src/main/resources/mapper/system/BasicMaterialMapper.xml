@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.BasicMaterialMapper">
+
+    <resultMap type="BasicMaterial" id="BasicMaterialResult">
+        <result property="id" column="id"/>
+        <result property="code" column="code"/>
+        <result property="name" column="name"/>
+        <result property="specifications" column="specifications"/>
+        <result property="dataStatus" column="data_status"/>
+        <result property="disabledState" column="disabled_state"/>
+        <result property="materialProperties" column="material_properties"/>
+        <result property="basicUnit" column="basic_unit"/>
+        <result property="useStatus" column="use_status"/>
+    </resultMap>
+
+    <sql id="selectBasicMaterialVo">
+        select id,
+               code,
+               name,
+               specifications,
+               data_status,
+               disabled_state,
+               material_properties,
+               basic_unit,
+               use_status
+        from basic_material
+    </sql>
+
+    <select id="selectBasicMaterialList" parameterType="BasicMaterial" resultMap="BasicMaterialResult">
+        <include refid="selectBasicMaterialVo"/>
+        <where>
+            <if test="name != null  and name != ''">and name like concat('%', #{name}, '%')</if>
+            <if test="dataStatus != null ">and data_status = #{dataStatus}</if>
+            <if test="disabledState != null ">and disabled_state = #{disabledState}</if>
+            <if test="useStatus != null ">and use_status = #{useStatus}</if>
+        </where>
+    </select>
+
+    <select id="selectBasicMaterialById" parameterType="Long" resultMap="BasicMaterialResult">
+        <include refid="selectBasicMaterialVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectBasicMaterialByCode" parameterType="String" resultMap="BasicMaterialResult">
+        <include refid="selectBasicMaterialVo"/>
+        where code = #{code}
+    </select>
+
+    <insert id="insertBasicMaterial" parameterType="BasicMaterial" useGeneratedKeys="true" keyProperty="id">
+        insert into basic_material
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="code != null">code,</if>
+            <if test="name != null">name,</if>
+            <if test="specifications != null">specifications,</if>
+            <if test="dataStatus != null">data_status,</if>
+            <if test="disabledState != null">disabled_state,</if>
+            <if test="materialProperties != null">material_properties,</if>
+            <if test="basicUnit != null">basic_unit,</if>
+            <if test="useStatus != null">use_status,</if>
+            <if test="updatetime != null">updatetime,</if>
+            <if test="addtime != null">addtime,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="code != null">#{code},</if>
+            <if test="name != null">#{name},</if>
+            <if test="specifications != null">#{specifications},</if>
+            <if test="dataStatus != null">#{dataStatus},</if>
+            <if test="disabledState != null">#{disabledState},</if>
+            <if test="materialProperties != null">#{materialProperties},</if>
+            <if test="basicUnit != null">#{basicUnit},</if>
+            <if test="useStatus != null">#{useStatus},</if>
+
+            <if test="updatetime != null">#{updatetime},</if>
+            <if test="addtime != null">#{addtime},</if>
+
+        </trim>
+    </insert>
+
+    <update id="updateBasicMaterial" parameterType="BasicMaterial">
+        update basic_material
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="code != null">code = #{code},</if>
+            <if test="name != null">name = #{name},</if>
+            <if test="specifications != null">specifications = #{specifications},</if>
+            <if test="dataStatus != null">data_status = #{dataStatus},</if>
+            <if test="disabledState != null">disabled_state = #{disabledState},</if>
+            <if test="materialProperties != null">material_properties = #{materialProperties},</if>
+            <if test="basicUnit != null">basic_unit = #{basicUnit},</if>
+            <if test="useStatus != null">use_status = #{useStatus},</if>
+
+            <if test="updatetime != null">updatetime = #{updatetime},</if>
+            <if test="addtime != null">addtime = #{addtime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteBasicMaterialById" parameterType="Long">
+        delete
+        from basic_material
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteBasicMaterialByIds" parameterType="String">
+        delete from basic_material where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

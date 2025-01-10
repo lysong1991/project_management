@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.MgtDesignMaterialsMapper">
+
+    <resultMap type="MgtDesignMaterials" id="MgtDesignMaterialsResult">
+        <result property="materialsId" column="materials_id"/>
+        <result property="projectId" column="project_id"/>
+        <result property="disclosureName" column="disclosure_name"/>
+        <result property="disclosurePerson" column="disclosure_person"/>
+        <result property="constructionUnit" column="construction_unit"/>
+        <result property="disclosureLocation" column="disclosure_location"/>
+        <result property="disclosureContent" column="disclosure_content"/>
+        <result property="file" column="file"/>
+        <result property="dataStatus" column="data_status"/>
+        <result property="deptId" column="dept_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <association property="mgtProject" column="project_id" javaType="MgtProject"
+                     select="selectProjectById"/>
+    </resultMap>
+
+    <sql id="selectMgtDesignMaterialsVo">
+        select a.materials_id,
+               a.project_id,
+               a.disclosure_name,
+               a.disclosure_person,
+               a.construction_unit,
+               a.disclosure_location,
+               a.disclosure_content,
+               a.file,
+               a.data_status,
+               a.dept_id,
+               a.user_id,
+               a.create_by,
+               a.create_time,
+               a.update_by,
+               a.update_time
+        from mgt_design_materials a
+                 LEFT JOIN mgt_project p ON a.project_id = p.project_id
+    </sql>
+
+    <select id="selectMgtDesignMaterialsList" parameterType="MgtDesignMaterials" resultMap="MgtDesignMaterialsResult">
+        <include refid="selectMgtDesignMaterialsVo"/>
+        <where>
+            <if test="projectId != null ">and a.project_id = #{projectId}</if>
+            <if test="disclosureName != null  and disclosureName != ''">and a.disclosure_name like concat('%',
+                #{disclosureName}, '%')
+            </if>
+            <if test="disclosurePerson != null  and disclosurePerson != ''">and a.disclosure_person =
+                #{disclosurePerson}
+            </if>
+            <if test="constructionUnit != null  and constructionUnit != ''">and a.construction_unit like concat('%',
+                #{constructionUnit}, '%')
+            </if>
+            <if test="dataStatus != null  and dataStatus != ''">and a.data_status = #{dataStatus}</if>
+            <if test="mgtProject != null and mgtProject.projectName != null and mgtProject.projectName != ''">
+                and p.project_name like concat('%', #{mgtProject.projectName}, '%')
+            </if>
+            <!-- 数据范围过滤 -->
+            ${params.dataScope}
+        </where>
+        ORDER BY a.create_time DESC
+    </select>
+
+    <select id="selectMgtDesignMaterialsByMaterialsId" parameterType="Long" resultMap="MgtDesignMaterialsResult">
+        <include refid="selectMgtDesignMaterialsVo"/>
+        where a.materials_id = #{materialsId}
+    </select>
+
+    <select id="selectMgtDesignMaterialsByProjectId" parameterType="Long" resultMap="MgtDesignMaterialsResult">
+        <include refid="selectMgtDesignMaterialsVo"/>
+        where a.project_id = #{projectId}
+    </select>
+
+    <insert id="insertMgtDesignMaterials" parameterType="MgtDesignMaterials" useGeneratedKeys="true"
+            keyProperty="materialsId">
+        insert into mgt_design_materials
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="projectId != null">project_id,</if>
+            <if test="disclosureName != null">disclosure_name,</if>
+            <if test="disclosurePerson != null">disclosure_person,</if>
+            <if test="constructionUnit != null">construction_unit,</if>
+            <if test="disclosureLocation != null">disclosure_location,</if>
+            <if test="disclosureContent != null">disclosure_content,</if>
+            <if test="file != null">file,</if>
+            <if test="dataStatus != null">data_status,</if>
+            <if test="deptId != null">dept_id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="projectId != null">#{projectId},</if>
+            <if test="disclosureName != null">#{disclosureName},</if>
+            <if test="disclosurePerson != null">#{disclosurePerson},</if>
+            <if test="constructionUnit != null">#{constructionUnit},</if>
+            <if test="disclosureLocation != null">#{disclosureLocation},</if>
+            <if test="disclosureContent != null">#{disclosureContent},</if>
+            <if test="file != null">#{file},</if>
+            <if test="dataStatus != null">#{dataStatus},</if>
+            <if test="deptId != null">#{deptId},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateMgtDesignMaterials" parameterType="MgtDesignMaterials">
+        update mgt_design_materials
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="projectId != null">project_id = #{projectId},</if>
+            <if test="disclosureName != null">disclosure_name = #{disclosureName},</if>
+            <if test="disclosurePerson != null">disclosure_person = #{disclosurePerson},</if>
+            <if test="constructionUnit != null">construction_unit = #{constructionUnit},</if>
+            <if test="disclosureLocation != null">disclosure_location = #{disclosureLocation},</if>
+            <if test="disclosureContent != null">disclosure_content = #{disclosureContent},</if>
+            <if test="file != null">file = #{file},</if>
+            <if test="dataStatus != null">data_status = #{dataStatus},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where materials_id = #{materialsId}
+    </update>
+
+    <delete id="deleteMgtDesignMaterialsByMaterialsId" parameterType="Long">
+        delete
+        from mgt_design_materials
+        where materials_id = #{materialsId}
+    </delete>
+
+    <delete id="deleteMgtDesignMaterialsByMaterialsIds" parameterType="String">
+        delete from mgt_design_materials where materials_id in
+        <foreach item="materialsId" collection="array" open="(" separator="," close=")">
+            #{materialsId}
+        </foreach>
+    </delete>
+
+    <select id="selectProjectById" parameterType="Long" resultType="MgtProject">
+        SELECT p.*
+        FROM mgt_project p
+        WHERE p.project_id = #{projectId}
+    </select>
+
+</mapper>

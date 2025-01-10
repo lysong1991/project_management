@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.MgtProjectMonthsReportMapper">
+
+    <resultMap type="MgtProjectMonthsReport" id="MgtProjectMonthsReportResult">
+        <result property="monthsId" column="months_id"/>
+        <result property="planId" column="plan_id"/>
+        <result property="projectId" column="project_id"/>
+        <result property="fillingStartDate" column="filling_start_date"/>
+        <result property="fillingEndDate" column="filling_end_date"/>
+        <result property="fillingDate" column="filling_date"/>
+        <result property="dataStatus" column="data_status"/>
+        <result property="deptId" column="dept_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <association property="mgtProject" column="project_id" javaType="MgtProject"
+                     select="selectProjectById"/>
+        <collection property="mgtProjectMonthsReportDetailedList" column="months_id" javaType="java.util.List"
+                    ofType="MgtProjectMonthsReportDetailed"
+                    select="selectMgtProjectMonthsReportDetailedList"/>
+    </resultMap>
+
+    <sql id="selectMgtProjectMonthsReportVo">
+        select a.months_id,
+               a.plan_id,
+               a.project_id,
+               a.filling_start_date,
+               a.filling_end_date,
+               a.filling_date,
+               a.data_status,
+               a.dept_id,
+               a.user_id,
+               a.create_by,
+               a.create_time,
+               a.update_by,
+               a.update_time
+        from mgt_project_months_report a
+                 LEFT JOIN mgt_project p ON a.project_id = p.project_id
+    </sql>
+
+    <select id="selectMgtProjectMonthsReportList" parameterType="MgtProjectMonthsReport"
+            resultMap="MgtProjectMonthsReportResult">
+        <include refid="selectMgtProjectMonthsReportVo"/>
+        <where>
+            <if test="projectId != null ">and a.project_id = #{projectId}</if>
+            <if test="fillingDate != null ">and a.filling_date = #{fillingDate}</if>
+            <if test="dataStatus != null  and dataStatus != ''">and a.data_status = #{dataStatus}</if>
+            <if test="mgtProject != null and mgtProject.projectName != null and mgtProject.projectName != ''">
+                and p.project_name like concat('%', #{mgtProject.projectName}, '%')
+            </if>
+            <if test="mgtProject != null and mgtProject.projectSn != null and mgtProject.projectSn != ''">
+                and p.project_sn like concat('%', #{mgtProject.projectSn}, '%')
+            </if>
+            <if test="params.beginFillingDate != null and params.beginFillingDate != '' and params.endFillingDate != null and params.endFillingDate != ''">
+                and a.filling_date between #{params.beginFillingDate} and #{params.endFillingDate}
+            </if>
+            <!-- 数据范围过滤 -->
+            ${params.dataScope}
+        </where>
+        ORDER BY a.create_time DESC
+    </select>
+
+    <select id="selectMgtProjectMonthsReportByMonthsId" parameterType="Long" resultMap="MgtProjectMonthsReportResult">
+        <include refid="selectMgtProjectMonthsReportVo"/>
+        where a.months_id = #{monthsId}
+    </select>
+
+    <select id="selectMgtProjectMonthsReportByProjectId" parameterType="Long" resultMap="MgtProjectMonthsReportResult">
+        <include refid="selectMgtProjectMonthsReportVo"/>
+        where a.project_id = #{projectId}
+    </select>
+
+    <insert id="insertMgtProjectMonthsReport" parameterType="MgtProjectMonthsReport" useGeneratedKeys="true"
+            keyProperty="monthsId">
+        insert into mgt_project_months_report
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="projectId != null">project_id,</if>
+            <if test="planId != null">plan_id,</if>
+            <if test="fillingStartDate != null">filling_start_date,</if>
+            <if test="fillingEndDate != null">filling_end_date,</if>
+            <if test="fillingDate != null">filling_date,</if>
+            <if test="dataStatus != null">data_status,</if>
+            <if test="deptId != null">dept_id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="projectId != null">#{projectId},</if>
+            <if test="planId != null">#{planId},</if>
+            <if test="fillingStartDate != null">#{fillingStartDate},</if>
+            <if test="fillingEndDate != null">#{fillingEndDate},</if>
+            <if test="fillingDate != null">#{fillingDate},</if>
+            <if test="dataStatus != null">#{dataStatus},</if>
+            <if test="deptId != null">#{deptId},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateMgtProjectMonthsReport" parameterType="MgtProjectMonthsReport">
+        update mgt_project_months_report
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="planId != null">plan_id = #{planId},</if>
+            <if test="projectId != null">project_id = #{projectId},</if>
+            <if test="fillingStartDate != null">filling_start_date = #{fillingStartDate},</if>
+            <if test="fillingEndDate != null">filling_end_date = #{fillingEndDate},</if>
+            <if test="fillingDate != null">filling_date = #{fillingDate},</if>
+            <if test="dataStatus != null">data_status = #{dataStatus},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where months_id = #{monthsId}
+    </update>
+
+    <delete id="deleteMgtProjectMonthsReportByMonthsId" parameterType="Long">
+        delete
+        from mgt_project_months_report
+        where months_id = #{monthsId}
+    </delete>
+
+    <delete id="deleteMgtProjectMonthsReportByMonthsIds" parameterType="String">
+        delete from mgt_project_months_report where months_id in
+        <foreach item="monthsId" collection="array" open="(" separator="," close=")">
+            #{monthsId}
+        </foreach>
+    </delete>
+
+    <select id="selectProjectById" parameterType="Long" resultType="MgtProject">
+        SELECT p.*
+        FROM mgt_project p
+        WHERE p.project_id = #{projectId}
+    </select>
+
+    <select id="selectMgtProjectMonthsReportDetailedList" resultType="MgtProjectMonthsReportDetailed">
+        select b.*
+        from mgt_project_months_report_detailed b
+        where b.months_id = #{monthsId}
+    </select>
+
+    <select id="selectMgtConstructionPlanDetailedByPlanDetailedId" parameterType="Long"
+            resultType="com.ruoyi.system.domain.MgtConstructionPlanDetailed">
+        SELECT pd.*
+        from mgt_construction_plan_detailed pd
+        WHERE pd.detailed_id = #{planDetailedId}
+    </select>
+
+</mapper>

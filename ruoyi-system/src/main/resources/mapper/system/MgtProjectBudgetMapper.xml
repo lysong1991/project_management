@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.MgtProjectBudgetMapper">
+
+    <resultMap type="MgtProjectBudget" id="MgtProjectBudgetResult">
+        <result property="budgetId" column="budget_id"/>
+        <result property="recordId" column="record_id"/>
+        <result property="projectId" column="project_id"/>
+        <result property="unitProjectName" column="unit_project_name"/>
+        <result property="zbTotalPrice" column="zb_total_price"/>
+        <result property="zrTotalPrice" column="zr_total_price"/>
+        <result property="mbTotalPrice" column="mb_total_price"/>
+        <result property="dataStatusZb" column="data_status_zb"/>
+        <result property="dataStatusZr" column="data_status_zr"/>
+        <result property="dataStatusMb" column="data_status_mb"/>
+        <result property="file" column="file"/>
+        <result property="deptId" column="dept_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <association property="mgtProject" column="project_id" javaType="MgtProject"
+                     select="selectProject"/>
+    </resultMap>
+
+    <sql id="selectMgtProjectBudgetVo">
+        select budget_id,
+               record_id,
+               project_id,
+               unit_project_name,
+               zb_total_price,
+               zr_total_price,
+               mb_total_price,
+               data_status_zb,
+               data_status_zr,
+               data_status_mb,
+               file,
+               dept_id,
+               user_id,
+               create_by,
+               create_time,
+               update_by,
+               update_time
+        from mgt_project_budget
+    </sql>
+
+    <select id="selectMgtProjectBudgetList" parameterType="MgtProjectBudget" resultMap="MgtProjectBudgetResult">
+        <include refid="selectMgtProjectBudgetVo"/>
+        <where>
+            <if test="projectId != null ">and project_id = #{projectId}</if>
+            <if test="recordId != null ">and record_id = #{recordId}</if>
+            <if test="unitProjectName != null and unitProjectName != '' ">and unit_project_name = #{unitProjectName}
+            </if>
+            <if test="dataStatusZb != null  and dataStatusZb != ''">and data_status_zb = #{dataStatusZb}</if>
+            <if test="dataStatusZr != null  and dataStatusZr != ''">and data_status_zr = #{dataStatusZr}</if>
+            <if test="dataStatusMb != null  and dataStatusMb != ''">and data_status_mb = #{dataStatusMb}</if>
+        </where>
+        ORDER BY create_time DESC
+    </select>
+
+    <select id="selectMgtProjectBudgetByBudgetId" parameterType="Long" resultMap="MgtProjectBudgetResult">
+        <include refid="selectMgtProjectBudgetVo"/>
+        where budget_id = #{budgetId}
+    </select>
+
+    <insert id="insertMgtProjectBudget" parameterType="MgtProjectBudget" useGeneratedKeys="true" keyProperty="budgetId">
+        insert into mgt_project_budget
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="projectId != null">project_id,</if>
+            <if test="recordId != null">record_id,</if>
+            <if test="unitProjectName != null">unit_project_name,</if>
+            <if test="zbTotalPrice != null">zb_total_price,</if>
+            <if test="zrTotalPrice != null">zr_total_price,</if>
+            <if test="mbTotalPrice != null">mb_total_price,</if>
+            <if test="dataStatusZb != null">data_status_zb,</if>
+            <if test="dataStatusZr != null">data_status_zr,</if>
+            <if test="dataStatusMb != null">data_status_mb,</if>
+            <if test="file != null">file,</if>
+            <if test="deptId != null">dept_id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="projectId != null">#{projectId},</if>
+            <if test="recordId != null">#{recordId},</if>
+            <if test="unitProjectName != null">#{unitProjectName},</if>
+            <if test="zbTotalPrice != null">#{zbTotalPrice},</if>
+            <if test="zrTotalPrice != null">#{zrTotalPrice},</if>
+            <if test="mbTotalPrice != null">#{mbTotalPrice},</if>
+            <if test="dataStatusZb != null">#{dataStatusZb},</if>
+            <if test="dataStatusZr != null">#{dataStatusZr},</if>
+            <if test="dataStatusMb != null">#{dataStatusMb},</if>
+            <if test="file != null">#{file},</if>
+            <if test="deptId != null">#{deptId},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateMgtProjectBudget" parameterType="MgtProjectBudget">
+        update mgt_project_budget
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="projectId != null">project_id = #{projectId},</if>
+            <if test="recordId != null">record_id = #{recordId},</if>
+            <if test="unitProjectName != null">unit_project_name = #{unitProjectName},</if>
+            <if test="zbTotalPrice != null">zb_total_price = #{zbTotalPrice},</if>
+            <if test="zrTotalPrice != null">zr_total_price = #{zrTotalPrice},</if>
+            <if test="mbTotalPrice != null">mb_total_price = #{mbTotalPrice},</if>
+            <if test="dataStatusZb != null">data_status_zb = #{dataStatusZb},</if>
+            <if test="dataStatusZr != null">data_status_zr = #{dataStatusZr},</if>
+            <if test="dataStatusMb != null">data_status_mb = #{dataStatusMb},</if>
+            <if test="file != null">file = #{file},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where budget_id = #{budgetId}
+    </update>
+
+    <delete id="deleteMgtProjectBudgetByBudgetId" parameterType="Long">
+        delete
+        from mgt_project_budget
+        where budget_id = #{budgetId}
+    </delete>
+
+    <delete id="deleteMgtProjectBudgetByBudgetIds" parameterType="String">
+        delete from mgt_project_budget where budget_id in
+        <foreach item="budgetId" collection="array" open="(" separator="," close=")">
+            #{budgetId}
+        </foreach>
+    </delete>
+
+    <select id="selectProject" parameterType="Long" resultType="MgtProject">
+        SELECT p.*
+        FROM mgt_project p
+        WHERE p.project_id = #{projectId}
+    </select>
+
+    <select id="selectMgtProjectBudgetListWithNoCost" parameterType="Long" resultMap="MgtProjectBudgetResult">
+        select b.*
+        from mgt_project_budget b
+                 left join mgt_project_cost_record r on r.budget_id = b.budget_id
+        where b.project_id = #{projectId}
+          and r.budget_id IS NULL
+    </select>
+
+</mapper>

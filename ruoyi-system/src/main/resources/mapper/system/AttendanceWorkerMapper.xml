@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.AttendanceWorkerMapper">
+
+    <resultMap type="AttendanceWorker" id="AttendanceWorkerResult">
+        <result property="id" column="id"/>
+        <result property="attendanceId" column="attendance_id"/>
+        <result property="projectId" column="project_id"/>
+        <result property="leaderId" column="leader_id"/>
+        <result property="workerName" column="worker_name"/>
+        <result property="workerPhone" column="worker_phone"/>
+        <result property="workerNo" column="worker_no"/>
+        <result property="file" column="file"/>
+        <result property="createTime" column="create_time"/>
+        <result property="userId" column="user_id"/>
+        <result property="deptId" column="dept_id"/>
+    </resultMap>
+
+    <sql id="selectAttendanceWorkerVo">
+        select id,
+               attendance_id,
+               project_id,
+               leader_id,
+               worker_name,
+               worker_phone,
+               worker_no,
+               file,
+               create_time,
+               user_id,
+               dept_id
+        from attendance_worker
+    </sql>
+
+    <select id="selectAttendanceWorkerList" parameterType="AttendanceWorker" resultMap="AttendanceWorkerResult">
+        <include refid="selectAttendanceWorkerVo"/>
+        <where>
+            <if test="attendanceId != null ">and attendance_id = #{attendanceId}</if>
+            <if test="projectId != null ">and project_id = #{projectId}</if>
+            <if test="leaderId != null ">and leader_id = #{leaderId}</if>
+            <if test="workerName != null  and workerName != ''">and worker_name like concat('%', #{workerName}, '%')
+            </if>
+            <if test="workerPhone != null  and workerPhone != ''">and worker_phone = #{workerPhone}</if>
+            <if test="workerNo != null  and workerNo != ''">and worker_no = #{workerNo}</if>
+        </where>
+    </select>
+
+    <select id="selectAttendanceWorkerById" parameterType="Long" resultMap="AttendanceWorkerResult">
+        <include refid="selectAttendanceWorkerVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertAttendanceWorker" parameterType="AttendanceWorker" useGeneratedKeys="true" keyProperty="id">
+        insert into attendance_worker
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="attendanceId != null">attendance_id,</if>
+            <if test="projectId != null">project_id,</if>
+            <if test="leaderId != null">leader_id,</if>
+            <if test="workerName != null">worker_name,</if>
+            <if test="workerPhone != null">worker_phone,</if>
+            <if test="workerNo != null">worker_no,</if>
+            <if test="file != null">file,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="deptId != null">dept_id,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="attendanceId != null">#{attendanceId},</if>
+            <if test="projectId != null">#{projectId},</if>
+            <if test="leaderId != null">#{leaderId},</if>
+            <if test="workerName != null">#{workerName},</if>
+            <if test="workerPhone != null">#{workerPhone},</if>
+            <if test="workerNo != null">#{workerNo},</if>
+            <if test="file != null">#{file},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="deptId != null">#{deptId},</if>
+        </trim>
+    </insert>
+
+    <update id="updateAttendanceWorker" parameterType="AttendanceWorker">
+        update attendance_worker
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="attendanceId != null">attendance_id = #{attendanceId},</if>
+            <if test="projectId != null">project_id = #{projectId},</if>
+            <if test="leaderId != null">leader_id = #{leaderId},</if>
+            <if test="workerName != null">worker_name = #{workerName},</if>
+            <if test="workerPhone != null">worker_phone = #{workerPhone},</if>
+            <if test="workerNo != null">worker_no = #{workerNo},</if>
+            <if test="file != null">file = #{file},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteAttendanceWorkerByAttendanceId" parameterType="Long">
+        delete
+        from attendance_worker
+        where attendance_id = #{attendanceId}
+    </delete>
+
+    <delete id="deleteAttendanceWorkerById" parameterType="Long">
+        delete
+        from attendance_worker
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteAttendanceWorkerByIds" parameterType="String">
+        delete from attendance_worker where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

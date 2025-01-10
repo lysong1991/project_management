@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.AttendanceMangerMapper">
+
+    <resultMap type="AttendanceManger" id="AttendanceMangerResult">
+        <result property="id" column="id"/>
+        <result property="attendanceId" column="attendance_id"/>
+        <result property="laberId" column="laber_id"/>
+        <result property="laberName" column="laber_name"/>
+        <result property="projectId" column="project_id"/>
+        <result property="projectName" column="project_name"/>
+        <result property="attendanceDate" column="attendance_date"/>
+        <result property="laberNum" column="laber_num"/>
+        <result property="createTime" column="create_time"/>
+        <result property="userId" column="user_id"/>
+        <result property="deptId" column="dept_id"/>
+        <collection property="attendanceMangerRecord" column="id" javaType="java.util.List"
+                    ofType="AttendanceMangerRecord"
+                    select="selectAttendanceMangerRecord"/>
+    </resultMap>
+
+    <sql id="selectAttendanceMangerVo">
+        select id,
+               attendance_id,
+               laber_id,
+               laber_name,
+               project_id,
+               project_name,
+               attendance_date,
+               laber_num,
+               create_time,
+               user_id,
+               dept_id
+        from attendance_manger
+    </sql>
+
+    <select id="selectAttendanceMangerList" parameterType="AttendanceManger" resultMap="AttendanceMangerResult">
+        <include refid="selectAttendanceMangerVo"/>
+        <where>
+            <if test="attendanceId != null ">and attendance_id = #{attendanceId}</if>
+            <if test="laberId != null ">and laber_id = #{laberId}</if>
+            <if test="laberName != null  and laberName != ''">and laber_name like concat('%', #{laberName}, '%')</if>
+            <if test="projectId != null ">and project_id = #{projectId}</if>
+            <if test="projectName != null  and projectName != ''">and project_name like concat('%', #{projectName},
+                '%')
+            </if>
+            <if test="attendanceDate != null ">and attendance_date = #{attendanceDate}</if>
+            <if test="laberNum != null ">and laber_num = #{laberNum}</if>
+            <if test="userId != null ">and user_id = #{userId}</if>
+            <if test="deptId != null ">and dept_id = #{deptId}</if>
+        </where>
+    </select>
+
+    <select id="selectAttendanceMangerById" parameterType="Long" resultMap="AttendanceMangerResult">
+        <include refid="selectAttendanceMangerVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertAttendanceManger" parameterType="AttendanceManger" useGeneratedKeys="true" keyProperty="id">
+        insert into attendance_manger
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="attendanceId != null">attendance_id,</if>
+            <if test="laberId != null">laber_id,</if>
+            <if test="laberName != null">laber_name,</if>
+            <if test="projectId != null">project_id,</if>
+            <if test="projectName != null">project_name,</if>
+            <if test="attendanceDate != null">attendance_date,</if>
+            <if test="laberNum != null">laber_num,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="deptId != null">dept_id,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="attendanceId != null">#{attendanceId},</if>
+            <if test="laberId != null">#{laberId},</if>
+            <if test="laberName != null">#{laberName},</if>
+            <if test="projectId != null">#{projectId},</if>
+            <if test="projectName != null">#{projectName},</if>
+            <if test="attendanceDate != null">#{attendanceDate},</if>
+            <if test="laberNum != null">#{laberNum},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="deptId != null">#{deptId},</if>
+        </trim>
+    </insert>
+
+    <update id="updateAttendanceManger" parameterType="AttendanceManger">
+        update attendance_manger
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="attendanceId != null">attendance_id = #{attendanceId},</if>
+            <if test="laberId != null">laber_id = #{laberId},</if>
+            <if test="laberName != null">laber_name = #{laberName},</if>
+            <if test="projectId != null">project_id = #{projectId},</if>
+            <if test="projectName != null">project_name = #{projectName},</if>
+            <if test="attendanceDate != null">attendance_date = #{attendanceDate},</if>
+            <if test="laberNum != null">laber_num = #{laberNum},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteAttendanceMangerById" parameterType="Long">
+        delete
+        from attendance_manger
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteAttendanceMangerByIds" parameterType="String">
+        delete from attendance_manger where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectAttendanceMangerRecord" resultType="AttendanceMangerRecord">
+        select *
+        from attendance_manger_record
+        where attendance_manger_id = #{id}
+    </select>
+</mapper>

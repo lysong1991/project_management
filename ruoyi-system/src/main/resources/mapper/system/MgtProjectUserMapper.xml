@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.MgtProjectUserMapper">
+
+    <resultMap type="MgtProjectUser" id="MgtProjectUserResult">
+        <result property="userId" column="user_id"/>
+        <result property="projectId" column="project_id"/>
+    </resultMap>
+
+    <sql id="selectMgtProjectUserVo">
+        select user_id, project_id
+        from mgt_project_user
+    </sql>
+
+    <select id="selectMgtProjectUserList" parameterType="MgtProjectUser" resultMap="MgtProjectUserResult">
+        <include refid="selectMgtProjectUserVo"/>
+        <where>
+        </where>
+    </select>
+
+    <select id="selectMgtProjectUserByUserId" parameterType="Long" resultMap="MgtProjectUserResult">
+        <include refid="selectMgtProjectUserVo"/>
+        where user_id = #{userId}
+    </select>
+
+    <insert id="insertMgtProjectUser" parameterType="MgtProjectUser">
+        insert into mgt_project_user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="projectId != null">project_id,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="projectId != null">#{projectId},</if>
+        </trim>
+    </insert>
+
+    <update id="updateMgtProjectUser" parameterType="MgtProjectUser">
+        update mgt_project_user
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="projectId != null">project_id = #{projectId},</if>
+        </trim>
+        where user_id = #{userId}
+    </update>
+
+    <delete id="deleteMgtProjectUserByUserId" parameterType="Long">
+        delete
+        from mgt_project_user
+        where user_id = #{userId}
+    </delete>
+
+    <delete id="deleteMgtProjectUserByProjectId" parameterType="Long">
+        delete
+        from mgt_project_user
+        where project_id = #{projectId}
+    </delete>
+
+    <delete id="deleteMgtProjectUserByUserIds" parameterType="String">
+        delete from mgt_project_user where user_id in
+        <foreach item="userId" collection="array" open="(" separator="," close=")">
+            #{userId}
+        </foreach>
+    </delete>
+</mapper>

@@ -1,0 +1,398 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.MgtProjectCostRecordDetailedMapper">
+
+    <resultMap type="MgtProjectCostRecordDetailed" id="MgtProjectCostRecordDetailedResult">
+        <result property="detailedId" column="detailed_id"/>
+        <result property="costId" column="cost_id"/>
+        <result property="recordId" column="record_id"/>
+        <result property="projectId" column="project_id"/>
+        <result property="projectType" column="project_type"/>
+        <result property="contractId" column="contract_id"/>
+        <result property="contractType" column="contract_type"/>
+        <result property="budgetDetailedId" column="budget_detailed_id"/>
+        <result property="budgetDetailedOtherId" column="budget_detailed_other_id"/>
+        <result property="totalThisMonthAmount" column="total_this_month_amount"/>
+        <result property="totalThisMonthUnitPrice" column="total_this_month_unit_price"/>
+        <result property="totalThisMonthQuantity" column="total_this_month_quantity"/>
+        <result property="totalLastMonthAmount" column="total_last_month_amount"/>
+        <result property="totalLastMonthQuantity" column="total_last_month_quantity"/>
+        <result property="totalAllMonthAmount" column="total_all_month_amount"/>
+        <result property="totalAllMonthQuantity" column="total_all_month_quantity"/>
+        <result property="subThisMonthAmount" column="sub_this_month_amount"/>
+        <result property="subThisMonthQuantity" column="sub_this_month_quantity"/>
+        <result property="subThisMonthArtificial" column="sub_this_month_artificial"/>
+        <result property="subThisMonthMaterials" column="sub_this_month_materials"/>
+        <result property="subThisMonthMechanics" column="sub_this_month_mechanics"/>
+        <result property="subThisMonthManagement" column="sub_this_month_management"/>
+        <result property="subLastMonthAmount" column="sub_last_month_amount"/>
+        <result property="subLastMonthQuantity" column="sub_last_month_quantity"/>
+        <result property="subAllMonthAmount" column="sub_all_month_amount"/>
+        <result property="subAllMonthQuantity" column="sub_all_month_quantity"/>
+        <result property="costProportion" column="cost_proportion"/>
+        <result property="fillingDate" column="filling_date"/>
+        <result property="deptId" column="dept_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <association property="mgtProjectBudgetDetailed" column="budget_detailed_id"
+                     javaType="MgtProjectBudgetDetailed" select="selectMgtProjectBudgetDetailed"/>
+    </resultMap>
+
+    <sql id="selectMgtProjectCostRecordDetailedVo">
+        select detailed_id,
+               cost_id,
+               record_id,
+               project_id,
+               project_type,
+               contract_id,
+               contract_type,
+               budget_detailed_id,
+               budget_detailed_other_id,
+               total_this_month_amount,
+               total_this_month_unit_price,
+               total_this_month_quantity,
+               total_last_month_amount,
+               total_last_month_quantity,
+               total_all_month_amount,
+               total_all_month_quantity,
+               sub_this_month_amount,
+               sub_this_month_quantity,
+               sub_this_month_artificial,
+               sub_this_month_materials,
+               sub_this_month_mechanics,
+               sub_this_month_management,
+               sub_last_month_amount,
+               sub_last_month_quantity,
+               sub_all_month_amount,
+               sub_all_month_quantity,
+               cost_proportion,
+               filling_date,
+               dept_id,
+               user_id,
+               create_by,
+               create_time,
+               update_by,
+               update_time
+        from mgt_project_cost_record_detailed
+    </sql>
+
+    <select id="selectMgtProjectCostRecordDetailedList" parameterType="MgtProjectCostRecordDetailed"
+            resultMap="MgtProjectCostRecordDetailedResult">
+        <include refid="selectMgtProjectCostRecordDetailedVo"/>
+        <where>
+            <if test="costId != null ">and cost_id = #{costId}</if>
+            <if test="recordId != null ">and record_id = #{recordId}</if>
+            <if test="projectId != null ">and project_id = #{projectId}</if>
+            <if test="projectType != null  and projectType != ''">and project_type = #{projectType}</if>
+            <if test="contractId != null ">and contract_id = #{contractId}</if>
+            <if test="contractType != null ">and contract_type = #{contractType}</if>
+            <if test="budgetDetailedId != null ">and budget_detailed_id = #{budgetDetailedId}</if>
+            <if test="budgetDetailedOtherId != null ">and budget_detailed_other_id = #{budgetDetailedOtherId}</if>
+            <if test="totalThisMonthAmount != null ">and total_this_month_amount = #{totalThisMonthAmount}</if>
+            <if test="totalThisMonthUnitPrice != null ">and total_this_month_unit_price = #{totalThisMonthUnitPrice}
+            </if>
+            <if test="totalThisMonthQuantity != null ">and total_this_month_quantity = #{totalThisMonthQuantity}</if>
+            <if test="totalLastMonthAmount != null ">and total_last_month_amount = #{totalLastMonthAmount}</if>
+            <if test="totalLastMonthQuantity != null ">and total_last_month_quantity = #{totalLastMonthQuantity}</if>
+            <if test="totalAllMonthAmount != null ">and total_all_month_amount = #{totalAllMonthAmount}</if>
+            <if test="totalAllMonthQuantity != null ">and total_all_month_quantity = #{totalAllMonthQuantity}</if>
+            <if test="subThisMonthAmount != null ">and sub_this_month_amount = #{subThisMonthAmount}</if>
+            <if test="subThisMonthQuantity != null ">and sub_this_month_quantity = #{subThisMonthQuantity}</if>
+            <if test="subLastMonthAmount != null ">and sub_last_month_amount = #{subLastMonthAmount}</if>
+            <if test="subLastMonthQuantity != null ">and sub_last_month_quantity = #{subLastMonthQuantity}</if>
+            <if test="subAllMonthAmount != null ">and sub_all_month_amount = #{subAllMonthAmount}</if>
+            <if test="subAllMonthQuantity != null ">and sub_all_month_quantity = #{subAllMonthQuantity}</if>
+            <if test="costProportion != null ">and cost_proportion = #{costProportion}</if>
+        </where>
+        ORDER BY create_time DESC
+    </select>
+
+    <select id="selectMgtProjectCostRecordDetailedByDetailedId" parameterType="Long"
+            resultMap="MgtProjectCostRecordDetailedResult">
+        <include refid="selectMgtProjectCostRecordDetailedVo"/>
+        where detailed_id = #{detailedId}
+    </select>
+
+    <insert id="insertMgtProjectCostRecordDetailed" parameterType="MgtProjectCostRecordDetailed" useGeneratedKeys="true"
+            keyProperty="detailedId">
+        insert into mgt_project_cost_record_detailed
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="costId != null">cost_id,</if>
+            <if test="recordId != null">record_id,</if>
+            <if test="projectId != null">project_id,</if>
+            <if test="projectType != null and projectType != ''">project_type,</if>
+            <if test="contractId != null">contract_id,</if>
+            <if test="contractType != null">contract_type,</if>
+            <if test="budgetDetailedId != null">budget_detailed_id,</if>
+            <if test="budgetDetailedOtherId != null">budget_detailed_other_id,</if>
+            <if test="totalThisMonthAmount != null">total_this_month_amount,</if>
+            <if test="totalThisMonthUnitPrice != null">total_this_month_unit_price,</if>
+            <if test="totalThisMonthQuantity != null">total_this_month_quantity,</if>
+            <if test="totalLastMonthAmount != null">total_last_month_amount,</if>
+            <if test="totalLastMonthQuantity != null">total_last_month_quantity,</if>
+            <if test="totalAllMonthAmount != null">total_all_month_amount,</if>
+            <if test="totalAllMonthQuantity != null">total_all_month_quantity,</if>
+            <if test="subThisMonthAmount != null">sub_this_month_amount,</if>
+            <if test="subThisMonthQuantity != null">sub_this_month_quantity,</if>
+            <if test="subThisMonthQuantity != null">sub_this_month_artificial,</if>
+            <if test="subThisMonthQuantity != null">sub_this_month_materials,</if>
+            <if test="subThisMonthQuantity != null">sub_this_month_mechanics,</if>
+            <if test="subThisMonthQuantity != null">sub_this_month_management,</if>
+            <if test="subLastMonthAmount != null">sub_last_month_amount,</if>
+            <if test="subLastMonthQuantity != null">sub_last_month_quantity,</if>
+            <if test="subAllMonthAmount != null">sub_all_month_amount,</if>
+            <if test="subAllMonthQuantity != null">sub_all_month_quantity,</if>
+            <if test="costProportion != null">cost_proportion,</if>
+            <if test="fillingDate != null">filling_date,</if>
+            <if test="deptId != null">dept_id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="costId != null">#{costId},</if>
+            <if test="recordId != null">#{recordId},</if>
+            <if test="projectId != null">#{projectId},</if>
+            <if test="projectType != null and projectType != ''">#{projectType},</if>
+            <if test="contractId != null">#{contractId},</if>
+            <if test="contractType != null">#{contractType},</if>
+            <if test="budgetDetailedId != null">#{budgetDetailedId},</if>
+            <if test="budgetDetailedOtherId != null">#{budgetDetailedOtherId},</if>
+            <if test="totalThisMonthAmount != null">#{totalThisMonthAmount},</if>
+            <if test="totalThisMonthUnitPrice != null">#{totalThisMonthUnitPrice},</if>
+            <if test="totalThisMonthQuantity != null">#{totalThisMonthQuantity},</if>
+            <if test="totalLastMonthAmount != null">#{totalLastMonthAmount},</if>
+            <if test="totalLastMonthQuantity != null">#{totalLastMonthQuantity},</if>
+            <if test="totalAllMonthAmount != null">#{totalAllMonthAmount},</if>
+            <if test="totalAllMonthQuantity != null">#{totalAllMonthQuantity},</if>
+            <if test="subThisMonthAmount != null">#{subThisMonthAmount},</if>
+            <if test="subThisMonthQuantity != null">#{subThisMonthQuantity},</if>
+            <if test="subThisMonthArtificial != null">#{subThisMonthArtificial},</if>
+            <if test="subThisMonthMaterials != null">#{subThisMonthMaterials},</if>
+            <if test="subThisMonthMechanics != null">#{subThisMonthMechanics},</if>
+            <if test="subThisMonthManagement != null">#{subThisMonthManagement},</if>
+            <if test="subLastMonthAmount != null">#{subLastMonthAmount},</if>
+            <if test="subLastMonthQuantity != null">#{subLastMonthQuantity},</if>
+            <if test="subAllMonthAmount != null">#{subAllMonthAmount},</if>
+            <if test="subAllMonthQuantity != null">#{subAllMonthQuantity},</if>
+            <if test="costProportion != null">#{costProportion},</if>
+            <if test="fillingDate != null">#{fillingDate},</if>
+            <if test="deptId != null">#{deptId},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateMgtProjectCostRecordDetailed" parameterType="MgtProjectCostRecordDetailed">
+        update mgt_project_cost_record_detailed
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="costId != null">cost_id = #{costId},</if>
+            <if test="recordId != null">record_id = #{recordId},</if>
+            <if test="projectId != null">project_id = #{projectId},</if>
+            <if test="projectType != null and projectType != ''">project_type = #{projectType},</if>
+            <if test="contractId != null">contract_id = #{contractId},</if>
+            <if test="contractType != null">contract_type = #{contractType},</if>
+            <if test="budgetDetailedId != null">budget_detailed_id = #{budgetDetailedId},</if>
+            <if test="budgetDetailedOtherId != null">budget_detailed_other_id = #{budgetDetailedOtherId},</if>
+            <if test="totalThisMonthAmount != null">total_this_month_amount = #{totalThisMonthAmount},</if>
+            <if test="totalThisMonthUnitPrice != null">total_this_month_unit_price = #{totalThisMonthUnitPrice},</if>
+            <if test="totalThisMonthQuantity != null">total_this_month_quantity = #{totalThisMonthQuantity},</if>
+            <if test="totalLastMonthAmount != null">total_last_month_amount = #{totalLastMonthAmount},</if>
+            <if test="totalLastMonthQuantity != null">total_last_month_quantity = #{totalLastMonthQuantity},</if>
+            <if test="totalAllMonthAmount != null">total_all_month_amount = #{totalAllMonthAmount},</if>
+            <if test="totalAllMonthQuantity != null">total_all_month_quantity = #{totalAllMonthQuantity},</if>
+            <if test="subThisMonthAmount != null">sub_this_month_amount = #{subThisMonthAmount},</if>
+            <if test="subThisMonthQuantity != null">sub_this_month_quantity = #{subThisMonthQuantity},</if>
+            <if test="subThisMonthArtificial != null">sub_this_month_artificial = #{subThisMonthArtificial},</if>
+            <if test="subThisMonthMaterials != null">sub_this_month_materials = #{subThisMonthMaterials},</if>
+            <if test="subThisMonthMechanics  != null">sub_this_month_mechanics = #{subThisMonthMechanics},</if>
+            <if test="subThisMonthManagement  != null">sub_this_month_management = #{subThisMonthManagement},</if>
+            <if test="subLastMonthAmount != null">sub_last_month_amount = #{subLastMonthAmount},</if>
+            <if test="subLastMonthQuantity != null">sub_last_month_quantity = #{subLastMonthQuantity},</if>
+            <if test="subAllMonthAmount != null">sub_all_month_amount = #{subAllMonthAmount},</if>
+            <if test="subAllMonthQuantity != null">sub_all_month_quantity = #{subAllMonthQuantity},</if>
+            <if test="costProportion != null">cost_proportion = #{costProportion},</if>
+            <if test="fillingDate != null">filling_date = #{fillingDate},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where detailed_id = #{detailedId}
+    </update>
+
+    <delete id="deleteMgtProjectCostRecordDetailedByDetailedId" parameterType="Long">
+        delete
+        from mgt_project_cost_record_detailed
+        where detailed_id = #{detailedId}
+    </delete>
+
+    <delete id="deleteMgtProjectCostRecordDetailedByDetailedIds" parameterType="String">
+        delete from mgt_project_cost_record_detailed where detailed_id in
+        <foreach item="detailedId" collection="array" open="(" separator="," close=")">
+            #{detailedId}
+        </foreach>
+    </delete>
+
+    <delete id="deleteMgtProjectCostRecordDetailedByRecordId" parameterType="Long">
+        delete from mgt_project_cost_record_detailed where record_id in
+        <foreach item="recordId" collection="array" open="(" separator="," close=")">
+            #{recordId}
+        </foreach>
+    </delete>
+
+    <select id="selectMgtProjectBudgetDetailed" parameterType="Long" resultType="MgtProjectBudgetDetailed">
+        SELECT bd.*
+        FROM mgt_project_budget_detailed bd
+        WHERE bd.detailed_id = #{budgetDetailedId}
+    </select>
+
+    <insert id="batchMgtProjectCostRecordDetailed">
+        insert into mgt_procurement_plan_detailed(
+        detailed_id,
+        cost_id,
+        record_id,
+        project_id,
+        project_type,
+        contract_id,
+        contract_type,
+        budget_detailed_id,
+        budget_detailed_other_id,
+        total_this_month_amount,
+        total_this_month_unit_price,
+        total_this_month_quantity,
+        total_last_month_amount,
+        total_last_month_quantity,
+        total_all_month_amount,
+        total_all_month_quantity,
+        sub_this_month_amount,
+        sub_this_month_quantity,
+        sub_last_month_amount,
+        sub_last_month_quantity,
+        sub_all_month_amount,
+        sub_all_month_quantity,
+        cost_proportion,
+        filling_date,
+        dept_id,
+        user_id,
+        create_by,
+        create_time,
+        update_by,
+        update_time
+        )
+        values
+        <foreach item="item" index="index" collection="list" separator=",">
+            ( #{item.detailedId}, #{item.costId}, #{item.recordId}, #{item.projectId}, #{item.projectType},
+            #{item.contractId}, #{item.contractType}, #{item.budgetDetailedId},#{item.budgetDetailedOtherId},
+            #{item.totalThisMonthAmount}, #{item.totalThisMonthQuantity}, #{item.totalThisMonthUnitPrice},
+            #{item.totalLastMonthAmount},
+            #{item.totalLastMonthQuantity},
+            #{item.totalAllMonthAmount}, #{item.totalAllMonthQuantity},
+            #{item.subThisMonthAmount}, #{item.subThisMonthQuantity}, #{item.subLastMonthAmount},
+            #{item.subLastMonthQuantity},
+            #{item.subAllMonthAmount}, #{item.subAllMonthQuantity}, #{item.costProportion},#{item.fillingDate},
+            #{item.deptId},
+            #{item.userId}, #{item.createBy}, #{item.createTime}, #{item.updateBy}, #{item.updateTime})
+        </foreach>
+    </insert>
+
+    <select id="getTotalAmount" parameterType="Map" resultType="BigDecimal">
+        select SUM(crd.total_this_month_amount)
+        from mgt_project_cost_record_detailed crd
+        LEFT JOIN mgt_project_cost_record cr ON cr.record_id = crd.record_id
+        <where>
+            cr.data_status = 1
+            <if test="budgetId != null ">and cr.budget_id = #{budgetId}</if>
+            <if test="budgetDetailedId != null ">and crd.budget_detailed_id = #{budgetDetailedId}</if>
+            <if test="leFillingDate != null ">and cr.filling_date &lt;= #{leFillingDate}</if>
+            <if test="fillingDate != null ">and cr.filling_date = #{fillingDate}</if>
+        </where>
+    </select>
+
+    <select id="getTotalQuantity" parameterType="Map" resultType="BigDecimal">
+        select SUM(crd.total_this_month_quantity)
+        from mgt_project_cost_record_detailed crd
+        LEFT JOIN mgt_project_cost_record cr ON cr.record_id = crd.record_id
+        <where>
+            cr.data_status = 1
+            <if test="budgetId != null ">and cr.budget_id = #{budgetId}</if>
+            <if test="budgetDetailedId != null ">and crd.budget_detailed_id = #{budgetDetailedId}</if>
+            <if test="leFillingDate != null ">and cr.filling_date &lt;= #{leFillingDate}</if>
+            <if test="fillingDate != null ">and cr.filling_date = #{fillingDate}</if>
+        </where>
+    </select>
+
+    <select id="getSubAmount" parameterType="Map" resultType="BigDecimal">
+        select SUM(crd.sub_this_month_amount)
+        from mgt_project_cost_record_detailed crd
+        LEFT JOIN mgt_project_cost_record cr ON cr.record_id = crd.record_id
+        <where>
+            cr.data_status = 1
+            <if test="budgetId != null ">and cr.budget_id = #{budgetId}</if>
+            <if test="budgetDetailedId != null ">and crd.budget_detailed_id = #{budgetDetailedId}</if>
+            <if test="fillingDate != null ">and cr.filling_date = #{fillingDate}</if>
+            <if test="leFillingDate != null ">and cr.filling_date &lt;= #{leFillingDate}</if>
+        </where>
+    </select>
+
+    <select id="getSubQuantity" parameterType="Map" resultType="BigDecimal">
+        select SUM(crd.sub_this_month_quantity)
+        from mgt_project_cost_record_detailed crd
+        LEFT JOIN mgt_project_cost_record cr ON cr.record_id = crd.record_id
+        <where>
+            cr.data_status = 1
+            <if test="budgetId != null ">and cr.budget_id = #{budgetId}</if>
+            <if test="budgetDetailedId != null ">and crd.budget_detailed_id = #{budgetDetailedId}</if>
+            <if test="fillingDate != null ">and cr.filling_date = #{fillingDate}</if>
+            <if test="leFillingDate != null ">and cr.filling_date &lt;= #{leFillingDate}</if>
+        </where>
+    </select>
+
+    <select id="selectSubDetailedList" parameterType="long" resultType="MgtProjectCostRecordDetailedSubExcelVo">
+        SELECT crd.detailed_id                             as id,
+               bd.code,
+               bd.name,
+               bd.unit,
+               IFNULL(bd.quantity, 0.00)                   AS totalQuantity,
+               IFNULL(bp.unit_price, 0.00)                 AS zbUnitPrice,
+               IFNULL(bp.total_price, 0.00)                AS zbTotalPrice,
+               IFNULL(crd.total_this_month_quantity, 0.00) AS totalThisMonthQuantity,
+               IFNULL(crd.sub_this_month_quantity, 0.00)   AS subThisMonthQuantity,
+               IFNULL(crd.sub_this_month_artificial, 0.00) AS subThisMonthArtificial,
+               IFNULL(crd.sub_this_month_materials, 0.00)  AS subThisMonthMaterials,
+               IFNULL(crd.sub_this_month_mechanics, 0.00)  AS subThisMonthMechanics,
+               IFNULL(crd.sub_this_month_management, 0.00) AS subThisMonthManagement
+        FROM mgt_project_cost_record_detailed crd
+                 LEFT JOIN mgt_project_budget_detailed bd ON bd.detailed_id = crd.budget_detailed_id
+                 LEFT JOIN mgt_project_budget_prices bp ON bp.detailed_id = bd.detailed_id
+        WHERE crd.record_id = #{recordId}
+          and crd.budget_detailed_id IS NOT NULL
+          and bp.price_type = 0
+    </select>
+
+    <select id="selectOtherDetailedList" parameterType="long" resultType="MgtProjectCostRecordDetailedOtherExcelVo">
+        SELECT crd.detailed_id                           as id,
+               bdo.detailed_name                         AS name,
+               IFNULL(bdo.zb_total_price, 0.00)          AS totalAmount,
+               IFNULL(crd.total_this_month_amount, 0.00) AS totalThisMonthAmount,
+               IFNULL(crd.sub_this_month_amount, 0.00)   AS subThisMonthAmount
+        FROM mgt_project_cost_record_detailed crd
+                 LEFT JOIN mgt_project_budget_detailed_other bdo ON bdo.other_id = crd.budget_detailed_other_id
+        WHERE crd.record_id = #{recordId}
+          and crd.budget_detailed_other_id IS NOT NULL
+    </select>
+
+
+</mapper>

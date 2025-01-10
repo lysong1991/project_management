@@ -1,0 +1,358 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.MgtCollectionPlanMapper">
+	
+	<resultMap type="MgtCollectionPlan" id="MgtCollectionPlanResult">
+		<result property="planId" column="plan_id" />
+		<result property="projectId" column="project_id" />
+		<result property="contractId" column="contract_id" />
+		<result property="oaContractId" column="oa_contract_id" />
+		<result property="payableAmount" column="payable_amount" />
+		<result property="collectionAmount" column="collection_amount" />
+		<result property="actualCollectionAmount" column="actual_collection_amount" />
+		<result property="plannedPaymentDate" column="planned_payment_date" />
+		<result property="actualPaymentDate" column="actual_payment_date" />
+		<result property="fillingDate" column="filling_date" />
+		<result property="remarks" column="remarks" />
+		<result property="file" column="file" />
+		<result property="type" column="type" />
+		<result property="status" column="status" />
+		<result property="dataStatus" column="data_status" />
+		<result property="paymentMethod" column="payment_method" />
+		<result property="deptId" column="dept_id" />
+		<result property="userId" column="user_id" />
+		<result property="createBy" column="create_by" />
+		<result property="createTime" column="create_time" />
+		<result property="updateBy" column="update_by" />
+		<result property="updateTime" column="update_time" />
+		<association property="mgtProject" column="project_id" javaType="MgtProject"
+					 select="selectProjectById" />
+		<association property="oaContracts" column="oa_contract_id"
+					 javaType="MgtOaContracts"
+					 select="selectMgtOaContractsById" />
+		<association property="projectcontracts" column="contract_id"
+					 javaType="Projectcontracts"
+					 select="selectProjectcontractsById" />
+		<association property="subcontract" column="contract_id" javaType="Subcontract"
+					 select="selectSubcontractById" />
+		<collection property="mgtCollectionPlanRegister" column="plan_id" javaType="java.util.List"
+					ofType="MgtCollectionPlanRegister"
+					select="selectMgtCollectionPlanRegisterList" />
+	</resultMap>
+	
+	<resultMap type="MgtCollectionPlanRegister" id="MgtCollectionPlanRegisterResult">
+		<result property="registerId" column="register_id" />
+		<result property="planId" column="plan_id" />
+		<result property="projectId" column="project_id" />
+		<result property="contractId" column="contract_id" />
+		<result property="fillingDate" column="filling_date" />
+		<result property="collectionAmount" column="collection_amount" />
+		<result property="plannedUnpaidAmount" column="planned_unpaid_amount" />
+		<result property="remarks" column="remarks" />
+		<result property="file" column="file" />
+		<result property="type" column="type" />
+		<result property="status" column="status" />
+		<result property="dataStatus" column="data_status" />
+		<result property="deptId" column="dept_id" />
+		<result property="userId" column="user_id" />
+		<result property="createBy" column="create_by" />
+		<result property="createTime" column="create_time" />
+		<result property="updateBy" column="update_by" />
+		<result property="updateTime" column="update_time" />
+	</resultMap>
+	
+	<resultMap type="Projectcontracts" id="ProjectcontractsResult">
+		<result property="id" column="id" />
+		<result property="projectName" column="project_name" />
+		<result property="projectId" column="project_id" />
+		<result property="projectmsg" column="projectmsg" />
+		<result property="contractingUnit" column="contracting_unit" />
+		<result property="constructionUnit" column="construction_unit" />
+		<result property="projectStatus" column="project_status" />
+		<result property="startTime" column="start_time" />
+		<result property="htId" column="ht_id" />
+		<result property="htName" column="ht_name" />
+		<result property="projectDate" column="project_date" />
+		<result property="projectPrice" column="project_price" />
+		<result property="jContact" column="j_contact" />
+		<result property="jPhone" column="j_phone" />
+		<result property="yContact" column="y_contact" />
+		<result property="yPhone" column="y_phone" />
+		<result property="warrantyPeropd" column="warranty_peropd" />
+		<result property="warrantyPrice" column="warranty_price" />
+		<result property="performancePay" column="performance_pay" />
+		<result property="htFile" column="ht_file" />
+		<result property="createTime" column="create_time" />
+		<result property="createUserid" column="user_id" />
+		<result property="createDeptid" column="dept_id" />
+	</resultMap>
+	
+	<resultMap type="Subcontract" id="SubcontractResult">
+		<result property="id" column="id" />
+		<result property="projectId" column="project_id" />
+		<result property="projectmsg" column="projectmsg" />
+		<result property="projectName" column="project_name" />
+		<result property="contractingUnit" column="contracting_unit" />
+		<result property="constructionUnit" column="construction_unit" />
+		<result property="projectStatus" column="project_status" />
+		<result property="startTime" column="start_time" />
+		<result property="endTime" column="end_time" />
+		<result property="htId" column="ht_id" />
+		<result property="htName" column="ht_name" />
+		<result property="projectDate" column="project_date" />
+		<result property="projectPrice" column="project_price" />
+		<result property="jContact" column="j_contact" />
+		<result property="jPhone" column="j_phone" />
+		<result property="yContact" column="y_contact" />
+		<result property="yPhone" column="y_phone" />
+		<result property="warrantyPeropd" column="warranty_peropd" />
+		<result property="warrantyPrice" column="warranty_price" />
+		<result property="performancePay" column="performance_pay" />
+		<result property="htFile" column="ht_file" />
+		<result property="createTime" column="create_time" />
+		<result property="createUserid" column="user_id" />
+		<result property="createUserdeptid" column="dept_id" />
+	</resultMap>
+	
+	<resultMap type="MgtOaContracts" id="MgtOaContractsResult">
+		<result property="contractId" column="contract_id" />
+		<result property="projectId" column="project_id" />
+		<result property="projectContractId" column="project_contract_id" />
+		<result property="projectContractTypes" column="project_contract_types" />
+		<result property="contractTitle" column="contract_title" />
+		<result property="deptCode" column="dept_code" />
+		<result property="contractSn" column="contract_sn" />
+		<result property="applicant" column="applicant" />
+		<result property="applicantDept" column="applicant_dept" />
+		<result property="applicationDate" column="application_date" />
+		<result property="projectName" column="project_name" />
+		<result property="newSupplier" column="new_supplier" />
+		<result property="signingDate" column="signing_date" />
+		<result property="contractType" column="contract_type" />
+		<result property="signingAmount" column="signing_amount" />
+		<result property="signingAmountStr" column="signing_amount_str" />
+		<result property="ourContractingUnit" column="our_contracting_unit" />
+		<result property="ourPerson" column="our_person" />
+		<result property="ourPersonMobile" column="our_person_mobile" />
+		<result property="otherContractingUnit" column="other_contracting_unit" />
+		<result property="otherPerson" column="other_person" />
+		<result property="otherPersonMobile" column="other_person_mobile" />
+		<result property="contractOverview" column="contract_overview" />
+		<result property="remarks" column="remarks" />
+		<result property="contractFile" column="contract_file" />
+		<result property="type" column="type" />
+		<result property="addtime" column="addtime" />
+		<result property="updatetime" column="updatetime" />
+		<result property="xmmc" column="xmmc" />
+		<result property="gcxmmc" column="gcxmmc" />
+		<result property="htlx" column="htlx" />
+		<result property="wfqydw" column="wfqydw" />
+		<result property="wfqydw1" column="wfqydw1" />
+	</resultMap>
+	
+	<sql id="selectMgtCollectionPlanVo">
+		select a.*
+		from mgt_collection_plan a
+				 LEFT JOIN mgt_project p ON a.project_id = p.project_id
+	</sql>
+	
+	<select id="selectSubcontractById" parameterType="Long" resultType="Subcontract" resultMap="SubcontractResult">
+		SELECT *
+		FROM subcontract
+		WHERE id = #{contractId}
+	</select>
+	
+	<select id="selectMgtCollectionPlanList" parameterType="MgtCollectionPlan" resultMap="MgtCollectionPlanResult">
+		<include refid="selectMgtCollectionPlanVo" />
+		<choose>
+			<when test="type != null and type == 0">
+				left join projectcontracts con on con.id = a.contract_id
+			</when>
+			<when test="type != null and type == 1">
+				left join subcontract con on con.id = a.contract_id
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+		<where>
+			<if test="projectId != null ">and a.project_id = #{projectId}</if>
+			<if test="contractId != null ">and a.contract_id = #{contractId}</if>
+			<if test="plannedPaymentDate != null ">and a.planned_payment_date = #{plannedPaymentDate}</if>
+			<if test="fillingDate != null ">and a.filling_date = #{fillingDate}</if>
+			<if test="type != null  and type != ''">and a.type = #{type}</if>
+			<if test="status != null  and status != ''">and a.status = #{status}</if>
+			<if test="dataStatus != null  and dataStatus != ''">and a.data_status = #{dataStatus}</if>
+			<if test="mgtProject != null and mgtProject.projectName != null and mgtProject.projectName != ''">
+				and p.project_name like concat('%', #{mgtProject.projectName}, '%')
+			</if>
+			<if test="mgtProject != null and mgtProject.projectSn != null and mgtProject.projectSn != ''">
+				and p.project_sn like concat('%', #{mgtProject.projectG}, '%')
+			</if>
+			<if test="mgtProject != null and mgtProject.projectGroup != null and mgtProject.projectGroup != ''">
+				and p.project_group = #{projectGroup}
+			</if>
+			<if test="params.contractName != null and params.contractName != ''">
+				AND con.ht_name like concat('%', #{params.contractName}, '%')
+			</if>
+			<if test="params.contractSn != null and params.contractSn != ''">
+				AND con.ht_id like concat('%', #{params.contractSn}, '%')
+			</if>
+			<!-- 数据范围过滤 -->
+			${params.dataScope}
+		</where>
+		ORDER BY a.create_time DESC
+	</select>
+	
+	<select id="selectMgtCollectionPlanByPlanId" parameterType="Long" resultMap="MgtCollectionPlanResult">
+		<include refid="selectMgtCollectionPlanVo" />
+		where a.plan_id = #{planId}
+		ORDER BY a.create_time DESC
+	</select>
+	
+	<select id="selectMgtCollectionPlanByProjectId" parameterType="CollectionPlanQueryVo"
+			resultMap="MgtCollectionPlanResult">
+		<include refid="selectMgtCollectionPlanVo" />
+		where a.project_id = #{projectId} and a.type = #{type} and a.data_status = 1
+	</select>
+	
+	<select id="selectMgtCollectionPlanListByProjectIds" parameterType="java.util.Set"
+			resultMap="MgtCollectionPlanResult">
+		<include refid="selectMgtCollectionPlanVo" />
+		<where>
+			<if test="projectIds != null and !projectIds.isEmpty()">
+				and a.project_id in
+				<foreach collection="projectIds" item="projectId" open="(" separator="," close=")">
+					#{projectId}
+				</foreach>
+			</if>
+			<if test="type != null and type != ''">
+				and a.type = #{type}
+			</if>
+			<if test="dataStatus != null and dataStatus != ''">
+				and a.data_status = #{dataStatus}
+			</if>
+		</where>
+		ORDER BY a.create_time DESC
+	</select>
+	
+	<insert id="insertMgtCollectionPlan" parameterType="MgtCollectionPlan" useGeneratedKeys="true" keyProperty="planId">
+		insert into mgt_collection_plan
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="projectId != null">project_id,</if>
+			<if test="contractId != null">contract_id,</if>
+			<if test="oaContractId != null">oa_contract_id,</if>
+			<if test="collectionAmount != null">collection_amount,</if>
+			<if test="payableAmount != null">payable_amount,</if>
+			<if test="actualCollectionAmount != null">actual_collection_amount,</if>
+			<if test="plannedPaymentDate != null">planned_payment_date,</if>
+			<if test="actualPaymentDate != null">actual_payment_date,</if>
+			<if test="fillingDate != null">filling_date,</if>
+			<if test="remarks != null">remarks,</if>
+			<if test="file != null">file,</if>
+			<if test="type != null">type,</if>
+			<if test="status != null">status,</if>
+			<if test="dataStatus != null">data_status,</if>
+			<if test="paymentMethod != null">payment_method,</if>
+			<if test="deptId != null">dept_id,</if>
+			<if test="userId != null">user_id,</if>
+			<if test="createBy != null">create_by,</if>
+			<if test="createTime != null">create_time,</if>
+			<if test="updateBy != null">update_by,</if>
+			<if test="updateTime != null">update_time,</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="projectId != null">#{projectId},</if>
+			<if test="contractId != null">#{contractId},</if>
+			<if test="oaContractId != null">#{oaContractId},</if>
+			<if test="collectionAmount != null">#{collectionAmount},</if>
+			<if test="payableAmount != null">#{payableAmount},</if>
+			<if test="actualCollectionAmount != null">#{actualCollectionAmount},</if>
+			<if test="plannedPaymentDate != null">#{plannedPaymentDate},</if>
+			<if test="actualPaymentDate != null">#{actualPaymentDate},</if>
+			<if test="fillingDate != null">#{fillingDate},</if>
+			<if test="remarks != null">#{remarks},</if>
+			<if test="file != null">#{file},</if>
+			<if test="type != null">#{type},</if>
+			<if test="status != null">#{status},</if>
+			<if test="dataStatus != null">#{dataStatus},</if>
+			<if test="paymentMethod != null">#{paymentMethod},</if>
+			<if test="deptId != null">#{deptId},</if>
+			<if test="userId != null">#{userId},</if>
+			<if test="createBy != null">#{createBy},</if>
+			<if test="createTime != null">#{createTime},</if>
+			<if test="updateBy != null">#{updateBy},</if>
+			<if test="updateTime != null">#{updateTime},</if>
+		</trim>
+	</insert>
+	
+	<update id="updateMgtCollectionPlan" parameterType="MgtCollectionPlan">
+		update mgt_collection_plan
+		<trim prefix="SET" suffixOverrides=",">
+			<if test="projectId != null">project_id = #{projectId},</if>
+			<if test="contractId != null">contract_id = #{contractId},</if>
+			<if test="oaContractId != null">oa_contract_id = #{oaContractId},</if>
+			<if test="collectionAmount != null">collection_amount = #{collectionAmount},</if>
+			<if test="payableAmount != null">payable_amount = #{payableAmount},</if>
+			<if test="actualCollectionAmount != null">actual_collection_amount = #{actualCollectionAmount},</if>
+			<if test="plannedPaymentDate != null">planned_payment_date = #{plannedPaymentDate},</if>
+			<if test="actualPaymentDate != null">actual_payment_date = #{actualPaymentDate},</if>
+			<if test="fillingDate != null">filling_date = #{fillingDate},</if>
+			<if test="remarks != null">remarks = #{remarks},</if>
+			<if test="file != null">file = #{file},</if>
+			<if test="type != null">type = #{type},</if>
+			<if test="status != null">status = #{status},</if>
+			<if test="dataStatus != null">data_status = #{dataStatus},</if>
+			<if test="paymentMethod != null">payment_method = #{paymentMethod},</if>
+			<if test="deptId != null">dept_id = #{deptId},</if>
+			<if test="userId != null">user_id = #{userId},</if>
+			<if test="createBy != null">create_by = #{createBy},</if>
+			<if test="createTime != null">create_time = #{createTime},</if>
+			<if test="updateBy != null">update_by = #{updateBy},</if>
+			<if test="updateTime != null">update_time = #{updateTime},</if>
+		</trim>
+		where plan_id = #{planId}
+	</update>
+	
+	<delete id="deleteMgtCollectionPlanByPlanId" parameterType="Long">
+		delete
+		from mgt_collection_plan
+		where plan_id = #{planId}
+	</delete>
+	
+	<delete id="deleteMgtCollectionPlanByPlanIds" parameterType="String">
+		delete from mgt_collection_plan where plan_id in
+		<foreach item="planId" collection="array" open="(" separator="," close=")">
+			#{planId}
+		</foreach>
+	</delete>
+	
+	<select id="selectProjectById" parameterType="Long" resultType="MgtProject">
+		SELECT p.*
+		FROM mgt_project p
+		WHERE p.project_id = #{projectId}
+	</select>
+	
+	<select id="selectProjectcontractsById" parameterType="Long" resultType="Projectcontracts"
+			resultMap="ProjectcontractsResult">
+		select c.*
+		FROM projectcontracts c
+		WHERE c.id = #{contractId}
+	</select>
+	
+	<select id="selectMgtCollectionPlanRegisterList" resultType="MgtCollectionPlanRegister"
+			resultMap="MgtCollectionPlanRegisterResult">
+		select b.*
+		from mgt_collection_plan_register b
+		where b.plan_id = #{planId}
+	</select>
+	
+	<select id="selectMgtOaContractsById" parameterType="Long" resultType="MgtOaContracts"
+			resultMap="MgtOaContractsResult">
+		select c.*
+		FROM mgt_oa_contracts c
+		WHERE c.contract_id = #{oaContractId}
+	</select>
+
+</mapper>

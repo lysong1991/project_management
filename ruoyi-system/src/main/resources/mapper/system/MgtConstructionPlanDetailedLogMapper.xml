@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.MgtConstructionPlanDetailedLogMapper">
+
+    <resultMap type="MgtConstructionPlanDetailedLog" id="MgtConstructionPlanDetailedLogResult">
+        <result property="logId" column="log_id"/>
+        <result property="planId" column="plan_id"/>
+        <result property="content" column="content"/>
+        <result property="startTime" column="start_time"/>
+        <result property="endTime" column="end_time"/>
+        <result property="progress" column="progress"/>
+        <result property="changeContent" column="change_content"/>
+        <result property="changeStartTime" column="change_start_time"/>
+        <result property="changeEndTime" column="change_end_time"/>
+        <result property="changeProgress" column="change_progress"/>
+        <result property="type" column="type"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+
+    <sql id="selectMgtConstructionPlanDetailedLogVo">
+        select log_id,
+               plan_id,
+               content,
+               start_time,
+               end_time,
+               progress,
+               change_content,
+               change_start_time,
+               change_end_time,
+               change_progress,
+               type,
+               create_time
+        from mgt_construction_plan_detailed_log
+    </sql>
+
+    <select id="selectMgtConstructionPlanDetailedLogList" parameterType="MgtConstructionPlanDetailedLog"
+            resultMap="MgtConstructionPlanDetailedLogResult">
+        <include refid="selectMgtConstructionPlanDetailedLogVo"/>
+        <where>
+            <if test="planId != null ">and plan_id = #{planId}</if>
+            <if test="content != null  and content != ''">and content = #{content}</if>
+            <if test="startTime != null ">and start_time = #{startTime}</if>
+            <if test="endTime != null ">and end_time = #{endTime}</if>
+            <if test="progress != null ">and progress = #{progress}</if>
+            <if test="changeContent != null  and changeContent != ''">and change_content = #{changeContent}</if>
+            <if test="changeStartTime != null ">and change_start_time = #{changeStartTime}</if>
+            <if test="changeEndTime != null ">and change_end_time = #{changeEndTime}</if>
+            <if test="changeProgress != null ">and change_progress = #{changeProgress}</if>
+            <if test="type != null  and type != ''">and type = #{type}</if>
+        </where>
+        ORDER BY create_time desc
+    </select>
+
+    <select id="selectMgtConstructionPlanDetailedLogByLogId" parameterType="Long"
+            resultMap="MgtConstructionPlanDetailedLogResult">
+        <include refid="selectMgtConstructionPlanDetailedLogVo"/>
+        where log_id = #{logId}
+    </select>
+
+    <insert id="insertMgtConstructionPlanDetailedLog" parameterType="MgtConstructionPlanDetailedLog"
+            useGeneratedKeys="true" keyProperty="logId">
+        insert into mgt_construction_plan_detailed_log
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="planId != null">plan_id,</if>
+            <if test="content != null">content,</if>
+            <if test="startTime != null">start_time,</if>
+            <if test="endTime != null">end_time,</if>
+            <if test="progress != null">progress,</if>
+            <if test="changeContent != null">change_content,</if>
+            <if test="changeStartTime != null">change_start_time,</if>
+            <if test="changeEndTime != null">change_end_time,</if>
+            <if test="changeProgress != null">change_progress,</if>
+            <if test="type != null">type,</if>
+            <if test="createTime != null">create_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="planId != null">#{planId},</if>
+            <if test="content != null">#{content},</if>
+            <if test="startTime != null">#{startTime},</if>
+            <if test="endTime != null">#{endTime},</if>
+            <if test="progress != null">#{progress},</if>
+            <if test="changeContent != null">#{changeContent},</if>
+            <if test="changeStartTime != null">#{changeStartTime},</if>
+            <if test="changeEndTime != null">#{changeEndTime},</if>
+            <if test="changeProgress != null">#{changeProgress},</if>
+            <if test="type != null">#{type},</if>
+            <if test="createTime != null">#{createTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateMgtConstructionPlanDetailedLog" parameterType="MgtConstructionPlanDetailedLog">
+        update mgt_construction_plan_detailed_log
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="planId != null">plan_id = #{planId},</if>
+            <if test="content != null">content = #{content},</if>
+            <if test="startTime != null">start_time = #{startTime},</if>
+            <if test="endTime != null">end_time = #{endTime},</if>
+            <if test="progress != null">progress = #{progress},</if>
+            <if test="changeContent != null">change_content = #{changeContent},</if>
+            <if test="changeStartTime != null">change_start_time = #{changeStartTime},</if>
+            <if test="changeEndTime != null">change_end_time = #{changeEndTime},</if>
+            <if test="changeProgress != null">change_progress = #{changeProgress},</if>
+            <if test="type != null">type = #{type},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+        </trim>
+        where log_id = #{logId}
+    </update>
+
+    <delete id="deleteMgtConstructionPlanDetailedLogByLogId" parameterType="Long">
+        delete
+        from mgt_construction_plan_detailed_log
+        where log_id = #{logId}
+    </delete>
+
+    <delete id="deleteMgtConstructionPlanDetailedLogByLogIds" parameterType="String">
+        delete from mgt_construction_plan_detailed_log where log_id in
+        <foreach item="logId" collection="array" open="(" separator="," close=")">
+            #{logId}
+        </foreach>
+    </delete>
+</mapper>

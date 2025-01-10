@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.MgtProjectBudgetDictMapper">
+
+    <resultMap type="MgtProjectBudgetDict" id="MgtProjectBudgetDictResult">
+        <result property="dictId" column="dict_id"/>
+        <result property="pid" column="pid"/>
+        <result property="name" column="name"/>
+        <result property="code" column="code"/>
+        <result property="dictType" column="dict_type"/>
+        <result property="sort" column="sort"/>
+    </resultMap>
+
+    <sql id="selectMgtProjectBudgetDictVo">
+        select dict_id, pid, name, code, dict_type, sort
+        from mgt_project_budget_dict
+    </sql>
+
+    <select id="selectMgtProjectBudgetDictList" parameterType="MgtProjectBudgetDict"
+            resultMap="MgtProjectBudgetDictResult">
+        <include refid="selectMgtProjectBudgetDictVo"/>
+        <where>
+            <if test="pid != null ">and pid = #{pid}</if>
+            <if test="name != null  and name != ''">and name like concat('%', #{name}, '%')</if>
+            <if test="code != null  and code != ''">and code = #{code}</if>
+            <if test="dictType != null  and dictType != ''">and dict_type = #{dictType}</if>
+            <if test="sort != null ">and sort = #{sort}</if>
+        </where>
+    </select>
+
+    <select id="selectMgtProjectBudgetDictByDictId" parameterType="Long" resultMap="MgtProjectBudgetDictResult">
+        <include refid="selectMgtProjectBudgetDictVo"/>
+        where dict_id = #{dictId}
+    </select>
+
+    <insert id="insertMgtProjectBudgetDict" parameterType="MgtProjectBudgetDict" useGeneratedKeys="true"
+            keyProperty="dictId">
+        insert into mgt_project_budget_dict
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="pid != null">pid,</if>
+            <if test="name != null">name,</if>
+            <if test="code != null">code,</if>
+            <if test="dictType != null">dict_type,</if>
+            <if test="sort != null">sort,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="pid != null">#{pid},</if>
+            <if test="name != null">#{name},</if>
+            <if test="code != null">#{code},</if>
+            <if test="dictType != null">#{dictType},</if>
+            <if test="sort != null">#{sort},</if>
+        </trim>
+    </insert>
+
+    <update id="updateMgtProjectBudgetDict" parameterType="MgtProjectBudgetDict">
+        update mgt_project_budget_dict
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="pid != null">pid = #{pid},</if>
+            <if test="name != null">name = #{name},</if>
+            <if test="code != null">code = #{code},</if>
+            <if test="dictType != null">dict_type = #{dictType},</if>
+            <if test="sort != null">sort = #{sort},</if>
+        </trim>
+        where dict_id = #{dictId}
+    </update>
+
+    <delete id="deleteMgtProjectBudgetDictByDictId" parameterType="Long">
+        delete
+        from mgt_project_budget_dict
+        where dict_id = #{dictId}
+    </delete>
+
+    <delete id="deleteMgtProjectBudgetDictByDictIds" parameterType="String">
+        delete from mgt_project_budget_dict where dict_id in
+        <foreach item="dictId" collection="array" open="(" separator="," close=")">
+            #{dictId}
+        </foreach>
+    </delete>
+</mapper>

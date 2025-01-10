@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.QualityFormMapper">
+
+    <resultMap type="QualityForm" id="QualityFormResult">
+        <result property="id" column="id"/>
+        <result property="code" column="code"/>
+        <result property="projectId" column="project_id"/>
+        <result property="projectName" column="project_name"/>
+        <result property="projectAddress" column="project_address"/>
+        <result property="projectMode" column="project_mode"/>
+        <result property="projectStatus" column="project_status"/>
+        <result property="leader" column="leader"/>
+        <result property="leaderId" column="leader_id"/>
+        <result property="deptName" column="dept_name"/>
+        <result property="deptId" column="sub_dept_id"/>
+        <result property="uploadDate" column="upload_date"/>
+        <result property="repoter" column="repoter"/>
+        <result property="createTime" column="create_time"/>
+        <result property="changeStatus" column="change_status"/>
+        <result property="createUserid" column="user_id"/>
+        <result property="createDeptid" column="dept_id"/>
+        <result property="initFailed" column="init_failed"/>
+        <result property="total" column="total"/>
+        <result property="now" column="now"/>
+        <result property="failed" column="failed"/>
+        <result property="pass" column="pass"/>
+        <result property="changeDate" column="change_date"/>
+        <result property="endTime" column="end_time"/>
+        <result property="type" column="type"/>
+        <result property="completionTime" column="completion_time"/>
+        <collection property="leaderUser" column="id" javaType="java.util.List" ofType="SysUserVo"
+                    select="selectLeaderUser"/>
+        <collection property="ccUser" column="id" javaType="java.util.List" ofType="SysUserVo"
+                    select="selectCcUser"/>
+    </resultMap>
+
+    <resultMap type="SysUserVo" id="SysUserVoResult">
+        <result property="userId" column="user_id"/>
+        <result property="userName" column="user_name"/>
+    </resultMap>
+
+    <sql id="selectQualityFormVo">
+        select DISTINCT d.*
+        from quality_form d
+                 LEFT JOIN mgt_project p ON p.project_id = d.project_id
+                 LEFT JOIN quality_form_user qfu ON qfu.quality_form_id = d.id
+    </sql>
+
+    <select id="selectQualityFormList" parameterType="QualityForm" resultMap="QualityFormResult">
+        <include refid="selectQualityFormVo"/>
+        <where>
+            <if test="projectId != null and projectId != ''">and d.project_id = #{projectId}</if>
+            <if test="id != null and id != ''">and d.id = #{id}</if>
+            <if test="endTime != null ">and d.end_time = #{endTime}</if>
+            <if test="code != null and code != ''">and d.code like concat('%',#{code},'%')</if>
+            <if test="projectName != null and projectName != ''">and p.project_name like concat('%', #{projectName},
+                '%')
+            </if>
+            <if test="leader != null and leader != ''">and qfu.user_type = 0
+                and qfu.user_name like concat('%',#{leader},'%')
+            </if>
+            <if test="changeStatus != null and changeStatus != ''">and d.change_status = #{changeStatus}</if>
+            <if test="params.statusList != null and params.statusList.size > 0">
+                and d.change_status in
+                <foreach collection="params.statusList" item="statusItem" open="(" separator="," close=")">
+                    #{statusItem}
+                </foreach>
+            </if>
+            <if test="params.userId != null and params.userId != ''">
+                and (qfu.user_id = #{params.userId} or d.user_id = #{params.userId})
+            </if>
+            <!-- 大于开始时间 -->
+            <if test="params.beginEndTime != null and params.endEndTime == null">
+                AND d.end_time &gt;= #{params.beginEndTime}
+            </if>
+            <!-- 小于结束时间 -->
+            <if test="params.beginEndTime == null and params.endEndTime != null">
+                AND d.end_time &lt;= #{params.endEndTime}
+            </if>
+            <!-- 小于结束时间 -->
+            <if test="params.beginEndTime != null and params.endEndTime != null">
+                AND d.end_time between #{params.beginEndTime} and #{params.endEndTime}
+            </if>
+            ${params.dataScope}
+        </where>
+        ORDER BY d.create_time DESC
+    </select>
+
+    <select id="selectQualityFormById" parameterType="Long" resultMap="QualityFormResult">
+        <include refid="selectQualityFormVo"/>
+        where d.id = #{id}
+    </select>
+
+    <select id="selectQualityFormByProjectId" parameterType="Long" resultMap="QualityFormResult">
+        <include refid="selectQualityFormVo"/>
+        where d.project_id = #{projectId}
+    </select>
+
+    <insert id="insertQualityForm" parameterType="QualityForm" useGeneratedKeys="true" keyProperty="id">
+        insert into quality_form
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="code != null">code,</if>
+            <if test="projectId != null">project_id,</if>
+            <if test="projectName != null">project_name,</if>
+            <if test="projectAddress != null">project_address,</if>
+            <if test="projectMode != null">project_mode,</if>
+            <if test="projectStatus != null">project_status,</if>
+            <if test="leader != null">leader,</if>
+            <if test="leaderId != null">leader_id,</if>
+            <if test="deptName != null">dept_name,</if>
+            <if test="deptId != null">sub_dept_id,</if>
+            <if test="uploadDate != null">upload_date,</if>
+            <if test="repoter != null">repoter,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="changeStatus != null">change_status,</if>
+            <if test="createUserid != null">user_id,</if>
+            <if test="createDeptid != null">dept_id,</if>
+            <if test="initFailed != null">init_failed,</if>
+            <if test="total != null">total,</if>
+            <if test="now != null">now,</if>
+            <if test="failed != null">failed,</if>
+            <if test="pass != null">pass,</if>
+            <if test="changeDate != null">change_date,</if>
+            <if test="endTime != null">end_time,</if>
+            <if test="type != null">type,</if>
+            <if test="completionTime != null">completion_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="code != null">#{code},</if>
+            <if test="projectId != null">#{projectId},</if>
+            <if test="projectName != null">#{projectName},</if>
+            <if test="projectAddress != null">#{projectAddress},</if>
+            <if test="projectMode != null">#{projectMode},</if>
+            <if test="projectStatus != null">#{projectStatus},</if>
+            <if test="leader != null">#{leader},</if>
+            <if test="leaderId != null">#{leaderId},</if>
+            <if test="deptName != null">#{deptName},</if>
+            <if test="deptId != null">#{deptId},</if>
+            <if test="initFailed != null">#{initFailed},</if>
+            <if test="uploadDate != null">#{uploadDate},</if>
+            <if test="repoter != null">#{repoter},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="changeStatus != null">#{changeStatus},</if>
+            <if test="createUserid != null">#{createUserid},</if>
+            <if test="createDeptid != null">#{createDeptid},</if>
+            <if test="total != null">#{total},</if>
+            <if test="now != null">#{now},</if>
+            <if test="failed != null">#{failed},</if>
+            <if test="pass != null">#{pass},</if>
+            <if test="changeDate != null">#{changeDate},</if>
+            <if test="endTime != null">#{endTime},</if>
+            <if test="type != null">#{type},</if>
+            <if test="completionTime != null">#{completionTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateQualityForm" parameterType="QualityForm">
+        update quality_form
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="code != null">code = #{code},</if>
+            <if test="projectId != null">project_id = #{projectId},</if>
+            <if test="projectName != null">project_name = #{projectName},</if>
+            <if test="projectAddress != null">project_address = #{projectAddress},</if>
+            <if test="projectMode != null">project_mode = #{projectMode},</if>
+            <if test="projectStatus != null">project_status = #{projectStatus},</if>
+            <if test="leader != null">leader = #{leader},</if>
+            <if test="leaderId != null">leader_id = #{leaderId},</if>
+            <if test="deptName != null">dept_name = #{deptName},</if>
+            <if test="deptId != null">sub_dept_id = #{deptId},</if>
+            <if test="uploadDate != null">upload_date = #{uploadDate},</if>
+            <if test="repoter != null">repoter = #{repoter},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="changeStatus != null">change_status = #{changeStatus},</if>
+            <if test="createUserid != null">user_id = #{createUserid},</if>
+            <if test="createDeptid != null">dept_id = #{createDeptid},</if>
+            <if test="initFailed != null">init_failed = #{initFailed},</if>
+            <if test="total != null">total = #{total},</if>
+            <if test="now != null">now = #{now},</if>
+            <if test="failed != null">failed = #{failed},</if>
+            <if test="pass != null">pass = #{pass},</if>
+            <if test="changeDate != null">change_date = #{changeDate},</if>
+            <if test="endTime != null">end_time = #{endTime},</if>
+            <if test="type != null">type = #{type},</if>
+            <if test="completionTime != null">completion_time = #{completionTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteQualityFormById" parameterType="Long">
+        delete
+        from quality_form
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteQualityFormByIds" parameterType="String">
+        delete from quality_form where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectLeaderUser" resultType="SysUserVo">
+        select qfu.user_id, qfu.user_name
+        from quality_form_user qfu
+        where qfu.quality_form_id = #{id}
+          and qfu.user_type = 0
+          and qfu.type = 0
+    </select>
+
+    <select id="selectCcUser" resultType="SysUserVo">
+        select qfu.user_id, qfu.user_name
+        from quality_form_user qfu
+        where qfu.quality_form_id = #{id}
+          and qfu.user_type = 1
+          and qfu.type = 0
+    </select>
+
+
+</mapper>

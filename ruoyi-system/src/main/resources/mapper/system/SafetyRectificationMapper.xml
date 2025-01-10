@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.SafetyRectificationMapper">
+
+    <resultMap type="SafetyRectification" id="SafetyRectificationResult">
+        <result property="id" column="id"/>
+        <result property="label" column="label"/>
+        <result property="term" column="term"/>
+        <result property="punish" column="punish"/>
+        <result property="templateName" column="template_name"/>
+    </resultMap>
+
+    <sql id="selectSafetyRectificationVo">
+        select id, label, term, punish
+        from safety_rectification
+    </sql>
+
+    <select id="selectSafetyRectificationList" parameterType="SafetyRectification"
+            resultMap="SafetyRectificationResult">
+        <include refid="selectSafetyRectificationVo"/>
+        <where>
+            <if test="label != null  and label != ''">and label like concat('%', #{label},'%')</if>
+            <if test="term != null  and term != ''">and term like concat('%', #{term},'%')</if>
+        </where>
+    </select>
+
+    <select id="selectSafetyRectificationById" parameterType="Long" resultMap="SafetyRectificationResult">
+        <include refid="selectSafetyRectificationVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertSafetyRectification" parameterType="SafetyRectification" useGeneratedKeys="true" keyProperty="id">
+        insert into safety_rectification
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="label != null">label,</if>
+            <if test="term != null">term,</if>
+            <if test="punish != null">punish,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="label != null">#{label},</if>
+            <if test="term != null">#{term},</if>
+            <if test="punish != null">#{punish},</if>
+        </trim>
+    </insert>
+
+    <update id="updateSafetyRectification" parameterType="SafetyRectification">
+        update safety_rectification
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="label != null">label = #{label},</if>
+            <if test="term != null">term = #{term},</if>
+            <if test="punish != null">punish = #{punish},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSafetyRectificationById" parameterType="Long">
+        delete
+        from safety_rectification
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteSafetyRectificationByIds" parameterType="String">
+        delete from safety_rectification where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectSafetyRectificationListByTemplate" parameterType="SafetyRectificationTemplate"
+            resultMap="SafetyRectificationResult">
+        select
+        a.id,
+        a.label,
+        a.term,
+        a.punish,
+        t.template_name
+        from safety_rectification a
+        INNER JOIN safety_rectification_template t on t.safety_id = a.id
+        <where>
+            <if test="templateName != null  and templateName != ''">and t.template_name = #{templateName}</if>
+        </where>
+    </select>
+
+</mapper>

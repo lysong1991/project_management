@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.MgtProjectBudgetDetailedMapper">
+
+    <resultMap type="MgtProjectBudgetDetailed" id="MgtProjectBudgetDetailedResult">
+        <result property="detailedId" column="detailed_id"/>
+        <result property="projectId" column="project_id"/>
+        <result property="recordId" column="record_id"/>
+        <result property="budgetId" column="budget_id"/>
+        <result property="num" column="num"/>
+        <result property="subCode" column="sub_code"/>
+        <result property="code" column="code"/>
+        <result property="name" column="name"/>
+        <result property="features" column="features"/>
+        <result property="unit" column="unit"/>
+        <result property="quantity" column="quantity"/>
+        <result property="actualQuantity" column="actual_quantity"/>
+        <result property="detailedType" column="detailed_type"/>
+        <result property="dataType" column="data_type"/>
+        <association property="mgtProjectBudget" javaType="MgtProjectBudget">
+            <id property="budgetId" column="pb_budget_id"/>
+            <result property="unitProjectName" column="pb_unit_project_name"/>
+            <result property="zbTotalPrice" column="pb_zb_total_price"/>
+            <result property="zrTotalPrice" column="pb_zr_total_price"/>
+            <result property="mbTotalPrice" column="pb_mb_total_price"/>
+            <result property="dataStatusZb" column="pb_data_status_zb"/>
+            <result property="dataStatusZr" column="pb_data_status_zr"/>
+            <result property="dataStatusMb" column="pb_data_status_mb"/>
+        </association>
+        <association property="zbPrices" javaType="MgtProjectBudgetPrices">
+            <id property="priceId" column="zb_price_id"/>
+            <result property="priceType" column="zb_price_type"/>
+            <result property="unitPrice" column="zb_unit_price"/>
+            <result property="totalPrice" column="zb_total_price"/>
+        </association>
+        <association property="zrPrices" javaType="MgtProjectBudgetPrices">
+            <id property="priceId" column="zr_price_id"/>
+            <result property="priceType" column="zr_price_type"/>
+            <result property="unitPrice" column="zr_unit_price"/>
+            <result property="totalPrice" column="zr_total_price"/>
+        </association>
+        <association property="mbPrices" javaType="MgtProjectBudgetPrices">
+            <id property="priceId" column="mb_price_id"/>
+            <result property="priceType" column="mb_price_type"/>
+            <result property="unitPrice" column="mb_unit_price"/>
+            <result property="totalPrice" column="mb_total_price"/>
+            <result property="artificial" column="mb_artificial"/>
+            <result property="materials" column="mb_materials"/>
+            <result property="mechanics" column="mb_mechanics"/>
+            <result property="management" column="mb_management"/>
+            <result property="profit" column="mb_profit"/>
+        </association>
+    </resultMap>
+
+    <resultMap id="MgtProjectBudgetDetailedVoResult" type="MgtProjectBudgetDetailedVo">
+        <result property="detailedId" column="detailed_id"/>
+        <result property="budgetId" column="budget_id"/>
+        <result property="projectId" column="project_id"/>
+        <result property="unitProjectName" column="unit_project_name"/>
+        <result property="code" column="code"/>
+        <result property="name" column="name"/>
+        <result property="features" column="features"/>
+        <result property="unit" column="unit"/>
+        <result property="quantity" column="quantity"/>
+        <result property="zbUnitPrice" column="zb_unit_price"/>
+        <result property="zbTotalPrice" column="zb_total_price"/>
+        <result property="zbArtificial" column="zb_artificial"/>
+        <result property="zbMaterials" column="zb_materials"/>
+        <result property="zbMechanics" column="zb_mechanics"/>
+        <result property="zbManagement" column="zb_management"/>
+        <result property="zbProfit" column="zb_pProfit"/>
+        <result property="zrUnitPrice" column="zr_unit_price"/>
+        <result property="zrTotalPrice" column="zr_total_price"/>
+        <result property="zrArtificial" column="zr_artificial"/>
+        <result property="zrMaterials" column="zr_materials"/>
+        <result property="zrMechanics" column="zr_mechanics"/>
+        <result property="zrManagement" column="zr_management"/>
+        <result property="zrProfit" column="zr_pProfit"/>
+        <result property="mbUnitPrice" column="mb_unit_price"/>
+        <result property="mbTotalPrice" column="mb_total_price"/>
+        <result property="mbArtificial" column="mb_artificial"/>
+        <result property="mbMaterials" column="mb_materials"/>
+        <result property="mbMechanics" column="mb_mechanics"/>
+        <result property="mbManagement" column="mb_management"/>
+        <result property="mbProfit" column="mb_pProfit"/>
+    </resultMap>
+
+    <sql id="selectMgtProjectBudgetDetailedVo">
+        select a.*,
+               pb.budget_id         as pb_budget_id,
+               pb.unit_project_name as pb_unit_project_name,
+               pb.zb_total_price    as pb_zb_total_price,
+               pb.zr_total_price    as pb_zr_total_price,
+               pb.mb_total_price    as pb_mb_total_price,
+               pb.data_status_zb    as pb_data_status_zb,
+               pb.data_status_zr    as pb_data_status_zr,
+               pb.data_status_mb    as pb_data_status_mb,
+               zb.price_id          as zb_price_id,
+               zb.price_type        as zb_price_type,
+               zb.unit_price        as zb_unit_price,
+               zb.total_price       as zb_total_price,
+               zr.price_id          as zr_price_id,
+               zr.price_type        as zr_price_type,
+               zr.unit_price        as zr_unit_price,
+               zr.total_price       as zr_total_price,
+               mb.price_id          as mb_price_id,
+               mb.price_type        as mb_price_type,
+               mb.unit_price        as mb_unit_price,
+               mb.total_price       as mb_total_price,
+               mb.artificial        as mb_artificial,
+               mb.materials         as mb_materials,
+               mb.mechanics         as mb_mechanics,
+               mb.management        as mb_management,
+               mb.profit            as mb_profit
+        from mgt_project_budget_detailed a
+                 LEFT JOIN mgt_project_budget pb
+                           ON pb.budget_id = a.budget_id
+                 LEFT JOIN mgt_project_budget_prices zb
+                           ON zb.detailed_id = a.detailed_id AND zb.price_type = 0
+                 LEFT JOIN mgt_project_budget_prices zr
+                           ON zr.detailed_id = a.detailed_id AND zr.price_type = 1
+                 LEFT JOIN mgt_project_budget_prices mb
+                           ON mb.detailed_id = a.detailed_id AND mb.price_type = 2
+    </sql>
+
+    <select id="selectMgtProjectBudgetDetailedList" parameterType="MgtProjectBudgetDetailed"
+            resultMap="MgtProjectBudgetDetailedResult">
+        <include refid="selectMgtProjectBudgetDetailedVo"/>
+        <where>
+            <if test="projectId != null ">and a.project_id = #{projectId}</if>
+            <if test="budgetId != null ">and a.budget_id = #{budgetId}</if>
+            <if test="code != null  and code != ''">and a.code = #{code}</if>
+            <if test="name != null  and name != ''">and a.name like concat('%', #{name}, '%')</if>
+            <if test="features != null  and features != ''">and a.features = #{features}</if>
+            <if test="unit != null  and unit != ''">and a.unit = #{unit}</if>
+            <if test="quantity != null ">and a.quantity = #{quantity}</if>
+            <if test="actualQuantity != null ">and a.actual_quantity = #{actualQuantity}</if>
+            <if test="detailedType != null  and detailedType != ''">and a.detailed_type = #{detailedType}</if>
+            <if test="dataType != null  and dataType != ''">and a.data_type = #{dataType}</if>
+        </where>
+    </select>
+
+    <select id="selectMgtProjectBudgetDetailedVoList" parameterType="map"
+            resultMap="MgtProjectBudgetDetailedVoResult">
+        select
+        a.detailed_id,
+        a.budget_id,
+        a.project_id,
+        a.code,
+        a.name,
+        a.features,
+        a.unit,
+        a.quantity,
+        b.unit_project_name
+        from mgt_project_budget_detailed a
+        left join mgt_project_budget b on b.budget_id = a.budget_id
+        <where>
+            <if test="detailedIds != null and detailedIds.size() > 0">and a.detailed_id in
+                <foreach item="id" index="index" collection="detailedIds" open="(" separator="," close=")">
+                    #{id}
+                </foreach>
+            </if>
+        </where>
+    </select>
+
+    <select id="selectMgtProjectBudgetDetailedByDetailedId" parameterType="Long"
+            resultMap="MgtProjectBudgetDetailedResult">
+        <include refid="selectMgtProjectBudgetDetailedVo"/>
+        where a.detailed_id = #{detailedId}
+    </select>
+
+    <insert id="insertMgtProjectBudgetDetailed" parameterType="MgtProjectBudgetDetailed" useGeneratedKeys="true"
+            keyProperty="detailedId">
+        insert into mgt_project_budget_detailed
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="projectId != null">project_id,</if>
+            <if test="recordId != null">record_id,</if>
+            <if test="budgetId != null">budget_id,</if>
+            <if test="num != null">num,</if>
+            <if test="subCode != null">sub_code,</if>
+            <if test="code != null">code,</if>
+            <if test="name != null">name,</if>
+            <if test="features != null">features,</if>
+            <if test="unit != null">unit,</if>
+            <if test="quantity != null">quantity,</if>
+            <if test="actualQuantity != null">actual_quantity,</if>
+            <if test="detailedType != null">detailed_type,</if>
+            <if test="dataType != null">data_type,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="projectId != null">#{projectId},</if>
+            <if test="recordId != null">#{recordId},</if>
+            <if test="budgetId != null">#{budgetId},</if>
+            <if test="num != null">#{num},</if>
+            <if test="subCode != null">#{subCode},</if>
+            <if test="code != null">#{code},</if>
+            <if test="name != null">#{name},</if>
+            <if test="features != null">#{features},</if>
+            <if test="unit != null">#{unit},</if>
+            <if test="quantity != null">#{quantity},</if>
+            <if test="actualQuantity != null">#{actualQuantity},</if>
+            <if test="detailedType != null">#{detailedType},</if>
+            <if test="dataType != null">#{dataType},</if>
+        </trim>
+    </insert>
+
+    <update id="updateMgtProjectBudgetDetailed" parameterType="MgtProjectBudgetDetailed">
+        update mgt_project_budget_detailed
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="projectId != null">project_id = #{projectId},</if>
+            <if test="budgetId != null">budget_id = #{budgetId},</if>
+            <if test="recordId != null">record_id = #{recordId},</if>
+            <if test="subCode != null">sub_code = #{subCode},</if>
+            <if test="num != null">num = #{num},</if>
+            <if test="code != null">code = #{code},</if>
+            <if test="name != null">name = #{name},</if>
+            <if test="features != null">features = #{features},</if>
+            <if test="unit != null">unit = #{unit},</if>
+            <if test="quantity != null">quantity = #{quantity},</if>
+            <if test="actualQuantity != null">actual_quantity = #{actualQuantity},</if>
+            <if test="detailedType != null">detailed_type = #{detailedType},</if>
+            <if test="dataType != null">data_type = #{dataType},</if>
+        </trim>
+        where detailed_id = #{detailedId}
+    </update>
+
+    <delete id="deleteMgtProjectBudgetDetailedByDetailedId" parameterType="Long">
+        delete
+        from mgt_project_budget_detailed
+        where detailed_id = #{detailedId}
+    </delete>
+
+    <delete id="deleteMgtProjectBudgetDetailedByBudgetId" parameterType="Long">
+        delete
+        from mgt_project_budget_detailed
+        where budget_id = #{budgetId}
+    </delete>
+
+    <delete id="deleteMgtProjectBudgetDetailedByDetailedIds" parameterType="String">
+        delete from mgt_project_budget_detailed where detailed_id in
+        <foreach item="detailedId" collection="array" open="(" separator="," close=")">
+            #{detailedId}
+        </foreach>
+    </delete>
+
+    <select id="selectZbPrices" parameterType="Long" resultType="MgtProjectBudgetPrices">
+        SELECT p.*
+        FROM mgt_project_budget_prices p
+        WHERE p.detailed_id = #{detailedId}
+          and p.price_type = 0 LIMIT 1
+    </select>
+
+    <select id="selectZrPrices" parameterType="Long" resultType="MgtProjectBudgetPrices">
+        SELECT p.*
+        FROM mgt_project_budget_prices p
+        WHERE p.detailed_id = #{detailedId}
+          and p.price_type = 1 LIMIT 1
+    </select>
+
+    <select id="selectMbPrices" parameterType="Long" resultType="MgtProjectBudgetPrices">
+        SELECT p.*
+        FROM mgt_project_budget_prices p
+        WHERE p.detailed_id = #{detailedId}
+          AND p.price_type = 2 LIMIT 1
+    </select>
+
+    <select id="selectMgtProjectBudget" parameterType="Long" resultType="MgtProjectBudget">
+        SELECT *
+        FROM mgt_project_budget
+        WHERE budget_id = #{budgetId}
+    </select>
+
+
+    <select id="getZbTotalPriceByProjectIds" parameterType="String" resultType="BigDecimal">
+        select sum(b.zb_total_price) as total_price
+        from mgt_project_budget b
+        where b.data_status_zb = 1
+        and b.project_id in
+        <foreach item="projectId" collection="array" open="(" separator="," close=")">
+            #{projectId}
+        </foreach>
+    </select>
+
+    <select id="getZrTotalPriceByProjectIds" parameterType="String" resultType="BigDecimal">
+        select sum(b.zr_total_price) as total_price
+        from mgt_project_budget b
+        where b.data_status_zb = 1
+        and b.data_status_zr = 1
+        and b.project_id in
+        <foreach item="projectId" collection="array" open="(" separator="," close=")">
+            #{projectId}
+        </foreach>
+    </select>
+
+    <select id="getMbTotalPriceByProjectIds" parameterType="String" resultType="BigDecimal">
+        select sum(b.mb_total_price) as total_price
+        from mgt_project_budget b
+        where b.data_status_zb = 1
+        and b.data_status_zr = 1
+        and b.data_status_mb = 1
+        and b.project_id in
+        <foreach item="projectId" collection="array" open="(" separator="," close=")">
+            #{projectId}
+        </foreach>
+    </select>
+
+</mapper>

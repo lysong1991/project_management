@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.MgtConstructionPlanDetailedMapper">
+	
+	<resultMap type="MgtConstructionPlanDetailed" id="MgtConstructionPlanDetailedResult">
+		<result property="detailedId" column="detailed_id" />
+		<result property="planId" column="plan_id" />
+		<result property="projectId" column="project_id" />
+		<result property="content" column="content" />
+		<result property="startTime" column="start_time" />
+		<result property="endTime" column="end_time" />
+		<result property="progress" column="progress" />
+		<result property="currentContent" column="current_content" />
+		<result property="currentStartTime" column="current_start_time" />
+		<result property="currentEndTime" column="current_end_time" />
+		<result property="currentProgress" column="current_progress" />
+		<result property="duration" column="duration" />
+		<result property="file" column="file" />
+		<result property="actualProgress" column="actual_progress" />
+		<result property="actualStartTime" column="actual_start_time" />
+		<result property="actualEndTime" column="actual_end_time" />
+		<result property="dataStatus" column="data_status" />
+		<result property="isDelay" column="is_delay" />
+		<result property="actualStatus" column="actual_status" />
+		<result property="deptId" column="dept_id" />
+		<result property="userId" column="user_id" />
+		<result property="createBy" column="create_by" />
+		<result property="createTime" column="create_time" />
+		<result property="updateBy" column="update_by" />
+		<result property="updateTime" column="update_time" />
+		<result property="updateTime" column="update_time" />
+		<result property="sort" column="sort" />
+	</resultMap>
+	
+	<sql id="selectMgtConstructionPlanDetailedVo">
+		select b.*
+		from mgt_construction_plan_detailed b
+	</sql>
+	
+	<select id="selectMgtConstructionPlanDetailedList" parameterType="MgtConstructionPlanDetailed"
+			resultMap="MgtConstructionPlanDetailedResult">
+		<include refid="selectMgtConstructionPlanDetailedVo" />
+		<where>
+			<if test="planId != null ">and b.plan_id = #{planId}</if>
+			<if test="projectId != null ">and b.project_id = #{projectId}</if>
+			<if test="startTime != null ">and b.start_time = #{startTime}</if>
+			<if test="endTime != null ">and b.end_time = #{endTime}</if>
+			<if test="duration != null ">and b.duration = #{duration}</if>
+			<if test="progress != null ">and b.progress = #{progress}</if>
+			<if test="actualProgress != null ">and b.actual_progress = #{actualProgress}</if>
+			<if test="dataStatus != null  and dataStatus != ''">and b.data_status = #{dataStatus}</if>
+			<if test="isDelay != null  and isDelay != ''">and b.is_delay = #{isDelay}</if>
+			<if test="actualStatus != null  and actualStatus != ''">and b.actual_status = #{actualStatus}</if>
+		</where>
+		ORDER BY b.sort desc, b.create_time asc
+	</select>
+	
+	<select id="selectMgtConstructionPlanDetailedByDetailedId" parameterType="Long"
+			resultMap="MgtConstructionPlanDetailedResult">
+		<include refid="selectMgtConstructionPlanDetailedVo" />
+		where b.detailed_id = #{detailedId}
+	</select>
+	
+	<insert id="insertMgtConstructionPlanDetailed" parameterType="MgtConstructionPlanDetailed" useGeneratedKeys="true"
+			keyProperty="detailedId">
+		insert into mgt_construction_plan_detailed
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="planId != null">plan_id,</if>
+			<if test="projectId != null">project_id,</if>
+			<if test="content != null">content,</if>
+			<if test="startTime != null">start_time,</if>
+			<if test="endTime != null">end_time,</if>
+			<if test="progress != null">progress,</if>
+			<if test="currentContent != null">current_content,</if>
+			<if test="currentStartTime != null">current_start_time,</if>
+			<if test="currentEndTime != null">current_end_time,</if>
+			<if test="currentProgress != null">current_progress,</if>
+			<if test="duration != null">duration,</if>
+			<if test="file != null">file,</if>
+			<if test="actualProgress != null">actual_progress,</if>
+			<if test="actualStartTime != null">actual_start_time,</if>
+			<if test="actualEndTime != null">actual_end_time,</if>
+			<if test="dataStatus != null">data_status,</if>
+			<if test="isDelay != null">is_delay,</if>
+			<if test="actualStatus != null">actual_status,</if>
+			<if test="deptId != null">dept_id,</if>
+			<if test="userId != null">user_id,</if>
+			<if test="createBy != null">create_by,</if>
+			<if test="createTime != null">create_time,</if>
+			<if test="updateBy != null">update_by,</if>
+			<if test="updateTime != null">update_time,</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="planId != null">#{planId},</if>
+			<if test="projectId != null">#{projectId},</if>
+			<if test="content != null">#{content},</if>
+			<if test="startTime != null">#{startTime},</if>
+			<if test="endTime != null">#{endTime},</if>
+			<if test="progress != null">#{progress},</if>
+			<if test="currentContent != null">#{currentContent},</if>
+			<if test="currentStartTime != null">#{currentStartTime},</if>
+			<if test="currentEndTime != null">#{currentEndTime},</if>
+			<if test="currentProgress != null">#{currentProgress},</if>
+			<if test="duration != null">#{duration},</if>
+			<if test="file != null">#{file},</if>
+			<if test="actualProgress != null">#{actualProgress},</if>
+			<if test="actualStartTime != null">#{actualStartTime},</if>
+			<if test="actualEndTime != null">#{actualEndTime},</if>
+			<if test="dataStatus != null">#{dataStatus},</if>
+			<if test="isDelay != null">#{isDelay},</if>
+			<if test="actualStatus != null">#{actualStatus},</if>
+			<if test="deptId != null">#{deptId},</if>
+			<if test="userId != null">#{userId},</if>
+			<if test="createBy != null">#{createBy},</if>
+			<if test="createTime != null">#{createTime},</if>
+			<if test="updateBy != null">#{updateBy},</if>
+			<if test="updateTime != null">#{updateTime},</if>
+		</trim>
+	</insert>
+	
+	<update id="updateMgtConstructionPlanDetailed" parameterType="MgtConstructionPlanDetailed">
+		update mgt_construction_plan_detailed
+		<trim prefix="SET" suffixOverrides=",">
+			<if test="planId != null">plan_id = #{planId},</if>
+			<if test="projectId != null">project_id = #{projectId},</if>
+			<if test="content != null">content = #{content},</if>
+			<if test="startTime != null">start_time = #{startTime},</if>
+			<if test="endTime != null">end_time = #{endTime},</if>
+			<if test="progress != null">progress = #{progress},</if>
+			<if test="currentContent != null">current_content = #{currentContent},</if>
+			<if test="currentStartTime != null">current_start_time = #{currentStartTime},</if>
+			<if test="currentEndTime != null">current_end_time = #{currentEndTime},</if>
+			<if test="currentProgress != null">current_progress = #{currentProgress},</if>
+			<if test="duration != null">duration = #{duration},</if>
+			<if test="file != null">file = #{file},</if>
+			<if test="actualProgress != null">actual_progress = #{actualProgress},</if>
+			<if test="actualStartTime != null">actual_start_time = #{actualStartTime},</if>
+			<if test="actualEndTime != null">actual_end_time = #{actualEndTime},</if>
+			<if test="dataStatus != null">data_status = #{dataStatus},</if>
+			<if test="isDelay != null">is_delay = #{isDelay},</if>
+			<if test="actualStatus != null">actual_status = #{actualStatus},</if>
+			<if test="deptId != null">dept_id = #{deptId},</if>
+			<if test="userId != null">user_id = #{userId},</if>
+			<if test="createBy != null">create_by = #{createBy},</if>
+			<if test="createTime != null">create_time = #{createTime},</if>
+			<if test="updateBy != null">update_by = #{updateBy},</if>
+			<if test="updateTime != null">update_time = #{updateTime},</if>
+		</trim>
+		where detailed_id = #{detailedId}
+	</update>
+	
+	<delete id="deleteMgtConstructionPlanDetailedByDetailedId" parameterType="Long">
+		delete
+		from mgt_construction_plan_detailed
+		where detailed_id = #{detailedId}
+	</delete>
+	
+	<delete id="deleteMgtConstructionPlanDetailedByDetailedIds" parameterType="String">
+		delete from mgt_construction_plan_detailed where detailed_id in
+		<foreach item="detailedId" collection="array" open="(" separator="," close=")">
+			#{detailedId}
+		</foreach>
+	</delete>
+	
+	<insert id="batchMgtConstructionPlanDetailed">
+		insert into mgt_construction_plan_detailed( detailed_id, plan_id, project_id,
+		content, start_time, end_time,progress,
+		current_content, current_start_time, current_end_time,current_progress,
+		duration, file, actual_progress, actual_end_time, actual_start_time, data_status, is_delay,
+		actual_status, dept_id,
+		user_id, create_by,
+		create_time, update_by,
+		update_time) values
+		<foreach item="item" index="index" collection="list" separator=",">
+			( #{item.detailedId}, #{item.planId}, #{item.projectId},
+			#{item.content}, #{item.startTime},#{item.endTime},#{item.progress},
+			#{item.currentContent}, #{item.currentStartTime},#{item.currentEndTime},#{item.currentProgress},
+			#{item.duration},#{item.file},#{item.actualProgress},#{item.actualEndTime},#{item.actualStartTime},
+			#{item.dataStatus},#{item.isDelay},#{item.actualStatus},#{item.deptId},#{item.userId},
+			#{item.createBy},#{item.createTime},#{item.updateBy},#{item.updateTime})
+		</foreach>
+	</insert>
+	
+	<delete id="deleteMgtConstructionPlanDetailedByPlanId" parameterType="Long">
+		delete
+		from mgt_construction_plan_detailed
+		where plan_id = #{planId}
+	</delete>
+	
+	<delete id="deleteMgtConstructionPlanDetailedByPlanIds" parameterType="String">
+		delete from mgt_construction_plan_detailed where plan_id in
+		<foreach item="planId" collection="array" open="(" separator="," close=")">
+			#{planId}
+		</foreach>
+	</delete>
+</mapper>

@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.MgtProjectCostRecordMapper">
+
+    <resultMap type="MgtProjectCostRecord" id="MgtProjectCostRecordResult">
+        <result property="recordId" column="record_id"/>
+        <result property="costId" column="cost_id"/>
+        <result property="projectId" column="project_id"/>
+        <result property="budgetId" column="budget_id"/>
+        <result property="name" column="name"/>
+        <result property="totalLastMonth" column="total_last_month"/>
+        <result property="totalThisMonth" column="total_this_month"/>
+        <result property="totalAllMonth" column="total_all_month"/>
+        <result property="totalCollection" column="total_collection"/>
+        <result property="totalRemarks" column="total_remarks"/>
+        <result property="subLastMonth" column="sub_last_month"/>
+        <result property="subThisMonth" column="sub_this_month"/>
+        <result property="subAllMonth" column="sub_all_month"/>
+        <result property="subPayment" column="sub_payment"/>
+        <result property="subRemarks" column="sub_remarks"/>
+        <result property="costProportion" column="cost_proportion"/>
+        <result property="fillingDate" column="filling_date"/>
+        <result property="dataStatus" column="data_status"/>
+        <result property="deptId" column="dept_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <association property="mgtProject" column="project_id" javaType="MgtProject"
+                     select="selectProjectById"/>
+        <association property="mgtProjectBudget" column="budget_id" javaType="MgtProjectBudget"
+                     select="selectMgtProjectBudget"/>
+        <collection property="mgtProjectCostRecordDetailed" column="record_id" javaType="java.util.List"
+                    ofType="MgtProjectCostRecordDetailed"
+                    select="selectMgtProjectCostRecordDetailed"/>
+    </resultMap>
+
+    <sql id="selectMgtProjectCostRecordVo">
+        select a.record_id,
+               a.cost_id,
+               a.project_id,
+               a.budget_id,
+               a.name,
+               a.total_last_month,
+               a.total_this_month,
+               a.total_all_month,
+               a.total_collection,
+               a.total_remarks,
+               a.sub_last_month,
+               a.sub_this_month,
+               a.sub_all_month,
+               a.sub_payment,
+               a.sub_remarks,
+               a.cost_proportion,
+               a.filling_date,
+               a.data_status,
+               a.dept_id,
+               a.user_id,
+               a.create_by,
+               a.create_time,
+               a.update_by,
+               a.update_time
+        from mgt_project_cost_record a
+                 LEFT JOIN mgt_project_budget b ON b.budget_id = a.budget_id
+    </sql>
+
+    <select id="selectMgtProjectCostRecordList" parameterType="MgtProjectCostRecord"
+            resultMap="MgtProjectCostRecordResult">
+        <include refid="selectMgtProjectCostRecordVo"/>
+        <where>
+            <if test="costId != null ">and a.cost_id = #{costId}</if>
+            <if test="projectId != null ">and a.project_id = #{projectId}</if>
+            <if test="budgetId != null ">and a.budget_id = #{budgetId}</if>
+            <if test="fillingDate != null ">and a.filling_date = #{fillingDate}</if>
+            <if test="dataStatus != null  and dataStatus != ''">and a.data_status = #{dataStatus}</if>
+            <if test="mgtProjectBudget != null and mgtProjectBudget.unitProjectName != null and mgtProjectBudget.unitProjectName != ''">
+                and b.unit_project_name like concat('%', #{mgtProjectBudget.unitProjectName}, '%')
+            </if>
+            <!-- 不小于 beginFillingDate -->
+            <if test="params.beginFillingDate != null and params.endFillingDate == null">
+                and a.filling_date &gt;= #{params.beginFillingDate}
+            </if>
+            <!-- 不大于 endFillingDate -->
+            <if test="params.beginFillingDate == null and params.endFillingDate != null">
+                and a.filling_date &lt;= #{params.endFillingDate}
+            </if>
+            <!-- 介于 beginFillingDate 和 endFillingDate 之间 -->
+            <if test="params.beginFillingDate != null and params.endFillingDate != null">
+                and a.filling_date between #{params.beginFillingDate} and #{params.endFillingDate}
+            </if>
+        </where>
+        order by a.filling_date desc
+    </select>
+
+    <select id="selectMgtProjectCostRecordListQuery" parameterType="MgtProjectCostRecordQueryVo"
+            resultMap="MgtProjectCostRecordResult">
+        <include refid="selectMgtProjectCostRecordVo"/>
+        <where>
+            <if test="costId != null ">and a.cost_id = #{costId}</if>
+            <if test="projectId != null ">and a.project_id = #{projectId}</if>
+            <if test="budgetId != null ">and a.budget_id = #{budgetId}</if>
+            <if test="dataStatus != null  and dataStatus != ''">and a.data_status = #{dataStatus}</if>
+            <if test="fillingDate != null ">and a.filling_date = #{fillingDate}</if>
+            <if test="mgtProjectBudget != null and mgtProjectBudget.unitProjectName != null and mgtProjectBudget.unitProjectName != ''">
+                and b.unit_project_name like concat('%', #{mgtProjectBudget.unitProjectName}, '%')
+            </if>
+            <if test="unitProjectName != null and unitProjectName != ''">
+                and b.unit_project_name like concat('%', #{unitProjectName}, '%')
+            </if>
+            <!-- 不小于 beginFillingDate -->
+            <if test="beginFillingDate != null and endFillingDate == null">
+                and a.filling_date &gt;= #{beginFillingDate}
+            </if>
+            <!-- 不大于 endFillingDate -->
+            <if test="beginFillingDate == null and endFillingDate != null">
+                and a.filling_date &lt;= #{endFillingDate}
+            </if>
+            <!-- 介于 beginFillingDate 和 endFillingDate 之间 -->
+            <if test="beginFillingDate != null and endFillingDate != null">
+                and a.filling_date between #{beginFillingDate} and #{endFillingDate}
+            </if>
+        </where>
+        ORDER BY a.filling_date DESC, a.record_id DESC
+    </select>
+
+    <select id="selectMgtProjectCostRecordByRecordId" parameterType="Long" resultMap="MgtProjectCostRecordResult">
+        <include refid="selectMgtProjectCostRecordVo"/>
+        where a.record_id = #{recordId}
+    </select>
+
+    <insert id="insertMgtProjectCostRecord" parameterType="MgtProjectCostRecord" useGeneratedKeys="true"
+            keyProperty="recordId">
+        insert into mgt_project_cost_record
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="costId != null">cost_id,</if>
+            <if test="projectId != null">project_id,</if>
+            <if test="budgetId != null">budget_id,</if>
+            <if test="name != null">name,</if>
+            <if test="totalLastMonth != null">total_last_month,</if>
+            <if test="totalThisMonth != null">total_this_month,</if>
+            <if test="totalAllMonth != null">total_all_month,</if>
+            <if test="totalCollection != null">total_collection,</if>
+            <if test="totalRemarks != null">total_remarks,</if>
+            <if test="subLastMonth != null">sub_last_month,</if>
+            <if test="subThisMonth != null">sub_this_month,</if>
+            <if test="subAllMonth != null">sub_all_month,</if>
+            <if test="subPayment != null">sub_payment,</if>
+            <if test="subRemarks != null">sub_remarks,</if>
+            <if test="costProportion != null">cost_proportion,</if>
+            <if test="fillingDate != null">filling_date,</if>
+            <if test="dataStatus != null">data_status,</if>
+            <if test="deptId != null">dept_id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="costId != null">#{costId},</if>
+            <if test="projectId != null">#{projectId},</if>
+            <if test="budgetId != null">#{budgetId},</if>
+            <if test="name != null">#{name},</if>
+            <if test="totalLastMonth != null">#{totalLastMonth},</if>
+            <if test="totalThisMonth != null">#{totalThisMonth},</if>
+            <if test="totalAllMonth != null">#{totalAllMonth},</if>
+            <if test="totalCollection != null">#{totalCollection},</if>
+            <if test="totalRemarks != null">#{totalRemarks},</if>
+            <if test="subLastMonth != null">#{subLastMonth},</if>
+            <if test="subThisMonth != null">#{subThisMonth},</if>
+            <if test="subAllMonth != null">#{subAllMonth},</if>
+            <if test="subPayment != null">#{subPayment},</if>
+            <if test="subRemarks != null">#{subRemarks},</if>
+            <if test="costProportion != null">#{costProportion},</if>
+            <if test="fillingDate != null">#{fillingDate},</if>
+            <if test="dataStatus != null">#{dataStatus},</if>
+            <if test="deptId != null">#{deptId},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateMgtProjectCostRecord" parameterType="MgtProjectCostRecord">
+        update mgt_project_cost_record
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="costId != null">cost_id = #{costId},</if>
+            <if test="projectId != null">project_id = #{projectId},</if>
+            <if test="budgetId != null">budget_id = #{budgetId},</if>
+            <if test="name != null">name = #{name},</if>
+            <if test="totalLastMonth != null">total_last_month = #{totalLastMonth},</if>
+            <if test="totalThisMonth != null">total_this_month = #{totalThisMonth},</if>
+            <if test="totalAllMonth != null">total_all_month = #{totalAllMonth},</if>
+            <if test="totalCollection != null">total_collection = #{totalCollection},</if>
+            <if test="totalRemarks != null">total_remarks = #{totalRemarks},</if>
+            <if test="subLastMonth != null">sub_last_month = #{subLastMonth},</if>
+            <if test="subThisMonth != null">sub_this_month = #{subThisMonth},</if>
+            <if test="subAllMonth != null">sub_all_month = #{subAllMonth},</if>
+            <if test="subPayment != null">sub_payment = #{subPayment},</if>
+            <if test="subRemarks != null">sub_remarks = #{subRemarks},</if>
+            <if test="costProportion != null">cost_proportion = #{costProportion},</if>
+            <if test="fillingDate != null">filling_date = #{fillingDate},</if>
+            <if test="dataStatus != null">data_status = #{dataStatus},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where record_id = #{recordId}
+    </update>
+
+    <delete id="deleteMgtProjectCostRecordByRecordId" parameterType="Long">
+        delete
+        from mgt_project_cost_record
+        where record_id = #{recordId}
+    </delete>
+
+    <delete id="deleteMgtProjectCostRecordByRecordIds" parameterType="String">
+        delete from mgt_project_cost_record where record_id in
+        <foreach item="recordId" collection="array" open="(" separator="," close=")">
+            #{recordId}
+        </foreach>
+    </delete>
+
+    <select id="selectProjectById" parameterType="Long" resultType="MgtProject">
+        SELECT *
+        FROM mgt_project
+        WHERE project_id = #{projectId}
+    </select>
+
+    <select id="selectMgtProjectBudget" parameterType="Long" resultType="MgtProjectBudget">
+        SELECT *
+        FROM mgt_project_budget
+        WHERE budget_id = #{budgetId}
+    </select>
+
+    <select id="selectMgtProjectCostRecordDetailed" resultType="MgtProjectCostRecordDetailed">
+        SELECT *
+        FROM mgt_project_cost_record_detailed
+        WHERE record_id = #{recordId}
+    </select>
+
+    <select id="getMinFillingDateByProjectId" resultType="Date">
+        SELECT MIN(filling_date) AS filling_date
+        FROM mgt_project_cost_record
+        WHERE project_id = #{projectId}
+    </select>
+
+
+</mapper>

@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.MgtProjectDailyReportMapper">
+
+    <resultMap type="MgtProjectDailyReport" id="MgtProjectDailyReportResult">
+        <result property="dailyId" column="daily_id"/>
+        <result property="projectId" column="project_id"/>
+        <result property="fillingDate" column="filling_date"/>
+        <result property="completedProjectContent" column="completed_project_content"/>
+        <result property="constructionPlan" column="construction_plan"/>
+        <result property="materialProgress" column="material_progress"/>
+        <result property="mechanicalProgress" column="mechanical_progress"/>
+        <result property="acceptanceProgress" column="acceptance_progress"/>
+        <result property="settlementProgress" column="settlement_progress"/>
+        <result property="returnProgress" column="return_progress"/>
+        <result property="problems" column="problems"/>
+        <result property="file" column="file"/>
+        <result property="dataStatus" column="data_status"/>
+        <result property="deptId" column="dept_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <association property="mgtProject" column="project_id" javaType="com.ruoyi.system.domain.MgtProject"
+                     select="selectProjectById"/>
+    </resultMap>
+
+    <resultMap type="MgtProject" id="MgtProjectResult">
+        <result property="projectId" column="project_id"/>
+        <result property="pid" column="pid"/>
+        <result property="projectName" column="project_name"/>
+        <result property="projectSn" column="project_sn"/>
+        <result property="projectLocation" column="project_location"/>
+        <result property="guaranteeDate" column="guarantee_date"/>
+        <result property="defectLiabilityDate" column="defect_liability_date"/>
+        <result property="paymentMethod" column="payment_method"/>
+        <result property="contractingCompany" column="contracting_company"/>
+        <result property="constructionCompany" column="construction_company"/>
+        <result property="surveyCompany" column="survey_company"/>
+        <result property="designCompany" column="design_company"/>
+        <result property="supervisionCompany" column="supervision_company"/>
+        <result property="contractingMode" column="contracting_mode"/>
+        <result property="settlementStatus" column="settlement_status"/>
+        <result property="commencementDate" column="commencement_date"/>
+        <result property="completionDate" column="completion_date"/>
+        <result property="status" column="status"/>
+        <result property="projectLeader" column="project_leader"/>
+        <result property="deptId" column="dept_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <sql id="selectMgtProjectDailyReportVo">
+        select a.daily_id,
+               a.project_id,
+               a.filling_date,
+               a.completed_project_content,
+               a.construction_plan,
+               a.material_progress,
+               a.mechanical_progress,
+               a.acceptance_progress,
+               a.settlement_progress,
+               a.return_progress,
+               a.problems,
+               a.file,
+               a.data_status,
+               a.dept_id,
+               a.user_id,
+               a.create_by,
+               a.create_time,
+               a.update_by,
+               a.update_time
+        from mgt_project_daily_report a
+                 LEFT JOIN mgt_project p ON a.project_id = p.project_id
+    </sql>
+
+    <select id="selectMgtProjectDailyReportList" parameterType="MgtProjectDailyReport"
+            resultMap="MgtProjectDailyReportResult">
+        <include refid="selectMgtProjectDailyReportVo"/>
+        <where>
+            <if test="projectId != null ">and a.project_id = #{projectId}</if>
+            <if test="fillingDate != null ">and a.filling_date = #{fillingDate}</if>
+            <if test="dataStatus != null  and dataStatus != ''">and a.data_status = #{dataStatus}</if>
+            <if test="createBy != null  and createBy != ''">and a.create_by = #{createBy}</if>
+            <if test="userId != null  and userId != ''">and a.user_id = #{userId}</if>
+            <if test="mgtProject != null and mgtProject.projectName != null and mgtProject.projectName != ''">
+                and p.project_name like concat('%', #{mgtProject.projectName}, '%')
+            </if>
+            <if test="mgtProject != null and mgtProject.projectSn != null and mgtProject.projectSn != ''">
+                and p.project_sn like concat('%', #{mgtProject.projectSn}, '%')
+            </if>
+            <!-- 数据范围过滤 -->
+            ${params.dataScope}
+        </where>
+        ORDER BY a.create_time DESC
+    </select>
+
+    <select id="selectMgtProjectDailyReportByDailyId" parameterType="Long" resultMap="MgtProjectDailyReportResult">
+        <include refid="selectMgtProjectDailyReportVo"/>
+        where a.daily_id = #{dailyId}
+    </select>
+
+    <select id="selectMgtProjectDailyReportByProjectId" parameterType="Long" resultMap="MgtProjectDailyReportResult">
+        <include refid="selectMgtProjectDailyReportVo"/>
+        where a.project_id = #{projectId}
+    </select>
+
+    <insert id="insertMgtProjectDailyReport" parameterType="MgtProjectDailyReport" useGeneratedKeys="true"
+            keyProperty="dailyId">
+        insert into mgt_project_daily_report
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="projectId != null">project_id,</if>
+            <if test="fillingDate != null">filling_date,</if>
+            <if test="completedProjectContent != null">completed_project_content,</if>
+            <if test="constructionPlan != null">construction_plan,</if>
+            <if test="materialProgress != null">material_progress,</if>
+            <if test="mechanicalProgress != null">mechanical_progress,</if>
+            <if test="acceptanceProgress != null">acceptance_progress,</if>
+            <if test="settlementProgress != null">settlement_progress,</if>
+            <if test="returnProgress != null">return_progress,</if>
+            <if test="problems != null">problems,</if>
+            <if test="file != null">file,</if>
+            <if test="dataStatus != null">data_status,</if>
+            <if test="deptId != null">dept_id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="projectId != null">#{projectId},</if>
+            <if test="fillingDate != null">#{fillingDate},</if>
+            <if test="completedProjectContent != null">#{completedProjectContent},</if>
+            <if test="constructionPlan != null">#{constructionPlan},</if>
+            <if test="materialProgress != null">#{materialProgress},</if>
+            <if test="mechanicalProgress != null">#{mechanicalProgress},</if>
+            <if test="acceptanceProgress != null">#{acceptanceProgress},</if>
+            <if test="settlementProgress != null">#{settlementProgress},</if>
+            <if test="returnProgress != null">#{returnProgress},</if>
+            <if test="problems != null">#{problems},</if>
+            <if test="file != null">#{file},</if>
+            <if test="dataStatus != null">#{dataStatus},</if>
+            <if test="deptId != null">#{deptId},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateMgtProjectDailyReport" parameterType="MgtProjectDailyReport">
+        update mgt_project_daily_report
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="projectId != null">project_id = #{projectId},</if>
+            <if test="fillingDate != null">filling_date = #{fillingDate},</if>
+            <if test="completedProjectContent != null">completed_project_content = #{completedProjectContent},</if>
+            <if test="constructionPlan != null">construction_plan = #{constructionPlan},</if>
+            <if test="materialProgress != null">material_progress = #{materialProgress},</if>
+            <if test="mechanicalProgress != null">mechanical_progress = #{mechanicalProgress},</if>
+            <if test="acceptanceProgress != null">acceptance_progress = #{acceptanceProgress},</if>
+            <if test="settlementProgress != null">settlement_progress = #{settlementProgress},</if>
+            <if test="returnProgress != null">return_progress = #{returnProgress},</if>
+            <if test="problems != null">problems = #{problems},</if>
+            <if test="file != null">file = #{file},</if>
+            <if test="dataStatus != null">data_status = #{dataStatus},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where daily_id = #{dailyId}
+    </update>
+
+    <delete id="deleteMgtProjectDailyReportByDailyId" parameterType="Long">
+        delete
+        from mgt_project_daily_report
+        where daily_id = #{dailyId}
+    </delete>
+
+    <delete id="deleteMgtProjectDailyReportByDailyIds" parameterType="String">
+        delete from mgt_project_daily_report where daily_id in
+        <foreach item="dailyId" collection="array" open="(" separator="," close=")">
+            #{dailyId}
+        </foreach>
+    </delete>
+
+    <select id="selectProjectById" parameterType="Long" resultType="com.ruoyi.system.domain.MgtProject"
+            resultMap="MgtProjectResult">
+        SELECT p.project_id,
+               p.pid,
+               p.project_name,
+               p.project_sn,
+               p.project_location,
+               p.guarantee_date,
+               p.defect_liability_date,
+               p.payment_method,
+               p.contracting_company,
+               p.construction_company,
+               p.survey_company,
+               p.design_company,
+               p.supervision_company,
+               p.contracting_mode,
+               p.settlement_status,
+               p.commencement_date,
+               p.completion_date,
+               p.status,
+               p.project_leader,
+               p.dept_id,
+               p.user_id,
+               p.create_by,
+               p.create_time,
+               p.update_by,
+               p.update_time
+        FROM mgt_project p
+        WHERE p.project_id = #{projectId}
+    </select>
+
+</mapper>

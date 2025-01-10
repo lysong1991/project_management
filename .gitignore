@@ -1,0 +1,66 @@
+# 操作系统相关文件
+.DS_Store
+Thumbs.db
+
+# 项目
+ruoyi/
+ruoyi-ui/
+uniapp/
+
+# IDE/编辑器文件
+.idea/
+.vscode/
+*.iml
+
+# SVN
+.svn/
+
+# 编译文件
+*.class
+*.jar
+*.war
+*.ear
+
+# 日志文件
+*.log
+
+# 临时文件
+*.tmp
+*.temp
+*.swp
+*.swo
+
+# 项目依赖
+node_modules/
+vendor/
+composer.lock
+package-lock.json
+yarn.lock
+
+# 缓存和上传文件
+cache/
+uploads/
+
+# 环境变量
+.env
+.env.local
+
+# PHP 相关文件
+*.php~
+phpunit.xml
+phpunit.xml.dist
+
+# Java 相关文件
+target/
+*.bat
+*.sh
+repository/
+
+# 前端构建输出
+dist/
+build/
+
+# ThinkPHP 相关
+runtime/
+public/runtime/
+public/uploads/

@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.MgtAcceptanceDetailedMapper">
+
+    <resultMap type="MgtAcceptanceDetailed" id="MgtAcceptanceDetailedResult">
+        <result property="detailedId" column="detailed_id"/>
+        <result property="acceptanceId" column="acceptance_id"/>
+        <result property="projectId" column="project_id"/>
+        <result property="projectName" column="project_name"/>
+        <result property="projectSn" column="project_sn"/>
+        <result property="materialName" column="material_name"/>
+        <result property="arrivalDate" column="arrival_date"/>
+        <result property="supplierName" column="supplier_name"/>
+        <result property="qualifiedStatus" column="qualified_status"/>
+        <result property="file" column="file"/>
+        <result property="deptId" column="dept_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <sql id="selectMgtAcceptanceDetailedVo">
+        select detailed_id,
+               acceptance_id,
+               project_id,
+               project_name,
+               project_sn,
+               material_name,
+               arrival_date,
+               supplier_name,
+               qualified_status,
+               file,
+               dept_id,
+               user_id,
+               create_by,
+               create_time,
+               update_by,
+               update_time
+        from mgt_acceptance_detailed
+    </sql>
+
+    <select id="selectMgtAcceptanceDetailedList" parameterType="MgtAcceptanceDetailed"
+            resultMap="MgtAcceptanceDetailedResult">
+        <include refid="selectMgtAcceptanceDetailedVo"/>
+        <where>
+            <if test="acceptanceId != null ">and acceptance_id = #{acceptanceId}</if>
+            <if test="projectId != null ">and project_id = #{projectId}</if>
+            <if test="projectName != null  and projectName != ''">and project_name like concat('%', #{projectName},
+                '%')
+            </if>
+            <if test="projectSn != null  and projectSn != ''">and project_sn = #{projectSn}</if>
+            <if test="materialName != null  and materialName != ''">and material_name like concat('%', #{materialName},
+                '%')
+            </if>
+            <if test="arrivalDate != null ">and arrival_date = #{arrivalDate}</if>
+            <if test="supplierName != null  and supplierName != ''">and supplier_name like concat('%', #{supplierName},
+                '%')
+            </if>
+            <if test="qualifiedStatus != null  and qualifiedStatus != ''">and qualified_status = #{qualifiedStatus}</if>
+            <if test="file != null  and file != ''">and file = #{file}</if>
+            <if test="deptId != null ">and dept_id = #{deptId}</if>
+            <if test="userId != null ">and user_id = #{userId}</if>
+        </where>
+        ORDER BY create_time DESC
+    </select>
+
+    <select id="selectMgtAcceptanceDetailedByDetailedId" parameterType="Long" resultMap="MgtAcceptanceDetailedResult">
+        <include refid="selectMgtAcceptanceDetailedVo"/>
+        where detailed_id = #{detailedId}
+    </select>
+
+    <insert id="insertMgtAcceptanceDetailed" parameterType="MgtAcceptanceDetailed" useGeneratedKeys="true"
+            keyProperty="detailedId">
+        insert into mgt_acceptance_detailed
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="acceptanceId != null">acceptance_id,</if>
+            <if test="projectId != null">project_id,</if>
+            <if test="projectName != null">project_name,</if>
+            <if test="projectSn != null">project_sn,</if>
+            <if test="materialName != null">material_name,</if>
+            <if test="arrivalDate != null">arrival_date,</if>
+            <if test="supplierName != null">supplier_name,</if>
+            <if test="qualifiedStatus != null">qualified_status,</if>
+            <if test="file != null">file,</if>
+            <if test="deptId != null">dept_id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="acceptanceId != null">#{acceptanceId},</if>
+            <if test="projectId != null">#{projectId},</if>
+            <if test="projectName != null">#{projectName},</if>
+            <if test="projectSn != null">#{projectSn},</if>
+            <if test="materialName != null">#{materialName},</if>
+            <if test="arrivalDate != null">#{arrivalDate},</if>
+            <if test="supplierName != null">#{supplierName},</if>
+            <if test="qualifiedStatus != null">#{qualifiedStatus},</if>
+            <if test="file != null">#{file},</if>
+            <if test="deptId != null">#{deptId},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateMgtAcceptanceDetailed" parameterType="MgtAcceptanceDetailed">
+        update mgt_acceptance_detailed
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="acceptanceId != null">acceptance_id = #{acceptanceId},</if>
+            <if test="projectId != null">project_id = #{projectId},</if>
+            <if test="projectName != null">project_name = #{projectName},</if>
+            <if test="projectSn != null">project_sn = #{projectSn},</if>
+            <if test="materialName != null">material_name = #{materialName},</if>
+            <if test="arrivalDate != null">arrival_date = #{arrivalDate},</if>
+            <if test="supplierName != null">supplier_name = #{supplierName},</if>
+            <if test="qualifiedStatus != null">qualified_status = #{qualifiedStatus},</if>
+            <if test="file != null">file = #{file},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where detailed_id = #{detailedId}
+    </update>
+
+    <delete id="deleteMgtAcceptanceDetailedByDetailedId" parameterType="Long">
+        delete
+        from mgt_acceptance_detailed
+        where detailed_id = #{detailedId}
+    </delete>
+
+    <delete id="deleteMgtAcceptanceDetailedByDetailedIds" parameterType="String">
+        delete from mgt_acceptance_detailed where detailed_id in
+        <foreach item="detailedId" collection="array" open="(" separator="," close=")">
+            #{detailedId}
+        </foreach>
+    </delete>
+</mapper>

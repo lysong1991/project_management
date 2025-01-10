@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.AttendanceMangerRecordMapper">
+
+    <resultMap type="AttendanceMangerRecord" id="AttendanceMangerRecordResult">
+        <result property="id" column="id"/>
+        <result property="attendanceMangerId" column="attendance_manger_id"/>
+        <result property="attendanceId" column="attendance_id"/>
+        <result property="projectId" column="project_id"/>
+        <result property="projectName" column="project_name"/>
+        <result property="leaderId" column="leader_id"/>
+        <result property="leaderName" column="leader_name"/>
+        <result property="workerName" column="worker_name"/>
+        <result property="workerPhone" column="worker_phone"/>
+        <result property="workerNo" column="worker_no"/>
+        <result property="attendanceDate" column="attendance_date"/>
+        <result property="createTime" column="create_time"/>
+        <result property="userId" column="user_id"/>
+        <result property="deptId" column="dept_id"/>
+    </resultMap>
+
+    <sql id="selectAttendanceMangerRecordVo">
+        select id,
+               attendance_manger_id,
+               attendance_id,
+               project_id,
+               project_name,
+               leader_id,
+               leader_name,
+               worker_name,
+               worker_phone,
+               worker_no,
+               attendance_date,
+               create_time,
+               user_id,
+               dept_id
+        from attendance_manger_record
+    </sql>
+
+    <select id="selectAttendanceMangerRecordList" parameterType="AttendanceMangerRecord"
+            resultMap="AttendanceMangerRecordResult">
+        <include refid="selectAttendanceMangerRecordVo"/>
+        <where>
+            <if test="attendanceMangerId != null ">and attendance_manger_id = #{attendanceMangerId}</if>
+            <if test="attendanceId != null ">and attendance_id = #{attendanceId}</if>
+            <if test="projectId != null ">and project_id = #{projectId}</if>
+            <if test="projectName != null  and projectName != ''">and project_name like concat('%', #{projectName},
+                '%')
+            </if>
+            <if test="leaderId != null ">and leader_id = #{leaderId}</if>
+            <if test="leaderName != null  and leaderName != ''">and leader_name like concat('%', #{leaderName}, '%')
+            </if>
+            <if test="workerName != null  and workerName != ''">and worker_name like concat('%', #{workerName}, '%')
+            </if>
+            <if test="workerPhone != null  and workerPhone != ''">and worker_phone = #{workerPhone}</if>
+            <if test="workerNo != null  and workerNo != ''">and worker_no = #{workerNo}</if>
+            <if test="attendanceDate != null ">and attendance_date = #{attendanceDate}</if>
+            <if test="userId != null ">and user_id = #{userId}</if>
+            <if test="deptId != null ">and dept_id = #{deptId}</if>
+        </where>
+    </select>
+
+    <select id="selectAttendanceMangerRecordById" parameterType="Long" resultMap="AttendanceMangerRecordResult">
+        <include refid="selectAttendanceMangerRecordVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertAttendanceMangerRecord" parameterType="AttendanceMangerRecord" useGeneratedKeys="true"
+            keyProperty="id">
+        insert into attendance_manger_record
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="attendanceMangerId != null">attendance_manger_id,</if>
+            <if test="attendanceId != null">attendance_id,</if>
+            <if test="projectId != null">project_id,</if>
+            <if test="projectName != null">project_name,</if>
+            <if test="leaderId != null">leader_id,</if>
+            <if test="leaderName != null">leader_name,</if>
+            <if test="workerName != null">worker_name,</if>
+            <if test="workerPhone != null">worker_phone,</if>
+            <if test="workerNo != null">worker_no,</if>
+            <if test="attendanceDate != null">attendance_date,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="deptId != null">dept_id,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="attendanceMangerId != null">#{attendanceMangerId},</if>
+            <if test="attendanceId != null">#{attendanceId},</if>
+            <if test="projectId != null">#{projectId},</if>
+            <if test="projectName != null">#{projectName},</if>
+            <if test="leaderId != null">#{leaderId},</if>
+            <if test="leaderName != null">#{leaderName},</if>
+            <if test="workerName != null">#{workerName},</if>
+            <if test="workerPhone != null">#{workerPhone},</if>
+            <if test="workerNo != null">#{workerNo},</if>
+            <if test="attendanceDate != null">#{attendanceDate},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="deptId != null">#{deptId},</if>
+        </trim>
+    </insert>
+
+    <update id="updateAttendanceMangerRecord" parameterType="AttendanceMangerRecord">
+        update attendance_manger_record
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="attendanceMangerId != null">attendance_manger_id = #{attendanceMangerId},</if>
+            <if test="attendanceId != null">attendance_id = #{attendanceId},</if>
+            <if test="projectId != null">project_id = #{projectId},</if>
+            <if test="projectName != null">project_name = #{projectName},</if>
+            <if test="leaderId != null">leader_id = #{leaderId},</if>
+            <if test="leaderName != null">leader_name = #{leaderName},</if>
+            <if test="workerName != null">worker_name = #{workerName},</if>
+            <if test="workerPhone != null">worker_phone = #{workerPhone},</if>
+            <if test="workerNo != null">worker_no = #{workerNo},</if>
+            <if test="attendanceDate != null">attendance_date = #{attendanceDate},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteAttendanceMangerRecordById" parameterType="Long">
+        delete
+        from attendance_manger_record
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteAttendanceMangerRecordByAttendanceMangerId" parameterType="Long">
+        delete
+        from attendance_manger_record
+        where attendance_manger_id = #{id}
+    </delete>
+
+    <delete id="deleteAttendanceMangerRecordByIds" parameterType="String">
+        delete from attendance_manger_record where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

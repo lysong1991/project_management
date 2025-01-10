@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.MgtProjectCostMapper">
+
+    <resultMap type="MgtProjectCost" id="MgtProjectCostResult">
+        <result property="costId" column="cost_id"/>
+        <result property="projectId" column="project_id"/>
+        <result property="totalLastMonth" column="total_last_month"/>
+        <result property="totalThisMonth" column="total_this_month"/>
+        <result property="totalAllMonth" column="total_all_month"/>
+        <result property="totalCollection" column="total_collection"/>
+        <result property="subLastMonth" column="sub_last_month"/>
+        <result property="subThisMonth" column="sub_this_month"/>
+        <result property="subAllMonth" column="sub_all_month"/>
+        <result property="subPayment" column="sub_payment"/>
+        <result property="profit" column="profit"/>
+        <result property="profitMargin" column="profit_margin"/>
+        <result property="fillingDate" column="filling_date"/>
+        <result property="remarks" column="remarks"/>
+        <result property="type" column="type"/>
+        <result property="dataStatus" column="data_status"/>
+        <result property="deptId" column="dept_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <association property="mgtProject" column="project_id" javaType="MgtProject"
+                     select="selectProjectById"/>
+    </resultMap>
+
+    <sql id="selectMgtProjectCostVo">
+        select a.cost_id,
+               a.project_id,
+               a.total_last_month,
+               a.total_this_month,
+               a.total_all_month,
+               a.total_collection,
+               a.sub_last_month,
+               a.sub_this_month,
+               a.sub_all_month,
+               a.sub_payment,
+               a.profit,
+               a.profit_margin,
+               a.filling_date,
+               a.remarks,
+               a.type,
+               a.data_status,
+               a.dept_id,
+               a.user_id,
+               a.create_by,
+               a.create_time,
+               a.update_by,
+               a.update_time
+        from mgt_project_cost a
+                 LEFT JOIN mgt_project p ON a.project_id = p.project_id
+    </sql>
+
+    <select id="selectMgtProjectCostList" parameterType="MgtProjectCost" resultMap="MgtProjectCostResult">
+        <include refid="selectMgtProjectCostVo"/>
+        <where>
+            <if test="projectId != null ">and a.project_id = #{projectId}</if>
+            <if test="type != null  and type != ''">and a.type = #{type}</if>
+            <if test="mgtProject != null and mgtProject.projectName != null and mgtProject.projectName != ''">
+                and p.project_name like concat('%', #{mgtProject.projectName}, '%')
+            </if>
+            <if test="mgtProject != null and mgtProject.projectSn != null and mgtProject.projectSn != ''">
+                and p.project_sn like concat('%', #{mgtProject.projectSn}, '%')
+            </if>
+            <!-- 数据范围过滤 -->
+            ${params.dataScope}
+        </where>
+        ORDER BY a.create_time DESC
+    </select>
+
+    <select id="selectMgtProjectCostByCostId" parameterType="Long" resultMap="MgtProjectCostResult">
+        <include refid="selectMgtProjectCostVo"/>
+        where a.cost_id = #{costId}
+    </select>
+
+    <select id="selectMgtProjectCostByProjectId" parameterType="Long" resultMap="MgtProjectCostResult">
+        <include refid="selectMgtProjectCostVo"/>
+        where a.project_id = #{projectId}
+    </select>
+
+    <insert id="insertMgtProjectCost" parameterType="MgtProjectCost" useGeneratedKeys="true" keyProperty="costId">
+        insert into mgt_project_cost
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="projectId != null">project_id,</if>
+            <if test="totalLastMonth != null">total_last_month,</if>
+            <if test="totalThisMonth != null">total_this_month,</if>
+            <if test="totalAllMonth != null">total_all_month,</if>
+            <if test="totalCollection != null">total_collection,</if>
+            <if test="subLastMonth != null">sub_last_month,</if>
+            <if test="subThisMonth != null">sub_this_month,</if>
+            <if test="subAllMonth != null">sub_all_month,</if>
+            <if test="subPayment != null">sub_payment,</if>
+            <if test="profit != null">profit,</if>
+            <if test="profitMargin != null">profit_margin,</if>
+            <if test="fillingDate != null">filling_date,</if>
+            <if test="remarks != null">remarks,</if>
+            <if test="type != null and type != ''">type,</if>
+            <if test="dataStatus != null">data_status,</if>
+            <if test="deptId != null">dept_id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="projectId != null">#{projectId},</if>
+            <if test="totalLastMonth != null">#{totalLastMonth},</if>
+            <if test="totalThisMonth != null">#{totalThisMonth},</if>
+            <if test="totalAllMonth != null">#{totalAllMonth},</if>
+            <if test="totalCollection != null">#{totalCollection},</if>
+            <if test="subLastMonth != null">#{subLastMonth},</if>
+            <if test="subThisMonth != null">#{subThisMonth},</if>
+            <if test="subAllMonth != null">#{subAllMonth},</if>
+            <if test="subPayment != null">#{subPayment},</if>
+            <if test="profit != null">#{profit},</if>
+            <if test="profitMargin != null">#{profitMargin},</if>
+            <if test="fillingDate != null">#{fillingDate},</if>
+            <if test="remarks != null">#{remarks},</if>
+            <if test="type != null and type != ''">#{type},</if>
+            <if test="dataStatus != null">#{dataStatus},</if>
+            <if test="deptId != null">#{deptId},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateMgtProjectCost" parameterType="MgtProjectCost">
+        update mgt_project_cost
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="projectId != null">project_id = #{projectId},</if>
+            <if test="totalLastMonth != null">total_last_month = #{totalLastMonth},</if>
+            <if test="totalThisMonth != null">total_this_month = #{totalThisMonth},</if>
+            <if test="totalAllMonth != null">total_all_month = #{totalAllMonth},</if>
+            <if test="totalCollection != null">total_collection = #{totalCollection},</if>
+            <if test="subLastMonth != null">sub_last_month = #{subLastMonth},</if>
+            <if test="subThisMonth != null">sub_this_month = #{subThisMonth},</if>
+            <if test="subAllMonth != null">sub_all_month = #{subAllMonth},</if>
+            <if test="subPayment != null">sub_payment = #{subPayment},</if>
+            <if test="profit != null">profit = #{profit},</if>
+            <if test="profitMargin != null">profit_margin = #{profitMargin},</if>
+            <if test="fillingDate != null">filling_date = #{fillingDate},</if>
+            <if test="remarks != null">remarks = #{remarks},</if>
+            <if test="type != null and type != ''">type = #{type},</if>
+            <if test="dataStatus != null">data_status = #{dataStatus},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where cost_id = #{costId}
+    </update>
+
+    <delete id="deleteMgtProjectCostByCostId" parameterType="Long">
+        delete
+        from mgt_project_cost
+        where cost_id = #{costId}
+    </delete>
+
+    <delete id="deleteMgtProjectCostByCostIds" parameterType="String">
+        delete from mgt_project_cost where cost_id in
+        <foreach item="costId" collection="array" open="(" separator="," close=")">
+            #{costId}
+        </foreach>
+    </delete>
+
+    <select id="selectProjectById" parameterType="Long" resultType="MgtProject">
+        SELECT p.*
+        FROM mgt_project p
+        WHERE p.project_id = #{projectId}
+    </select>
+</mapper>

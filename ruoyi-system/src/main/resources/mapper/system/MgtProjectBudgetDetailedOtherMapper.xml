@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.MgtProjectBudgetDetailedOtherMapper">
+
+    <resultMap type="MgtProjectBudgetDetailedOther" id="MgtProjectBudgetDetailedOtherResult">
+        <result property="otherId" column="other_id"/>
+        <result property="projectId" column="project_id"/>
+        <result property="recordId" column="record_id"/>
+        <result property="budgetId" column="budget_id"/>
+        <result property="detailedId" column="detailed_id"/>
+        <result property="code" column="code"/>
+        <result property="name" column="name"/>
+        <result property="detailedName" column="detailed_name"/>
+        <result property="detailedUnit" column="detailed_unit"/>
+        <result property="zbTotalPrice" column="zb_total_price"/>
+        <result property="zrTotalPrice" column="zr_total_price"/>
+        <result property="mbTotalPrice" column="mb_total_price"/>
+        <result property="otherType" column="other_type"/>
+        <result property="dataType" column="data_type"/>
+    </resultMap>
+
+    <resultMap id="MgtProjectBudgetDetailedVoResult" type="MgtProjectBudgetDetailedVo">
+        <result property="otherDetailedId" column="other_id"/>
+        <result property="projectId" column="project_id"/>
+        <result property="budgetId" column="budget_id"/>
+        <result property="detailedId" column="detailed_id"/>
+        <result property="code" column="code"/>
+        <result property="name" column="name"/>
+        <result property="otherName" column="detailed_name"/>
+        <result property="otherUnit" column="detailed_unit"/>
+        <result property="zbTotalPrice" column="zb_total_price"/>
+        <result property="zrTotalPrice" column="zr_total_price"/>
+        <result property="mbTotalPrice" column="mb_total_price"/>
+    </resultMap>
+
+    <sql id="selectMgtProjectBudgetDetailedOtherVo">
+        select a.*
+        from mgt_project_budget_detailed_other a
+    </sql>
+
+    <select id="selectMgtProjectBudgetDetailedOtherList" parameterType="MgtProjectBudgetDetailedOther"
+            resultMap="MgtProjectBudgetDetailedOtherResult">
+        <include refid="selectMgtProjectBudgetDetailedOtherVo"/>
+        <where>
+            <if test="projectId != null ">and a.project_id = #{projectId}</if>
+            <if test="budgetId != null ">and a.budget_id = #{budgetId}</if>
+            <if test="recordId != null ">and a.record_id = #{recordId}</if>
+            <if test="detailedName != null  and detailedName != ''">and a.detailed_name like concat('%',
+                #{detailedName},
+                '%')
+            </if>
+        </where>
+    </select>
+
+    <select id="selectMgtProjectBudgetDetailedOtherByOtherId" parameterType="Long"
+            resultMap="MgtProjectBudgetDetailedOtherResult">
+        <include refid="selectMgtProjectBudgetDetailedOtherVo"/>
+        where a.other_id = #{otherId}
+    </select>
+
+    <select id="selectMgtProjectBudgetDetailedOtherByDetailedId" parameterType="Long"
+            resultMap="MgtProjectBudgetDetailedOtherResult">
+        <include refid="selectMgtProjectBudgetDetailedOtherVo"/>
+        where a.detailed_id = #{detailedId}
+    </select>
+
+    <select id="selectMgtProjectBudgetDetailedVoList" parameterType="MgtProjectBudgetDetailed"
+            resultMap="MgtProjectBudgetDetailedVoResult">
+        select a.other_id,
+        a.project_id,
+        a.budget_id,
+        a.detailed_id,
+        a.code,
+        a.name,
+        a.detailed_name,
+        a.zb_total_price,
+        a.zr_total_price,
+        a.mb_total_price,
+        a.other_type,
+        a.data_type
+        from mgt_project_budget_detailed_other a
+        <where>
+            <if test="otherIds != null and otherIds.size() > 0">and a.other_id in
+                <foreach item="id" index="index" collection="otherIds" open="(" separator="," close=")">
+                    #{id}
+                </foreach>
+            </if>
+        </where>
+    </select>
+
+    <insert id="insertMgtProjectBudgetDetailedOther" parameterType="MgtProjectBudgetDetailedOther"
+            useGeneratedKeys="true" keyProperty="otherId">
+        insert into mgt_project_budget_detailed_other
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="projectId != null">project_id,</if>
+            <if test="recordId != null">record_id,</if>
+            <if test="budgetId != null">budget_id,</if>
+            <if test="detailedId != null">detailed_id,</if>
+            <if test="code != null">code,</if>
+            <if test="name != null">name,</if>
+            <if test="detailedName != null">detailed_name,</if>
+            <if test="detailedUnit != null">detailed_unit,</if>
+            <if test="zbTotalPrice != null">zb_total_price,</if>
+            <if test="zrTotalPrice != null">zr_total_price,</if>
+            <if test="mbTotalPrice != null">mb_total_price,</if>
+            <if test="otherType != null">other_type,</if>
+            <if test="dataType != null">data_type,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="projectId != null">#{projectId},</if>
+            <if test="recordId != null">#{recordId},</if>
+            <if test="budgetId != null">#{budgetId},</if>
+            <if test="detailedId != null">#{detailedId},</if>
+            <if test="code != null">#{code},</if>
+            <if test="name != null">#{name},</if>
+            <if test="detailedName != null">#{detailedName},</if>
+            <if test="detailedUnit != null">#{detailedUnit},</if>
+            <if test="zbTotalPrice != null">#{zbTotalPrice},</if>
+            <if test="zrTotalPrice != null">#{zrTotalPrice},</if>
+            <if test="mbTotalPrice != null">#{mbTotalPrice},</if>
+            <if test="otherType != null">#{otherType},</if>
+            <if test="dataType != null">#{dataType},</if>
+        </trim>
+    </insert>
+
+    <update id="updateMgtProjectBudgetDetailedOther" parameterType="MgtProjectBudgetDetailedOther">
+        update mgt_project_budget_detailed_other
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="projectId != null">project_id = #{projectId},</if>
+            <if test="recordId != null">record_id = #{recordId},</if>
+            <if test="budgetId != null">budget_id = #{budgetId},</if>
+            <if test="detailedId != null">detailed_id = #{detailedId},</if>
+            <if test="code != null">code = #{code},</if>
+            <if test="name != null">name = #{name},</if>
+            <if test="detailedName != null">detailed_name = #{detailedName},</if>
+            <if test="detailedUnit != null">detailed_unit = #{detailedUnit},</if>
+            <if test="zbTotalPrice != null">zb_total_price = #{zbTotalPrice},</if>
+            <if test="zrTotalPrice != null">zr_total_price = #{zrTotalPrice},</if>
+            <if test="mbTotalPrice != null">mb_total_price = #{mbTotalPrice},</if>
+            <if test="otherType != null">other_type = #{otherType},</if>
+            <if test="dataType != null">data_type = #{dataType},</if>
+        </trim>
+        where other_id = #{otherId}
+    </update>
+
+    <delete id="deleteMgtProjectBudgetDetailedOtherByOtherId" parameterType="Long">
+        delete
+        from mgt_project_budget_detailed_other
+        where other_id = #{otherId}
+    </delete>
+
+    <delete id="deleteMgtProjectBudgetDetailedOtherByBudgetId" parameterType="Long">
+        delete
+        from mgt_project_budget_detailed_other
+        where budget_id = #{budgetId}
+    </delete>
+
+    <delete id="deleteMgtProjectBudgetDetailedOtherByOtherIds" parameterType="String">
+        delete from mgt_project_budget_detailed_other where other_id in
+        <foreach item="otherId" collection="array" open="(" separator="," close=")">
+            #{otherId}
+        </foreach>
+    </delete>
+
+    <delete id="deleteMgtProjectBudgetDetailedOtherByDetailedIds" parameterType="String">
+        delete from mgt_project_budget_detailed_other where detailed_id in
+        <foreach item="detailedId" collection="array" open="(" separator="," close=")">
+            #{detailedId}
+        </foreach>
+    </delete>
+</mapper>

@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.MgtProjectBudgetRecordMapper">
+
+    <resultMap type="MgtProjectBudgetRecord" id="MgtProjectBudgetRecordResult">
+        <result property="recordId" column="record_id"/>
+        <result property="projectId" column="project_id"/>
+        <result property="zbTotalPrice" column="zb_total_price"/>
+        <result property="zrTotalPrice" column="zr_total_price"/>
+        <result property="mbTotalPrice" column="mb_total_price"/>
+        <result property="deptId" column="dept_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <association property="mgtProject" column="project_id" javaType="MgtProject"
+                     select="selectProject"/>
+    </resultMap>
+
+    <sql id="selectMgtProjectBudgetRecordVo">
+        select DISTINCT a.record_id,
+                        a.project_id,
+                        a.zb_total_price,
+                        a.zr_total_price,
+                        a.mb_total_price,
+                        a.dept_id,
+                        a.user_id,
+                        a.create_by,
+                        a.create_time,
+                        a.update_by,
+                        a.update_time
+        from mgt_project_budget_record a
+                 left join mgt_project p on p.project_id = a.project_id
+    </sql>
+
+    <select id="selectMgtProjectBudgetRecordList" parameterType="MgtProjectBudgetRecordQueryVo"
+            resultMap="MgtProjectBudgetRecordResult">
+        <include refid="selectMgtProjectBudgetRecordVo"/>
+        <choose>
+            <when test="dataStatusZb != null or dataStatusZr != null or dataStatusMb != null">
+                left join mgt_project_budget b on b.record_id = a.record_id
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        <where>
+            <if test="projectId != null ">and a.project_id = #{projectId}</if>
+            <if test="dataStatusZb != null  and dataStatusZb != ''">and b.data_status_zb = #{dataStatusZb}</if>
+            <if test="dataStatusZr != null  and dataStatusZr != ''">and b.data_status_zr = #{dataStatusZr}</if>
+            <if test="dataStatusMb != null  and dataStatusMb != ''">and b.data_status_mb = #{dataStatusMb}</if>
+            <if test="mgtProject != null and mgtProject.projectName != null and mgtProject.projectName != ''">
+                and p.project_name like concat('%', #{mgtProject.projectName},'%')
+            </if>
+            <if test="mgtProject != null and mgtProject.projectSn != null and mgtProject.projectSn != ''">
+                and p.project_sn like concat('%', #{mgtProject.projectSn},'%')
+            </if>
+            <!-- 数据范围过滤 -->
+            ${params.dataScope}
+        </where>
+        ORDER BY a.create_time DESC
+    </select>
+
+    <select id="selectMgtProjectBudgetRecordByRecordId" parameterType="Long" resultMap="MgtProjectBudgetRecordResult">
+        <include refid="selectMgtProjectBudgetRecordVo"/>
+        where a.record_id = #{recordId}
+    </select>
+
+    <insert id="insertMgtProjectBudgetRecord" parameterType="MgtProjectBudgetRecord" useGeneratedKeys="true"
+            keyProperty="recordId">
+        insert into mgt_project_budget_record
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="projectId != null">project_id,</if>
+            <if test="zbTotalPrice != null">zb_total_price,</if>
+            <if test="zrTotalPrice != null">zr_total_price,</if>
+            <if test="mbTotalPrice != null">mb_total_price,</if>
+            <if test="deptId != null">dept_id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="projectId != null">#{projectId},</if>
+            <if test="zbTotalPrice != null">#{zbTotalPrice},</if>
+            <if test="zrTotalPrice != null">#{zrTotalPrice},</if>
+            <if test="mbTotalPrice != null">#{mbTotalPrice},</if>
+            <if test="deptId != null">#{deptId},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateMgtProjectBudgetRecord" parameterType="MgtProjectBudgetRecord">
+        update mgt_project_budget_record
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="projectId != null">project_id = #{projectId},</if>
+            <if test="zbTotalPrice != null">zb_total_price = #{zbTotalPrice},</if>
+            <if test="zrTotalPrice != null">zr_total_price = #{zrTotalPrice},</if>
+            <if test="mbTotalPrice != null">mb_total_price = #{mbTotalPrice},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where record_id = #{recordId}
+    </update>
+
+    <delete id="deleteMgtProjectBudgetRecordByRecordId" parameterType="Long">
+        delete
+        from mgt_project_budget_record
+        where record_id = #{recordId}
+    </delete>
+
+    <delete id="deleteMgtProjectBudgetRecordByRecordIds" parameterType="String">
+        delete from mgt_project_budget_record where record_id in
+        <foreach item="recordId" collection="array" open="(" separator="," close=")">
+            #{recordId}
+        </foreach>
+    </delete>
+
+    <select id="selectMgtProjectBudgetRecordByProjectId" parameterType="Long" resultMap="MgtProjectBudgetRecordResult">
+        <include refid="selectMgtProjectBudgetRecordVo"/>
+        where a.project_id = #{projectId}
+    </select>
+
+    <select id="selectProject" parameterType="Long" resultType="MgtProject">
+        SELECT *
+        FROM mgt_project
+        WHERE project_id = #{projectId}
+    </select>
+
+</mapper>

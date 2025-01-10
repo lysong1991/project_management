@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.SelfCheckingCpMapper">
+
+    <resultMap type="SelfCheckingCp" id="SelfCheckingCpResult">
+        <result property="id" column="id"/>
+        <result property="code" column="code"/>
+        <result property="projectId" column="project_id"/>
+        <result property="projectName" column="project_name"/>
+        <result property="projectAddress" column="project_address"/>
+        <result property="projectMode" column="project_mode"/>
+        <result property="projectStatus" column="project_status"/>
+        <result property="leaderDeptid" column="leader_deptid"/>
+        <result property="leaderDept" column="leader_dept"/>
+        <result property="leaderId" column="leader_id"/>
+        <result property="leader" column="leader"/>
+        <result property="uploadDate" column="upload_date"/>
+        <result property="repoter" column="repoter"/>
+        <result property="createTime" column="create_time"/>
+        <result property="changeStatus" column="change_status"/>
+        <result property="deptId" column="dept_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="total" column="total"/>
+        <result property="initFailed" column="init_failed"/>
+        <result property="now" column="now"/>
+        <result property="failed" column="failed"/>
+        <result property="pass" column="pass"/>
+        <result property="changeDate" column="change_date"/>
+        <result property="endTime" column="end_time"/>
+        <result property="type" column="type"/>
+    </resultMap>
+
+    <sql id="selectSelfCheckingCpVo">
+        select d.id,
+               d.code,
+               d.project_id,
+               d.project_name,
+               d.project_address,
+               d.project_mode,
+               d.project_status,
+               d.leader_deptid,
+               d.leader_dept,
+               d.leader_id,
+               d.leader,
+               d.upload_date,
+               d.repoter,
+               d.create_time,
+               d.change_status,
+               d.dept_id,
+               d.user_id,
+               d.init_failed,
+               d.total,
+               d.now,
+               d.failed,
+               d.pass,
+               d.change_date,
+               d.end_time,
+               d.type
+        from self_checking_cp d
+                 LEFT JOIN mgt_project p ON p.project_id = d.project_id
+    </sql>
+
+    <select id="selectSelfCheckingCpList" parameterType="SelfCheckingCp" resultMap="SelfCheckingCpResult">
+        <include refid="selectSelfCheckingCpVo"/>
+        <where>
+            <if test="id != null ">and d.id = #{id}</if>
+            <if test="projectId != null ">and d.project_id = #{projectId}</if>
+            <if test="endTime != null ">and d.end_time = #{endTime}</if>
+            <if test="code != null  and code != ''">and d.code like concat('%',#{code},'%')</if>
+            <if test="projectName != null  and projectName != ''">and p.project_name like concat('%',
+                #{projectName},'%')
+            </if>
+            <choose>
+                <when test="changeStatus == 'finish'">
+                    and d.change_status = '整改完成'
+                </when>
+                <when test="changeStatus != null and changeStatus != '' and changeStatus != 'status' and changeStatus != 'finish'">
+                    and d.change_status = #{changeStatus}
+                </when>
+                <otherwise>
+                    <if test="changeStatus == 'status'">
+                        and (d.change_status = '待整改' OR d.change_status = '整改中')
+                    </if>
+                </otherwise>
+            </choose>
+        </where>
+        ORDER BY d.create_time DESC
+    </select>
+
+    <select id="selectSelfCheckingCpById" parameterType="Long" resultMap="SelfCheckingCpResult">
+        <include refid="selectSelfCheckingCpVo"/>
+        where d.id = #{id}
+    </select>
+
+    <insert id="insertSelfCheckingCp" parameterType="SelfCheckingCp" useGeneratedKeys="true" keyProperty="id">
+        insert into self_checking_cp
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="code != null">code,</if>
+            <if test="projectId != null">project_id,</if>
+            <if test="projectName != null">project_name,</if>
+            <if test="projectAddress != null">project_address,</if>
+            <if test="projectMode != null">project_mode,</if>
+            <if test="projectStatus != null">project_status,</if>
+            <if test="leaderDeptid != null">leader_deptid,</if>
+            <if test="leaderDept != null">leader_dept,</if>
+            <if test="leaderId != null">leader_id,</if>
+            <if test="leader != null">leader,</if>
+            <if test="uploadDate != null">upload_date,</if>
+            <if test="repoter != null">repoter,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="changeStatus != null">change_status,</if>
+            <if test="deptId != null">dept_id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="initFailed != null">init_failed,</if>
+            <if test="total != null">total,</if>
+            <if test="now != null">now,</if>
+            <if test="failed != null">failed,</if>
+            <if test="pass != null">pass,</if>
+            <if test="changeDate != null">change_date,</if>
+            <if test="endTime != null">end_time,</if>
+            <if test="type != null">type,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="code != null">#{code},</if>
+            <if test="projectId != null">#{projectId},</if>
+            <if test="projectName != null">#{projectName},</if>
+            <if test="projectAddress != null">#{projectAddress},</if>
+            <if test="projectMode != null">#{projectMode},</if>
+            <if test="projectStatus != null">#{projectStatus},</if>
+            <if test="leaderDeptid != null">#{leaderDeptid},</if>
+            <if test="leaderDept != null">#{leaderDept},</if>
+            <if test="leaderId != null">#{leaderId},</if>
+            <if test="leader != null">#{leader},</if>
+            <if test="uploadDate != null">#{uploadDate},</if>
+            <if test="repoter != null">#{repoter},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="changeStatus != null">#{changeStatus},</if>
+            <if test="deptId != null">#{deptId},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="initFailed != null">#{initFailed},</if>
+            <if test="total != null">#{total},</if>
+            <if test="now != null">#{now},</if>
+            <if test="failed != null">#{failed},</if>
+            <if test="pass != null">#{pass},</if>
+            <if test="changeDate != null">#{changeDate},</if>
+            <if test="endTime != null">#{endTime},</if>
+            <if test="type != null">#{type},</if>
+        </trim>
+    </insert>
+
+    <update id="updateSelfCheckingCp" parameterType="SelfCheckingCp">
+        update self_checking_cp
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="code != null">code = #{code},</if>
+            <if test="projectId != null">project_id = #{projectId},</if>
+            <if test="projectName != null">project_name = #{projectName},</if>
+            <if test="projectAddress != null">project_address = #{projectAddress},</if>
+            <if test="projectMode != null">project_mode = #{projectMode},</if>
+            <if test="projectStatus != null">project_status = #{projectStatus},</if>
+            <if test="leaderDeptid != null">leader_deptid = #{leaderDeptid},</if>
+            <if test="leaderDept != null">leader_dept = #{leaderDept},</if>
+            <if test="leaderId != null">leader_id = #{leaderId},</if>
+            <if test="leader != null">leader = #{leader},</if>
+            <if test="uploadDate != null">upload_date = #{uploadDate},</if>
+            <if test="repoter != null">repoter = #{repoter},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="changeStatus != null">change_status = #{changeStatus},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="initFailed != null">init_failed = #{initFailed},</if>
+            <if test="total != null">total = #{total},</if>
+            <if test="now != null">now = #{now},</if>
+            <if test="failed != null">failed = #{failed},</if>
+            <if test="pass != null">pass = #{pass},</if>
+            <if test="changeDate != null">change_date = #{changeDate},</if>
+            <if test="endTime != null">end_time = #{endTime},</if>
+            <if test="type != null">type = #{type},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSelfCheckingCpById" parameterType="Long">
+        delete
+        from self_checking_cp
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteSelfCheckingCpByIds" parameterType="String">
+        delete from self_checking_cp where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

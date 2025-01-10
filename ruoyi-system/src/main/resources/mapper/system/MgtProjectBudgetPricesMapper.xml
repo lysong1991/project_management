@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.MgtProjectBudgetPricesMapper">
+
+    <resultMap type="MgtProjectBudgetPrices" id="MgtProjectBudgetPricesResult">
+        <result property="priceId" column="price_id"/>
+        <result property="projectId" column="project_id"/>
+        <result property="recordId" column="record_id"/>
+        <result property="budgetId" column="budget_id"/>
+        <result property="detailedId" column="detailed_id"/>
+        <result property="priceType" column="price_type"/>
+        <result property="unitPrice" column="unit_price"/>
+        <result property="totalPrice" column="total_price"/>
+        <result property="artificial" column="artificial"/>
+        <result property="materials" column="materials"/>
+        <result property="mechanics" column="mechanics"/>
+        <result property="management" column="management"/>
+        <result property="profit" column="profit"/>
+        <result property="detailedType" column="detailed_type"/>
+    </resultMap>
+
+    <sql id="selectMgtProjectBudgetPricesVo">
+        select *
+        from mgt_project_budget_prices
+    </sql>
+
+    <select id="selectMgtProjectBudgetPricesList" parameterType="MgtProjectBudgetPrices"
+            resultMap="MgtProjectBudgetPricesResult">
+        <include refid="selectMgtProjectBudgetPricesVo"/>
+        <where>
+            <if test="projectId != null ">and project_id = #{projectId}</if>
+            <if test="recordId != null ">and record_id = #{recordId}</if>
+            <if test="budgetId != null ">and budget_id = #{budgetId}</if>
+            <if test="detailedId != null ">and detailed_id = #{detailedId}</if>
+            <if test="priceType != null  and priceType != ''">and price_type = #{priceType}</if>
+            <if test="unitPrice != null ">and unit_price = #{unitPrice}</if>
+            <if test="totalPrice != null ">and total_price = #{totalPrice}</if>
+            <if test="artificial != null ">and artificial = #{artificial}</if>
+            <if test="materials != null ">and materials = #{materials}</if>
+            <if test="mechanics != null ">and mechanics = #{mechanics}</if>
+            <if test="management != null ">and management = #{management}</if>
+            <if test="profit != null ">and profit = #{profit}</if>
+        </where>
+    </select>
+
+    <select id="selectMgtProjectBudgetPricesByPriceId" parameterType="Long" resultMap="MgtProjectBudgetPricesResult">
+        <include refid="selectMgtProjectBudgetPricesVo"/>
+        where price_id = #{priceId}
+    </select>
+
+    <insert id="insertMgtProjectBudgetPrices" parameterType="MgtProjectBudgetPrices" useGeneratedKeys="true"
+            keyProperty="priceId">
+        insert into mgt_project_budget_prices
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="projectId != null">project_id,</if>
+            <if test="recordId != null">record_id,</if>
+            <if test="budgetId != null">budget_id,</if>
+            <if test="detailedId != null">detailed_id,</if>
+            <if test="priceType != null">price_type,</if>
+            <if test="unitPrice != null">unit_price,</if>
+            <if test="totalPrice != null">total_price,</if>
+            <if test="artificial != null">artificial,</if>
+            <if test="materials != null">materials,</if>
+            <if test="mechanics != null">mechanics,</if>
+            <if test="management != null">management,</if>
+            <if test="profit != null">profit,</if>
+            <if test="detailedType != null">detailed_type,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="projectId != null">#{projectId},</if>
+            <if test="recordId != null">#{recordId},</if>
+            <if test="budgetId != null">#{budgetId},</if>
+            <if test="detailedId != null">#{detailedId},</if>
+            <if test="priceType != null">#{priceType},</if>
+            <if test="unitPrice != null">#{unitPrice},</if>
+            <if test="totalPrice != null">#{totalPrice},</if>
+            <if test="artificial != null">#{artificial},</if>
+            <if test="materials != null">#{materials},</if>
+            <if test="mechanics != null">#{mechanics},</if>
+            <if test="management != null">#{management},</if>
+            <if test="profit != null">#{profit},</if>
+            <if test="detailedType != null">#{detailedType},</if>
+        </trim>
+    </insert>
+
+    <update id="updateMgtProjectBudgetPrices" parameterType="MgtProjectBudgetPrices">
+        update mgt_project_budget_prices
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="projectId != null">project_id = #{projectId},</if>
+            <if test="recordId != null">record_id = #{recordId},</if>
+            <if test="budgetId != null">budget_id = #{budgetId},</if>
+            <if test="detailedId != null">detailed_id = #{detailedId},</if>
+            <if test="priceType != null">price_type = #{priceType},</if>
+            <if test="unitPrice != null">unit_price = #{unitPrice},</if>
+            <if test="totalPrice != null">total_price = #{totalPrice},</if>
+            <if test="artificial != null">artificial = #{artificial},</if>
+            <if test="materials != null">materials = #{materials},</if>
+            <if test="mechanics != null">mechanics = #{mechanics},</if>
+            <if test="management != null">management = #{management},</if>
+            <if test="profit != null">profit = #{profit},</if>
+            <if test="detailedType != null">detailed_type = #{detailedType},</if>
+        </trim>
+        where price_id = #{priceId}
+    </update>
+
+    <delete id="deleteMgtProjectBudgetPricesByPriceId" parameterType="Long">
+        delete
+        from mgt_project_budget_prices
+        where price_id = #{priceId}
+    </delete>
+
+    <delete id="deleteMgtProjectBudgetPricesByPriceIds" parameterType="String">
+        delete from mgt_project_budget_prices where price_id in
+        <foreach item="priceId" collection="array" open="(" separator="," close=")">
+            #{priceId}
+        </foreach>
+    </delete>
+
+    <delete id="deleteMgtProjectBudgetPricesByDetailedIds" parameterType="String">
+        delete from mgt_project_budget_prices where detailed_id in
+        <foreach item="detailedId" collection="array" open="(" separator="," close=")">
+            #{detailedId}
+        </foreach>
+    </delete>
+
+    <delete id="deleteMgtProjectBudgetPricesByBudgetId" parameterType="Long">
+        delete
+        from mgt_project_budget_prices
+        where budget_id = #{budgetId}
+    </delete>
+</mapper>

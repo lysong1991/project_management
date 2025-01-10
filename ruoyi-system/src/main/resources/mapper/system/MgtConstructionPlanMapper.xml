@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.MgtConstructionPlanMapper">
+	
+	<resultMap type="MgtConstructionPlan" id="MgtConstructionPlanResult">
+		<result property="planId" column="plan_id" />
+		<result property="projectId" column="project_id" />
+		<result property="name" column="name" />
+		<result property="content" column="content" />
+		<result property="startTime" column="start_time" />
+		<result property="endTime" column="end_time" />
+		<result property="currentStartTime" column="current_start_time" />
+		<result property="currentEndTime" column="current_end_time" />
+		<result property="duration" column="duration" />
+		<result property="file" column="file" />
+		<result property="progress" column="progress" />
+		<result property="dataStatus" column="data_status" />
+		<result property="deptId" column="dept_id" />
+		<result property="userId" column="user_id" />
+		<result property="createBy" column="create_by" />
+		<result property="createTime" column="create_time" />
+		<result property="updateBy" column="update_by" />
+		<result property="updateTime" column="update_time" />
+		<association property="mgtProject" column="project_id" javaType="MgtProject"
+					 select="selectProjectById" />
+		<collection property="mgtConstructionPlanDetailedList" column="plan_id" javaType="java.util.List"
+					ofType="com.ruoyi.system.domain.MgtConstructionPlanDetailed"
+					select="selectMgtConstructionPlanDetailedList" />
+	</resultMap>
+	
+	<resultMap type="MgtConstructionPlanDetailed" id="MgtConstructionPlanDetailedResult">
+		<result property="detailedId" column="detailed_id" />
+		<result property="planId" column="plan_id" />
+		<result property="projectId" column="project_id" />
+		<result property="content" column="content" />
+		<result property="startTime" column="start_time" />
+		<result property="endTime" column="end_time" />
+		<result property="progress" column="progress" />
+		<result property="currentContent" column="current_content" />
+		<result property="currentStartTime" column="current_start_time" />
+		<result property="currentEndTime" column="current_end_time" />
+		<result property="currentProgress" column="current_progress" />
+		<result property="duration" column="duration" />
+		<result property="file" column="file" />
+		<result property="actualProgress" column="actual_progress" />
+		<result property="actualStartTime" column="actual_start_time" />
+		<result property="actualEndTime" column="actual_end_time" />
+		<result property="dataStatus" column="data_status" />
+		<result property="isDelay" column="is_delay" />
+		<result property="actualStatus" column="actual_status" />
+		<result property="deptId" column="dept_id" />
+		<result property="userId" column="user_id" />
+		<result property="createBy" column="create_by" />
+		<result property="createTime" column="create_time" />
+		<result property="updateBy" column="update_by" />
+		<result property="updateTime" column="update_time" />
+	</resultMap>
+	
+	<sql id="selectMgtConstructionPlanVo">
+		select a.*
+		from mgt_construction_plan a
+				 LEFT JOIN mgt_project p ON a.project_id = p.project_id
+	</sql>
+	
+	<select id="selectMgtConstructionPlanList" parameterType="MgtConstructionPlan"
+			resultMap="MgtConstructionPlanResult">
+		<include refid="selectMgtConstructionPlanVo" />
+		<where>
+			<if test="projectId != null ">and a.project_id = #{projectId}</if>
+			<if test="name != null  and name != ''">and a.name like concat('%', #{name}, '%')</if>
+			<if test="startTime != null ">and a.start_time = #{startTime}</if>
+			<if test="endTime != null ">and a.end_time = #{endTime}</if>
+			<if test="duration != null ">and a.duration = #{duration}</if>
+			<if test="progress != null ">and a.progress = #{progress}</if>
+			<if test="dataStatus != null  and dataStatus != ''">and a.data_status = #{dataStatus}</if>
+			<if test="mgtProject != null and mgtProject.projectName != null and mgtProject.projectName != ''">
+				and p.project_name like concat('%', #{mgtProject.projectName}, '%')
+			</if>
+			<if test="mgtProject != null and mgtProject.projectSn != null and mgtProject.projectSn != ''">
+				and p.project_sn like concat('%', #{mgtProject.projectSn}, '%')
+			</if>
+			<if test="mgtProject != null and mgtProject.contractingMode != null and mgtProject.contractingMode != ''">
+				and p.contracting_mode = #{mgtProject.contractingMode}
+			</if>
+			<if test="mgtProject != null and mgtProject.settlementStatus != null and mgtProject.settlementStatus != ''">
+				and p.settlement_status = #{mgtProject.settlementStatus}
+			</if>
+			<!-- 数据范围过滤 -->
+			${params.dataScope}
+		</where>
+		ORDER BY a.create_time DESC
+	</select>
+	
+	<select id="selectMgtConstructionPlanChangeList" parameterType="MgtConstructionPlan"
+			resultMap="MgtConstructionPlanResult">
+		select a.*
+		from mgt_construction_plan a
+		LEFT JOIN mgt_project p ON a.project_id = p.project_id
+		INNER JOIN mgt_construction_plan_detailed_log pdl ON pdl.plan_id = a.plan_id
+		<where>
+			<if test="projectId != null ">and a.project_id = #{projectId}</if>
+			<if test="name != null  and name != ''">and a.name like concat('%', #{name}, '%')</if>
+			<if test="startTime != null ">and a.start_time = #{startTime}</if>
+			<if test="endTime != null ">and a.end_time = #{endTime}</if>
+			<if test="duration != null ">and a.duration = #{duration}</if>
+			<if test="progress != null ">and a.progress = #{progress}</if>
+			<if test="dataStatus != null  and dataStatus != ''">and a.data_status = #{dataStatus}</if>
+			<if test="mgtProject != null and mgtProject.projectName != null and mgtProject.projectName != ''">
+				and p.project_name like concat('%', #{mgtProject.projectName}, '%')
+			</if>
+			<if test="mgtProject != null and mgtProject.projectSn != null and mgtProject.projectSn != ''">
+				and p.project_sn like concat('%', #{mgtProject.projectSn}, '%')
+			</if>
+			<if test="mgtProject != null and mgtProject.contractingMode != null and mgtProject.contractingMode != ''">
+				and p.contracting_mode = #{mgtProject.contractingMode}
+			</if>
+			<if test="mgtProject != null and mgtProject.settlementStatus != null and mgtProject.settlementStatus != ''">
+				and p.settlement_status = #{mgtProject.settlementStatus}
+			</if>
+			<!-- 数据范围过滤 -->
+			${params.dataScope}
+		</where>
+		ORDER BY a.create_time DESC
+	</select>
+	
+	<select id="selectMgtConstructionPlanByPlanId" parameterType="Long" resultMap="MgtConstructionPlanResult">
+		<include refid="selectMgtConstructionPlanVo" />
+		where a.plan_id = #{planId}
+	</select>
+	
+	<select id="selectMgtConstructionPlanByProjectId" parameterType="Long" resultMap="MgtConstructionPlanResult">
+		<include refid="selectMgtConstructionPlanVo" />
+		where a.project_id = #{projectId}
+	</select>
+	
+	<insert id="insertMgtConstructionPlan" parameterType="MgtConstructionPlan" useGeneratedKeys="true"
+			keyProperty="planId">
+		insert into mgt_construction_plan
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="projectId != null">project_id,</if>
+			<if test="name != null">name,</if>
+			<if test="content != null">content,</if>
+			<if test="startTime != null">start_time,</if>
+			<if test="endTime != null">end_time,</if>
+			<if test="currentStartTime != null">current_start_time,</if>
+			<if test="currentEndTime != null">current_end_time,</if>
+			<if test="duration != null">duration,</if>
+			<if test="file != null">file,</if>
+			<if test="progress != null">progress,</if>
+			<if test="dataStatus != null">data_status,</if>
+			<if test="deptId != null">dept_id,</if>
+			<if test="userId != null">user_id,</if>
+			<if test="createBy != null">create_by,</if>
+			<if test="createTime != null">create_time,</if>
+			<if test="updateBy != null">update_by,</if>
+			<if test="updateTime != null">update_time,</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="projectId != null">#{projectId},</if>
+			<if test="name != null">#{name},</if>
+			<if test="content != null">#{content},</if>
+			<if test="startTime != null">#{startTime},</if>
+			<if test="endTime != null">#{endTime},</if>
+			<if test="currentStartTime != null">#{currentStartTime},</if>
+			<if test="currentEndTime != null">#{currentEndTime},</if>
+			<if test="duration != null">#{duration},</if>
+			<if test="file != null">#{file},</if>
+			<if test="progress != null">#{progress},</if>
+			<if test="dataStatus != null">#{dataStatus},</if>
+			<if test="deptId != null">#{deptId},</if>
+			<if test="userId != null">#{userId},</if>
+			<if test="createBy != null">#{createBy},</if>
+			<if test="createTime != null">#{createTime},</if>
+			<if test="updateBy != null">#{updateBy},</if>
+			<if test="updateTime != null">#{updateTime},</if>
+		</trim>
+	</insert>
+	
+	<update id="updateMgtConstructionPlan" parameterType="MgtConstructionPlan">
+		update mgt_construction_plan
+		<trim prefix="SET" suffixOverrides=",">
+			<if test="projectId != null">project_id = #{projectId},</if>
+			<if test="name != null">name = #{name},</if>
+			<if test="content != null">content = #{content},</if>
+			<if test="startTime != null">start_time = #{startTime},</if>
+			<if test="endTime != null">end_time = #{endTime},</if>
+			<if test="currentStartTime != null">current_start_time = #{currentStartTime},</if>
+			<if test="currentEndTime != null">current_end_time = #{currentEndTime},</if>
+			<if test="duration != null">duration = #{duration},</if>
+			<if test="file != null">file = #{file},</if>
+			<if test="progress != null">progress = #{progress},</if>
+			<if test="dataStatus != null">data_status = #{dataStatus},</if>
+			<if test="deptId != null">dept_id = #{deptId},</if>
+			<if test="userId != null">user_id = #{userId},</if>
+			<if test="createBy != null">create_by = #{createBy},</if>
+			<if test="createTime != null">create_time = #{createTime},</if>
+			<if test="updateBy != null">update_by = #{updateBy},</if>
+			<if test="updateTime != null">update_time = #{updateTime},</if>
+		</trim>
+		where plan_id = #{planId}
+	</update>
+	
+	<delete id="deleteMgtConstructionPlanByPlanId" parameterType="Long">
+		delete
+		from mgt_construction_plan
+		where plan_id = #{planId}
+	</delete>
+	
+	<delete id="deleteMgtConstructionPlanByPlanIds" parameterType="String">
+		delete from mgt_construction_plan where plan_id in
+		<foreach item="planId" collection="array" open="(" separator="," close=")">
+			#{planId}
+		</foreach>
+	</delete>
+	
+	<select id="selectMgtConstructionPlanDetailedList" resultType="MgtProjectBudgetDetailed"
+			resultMap="MgtConstructionPlanDetailedResult">
+		select b.*
+		from mgt_construction_plan_detailed b
+		where b.plan_id = #{planId}
+		ORDER BY b.sort DESC
+	</select>
+	
+	<select id="selectProjectById" parameterType="Long" resultType="MgtProject">
+		SELECT p.*
+		FROM mgt_project p
+		WHERE p.project_id = #{projectId}
+	</select>
+
+</mapper>

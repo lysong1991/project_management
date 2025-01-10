@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.MgtOaGcxmmcMapper">
+
+    <resultMap type="MgtOaGcxmmc" id="MgtOaGcxmmcResult">
+        <result property="id" column="id"/>
+        <result property="gcxmmc" column="gcxmmc"/>
+        <result property="addtime" column="addtime"/>
+    </resultMap>
+
+    <sql id="selectMgtOaGcxmmcVo">
+        select *
+        from mgt_oa_gcxmmc
+    </sql>
+
+    <select id="selectMgtOaGcxmmcById" parameterType="Int" resultMap="MgtOaGcxmmcResult">
+        <include refid="selectMgtOaGcxmmcVo"/>
+        where id = #{id}
+    </select>
+
+</mapper>

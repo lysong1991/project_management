@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.MgtCollectionInvoiceReceiptMapper">
+
+    <resultMap type="MgtCollectionInvoiceReceipt" id="MgtCollectionInvoiceReceiptResult">
+        <result property="receiptId" column="receipt_id"/>
+        <result property="projectId" column="project_id"/>
+        <result property="contractId" column="contract_id"/>
+        <result property="contractType" column="contract_type"/>
+        <result property="billingUnit" column="billing_unit"/>
+        <result property="receiptUnit" column="receipt_unit"/>
+        <result property="invoiceNumber" column="invoice_number"/>
+        <result property="invoiceAmount" column="invoice_amount"/>
+        <result property="completeInvoiceAmount" column="complete_invoice_amount"/>
+        <result property="invoiceType" column="invoice_type"/>
+        <result property="taxRate" column="tax_rate"/>
+        <result property="depositBank" column="deposit_bank"/>
+        <result property="openingBankAccount" column="opening_bank_account"/>
+        <result property="bankAddress" column="bank_address"/>
+        <result property="openingBankPhone" column="opening_bank_phone"/>
+        <result property="taxpayerIdentificationNumber" column="taxpayer_identification_number"/>
+        <result property="remarks" column="remarks"/>
+        <result property="file" column="file"/>
+        <result property="type" column="type"/>
+        <result property="dataStatus" column="data_status"/>
+        <result property="deptId" column="dept_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <association property="mgtProject" column="project_id" javaType="MgtProject"
+                     select="selectProjectById"/>
+        <association property="projectcontracts" column="{contractId=contract_id, contractType=contract_type}"
+                     javaType="Projectcontracts"
+                     select="selectProjectcontractsById"/>
+    </resultMap>
+
+    <sql id="selectMgtCollectionInvoiceReceiptVo">
+        select a.receipt_id,
+               a.project_id,
+               a.contract_id,
+               a.contract_type,
+               a.billing_unit,
+               a.receipt_unit,
+               a.invoice_number,
+               a.invoice_amount,
+               a.complete_invoice_amount,
+               a.invoice_type,
+               a.tax_rate,
+               a.deposit_bank,
+               a.opening_bank_account,
+               a.bank_address,
+               a.opening_bank_phone,
+               a.taxpayer_identification_number,
+               a.remarks,
+               a.file,
+               a.type,
+               a.data_status,
+               a.dept_id,
+               a.user_id,
+               a.create_by,
+               a.create_time,
+               a.update_by,
+               a.update_time
+        from mgt_collection_invoice_receipt a
+                 LEFT JOIN mgt_project p ON a.project_id = p.project_id
+    </sql>
+
+    <select id="selectMgtCollectionInvoiceReceiptList" parameterType="MgtCollectionInvoiceReceipt"
+            resultMap="MgtCollectionInvoiceReceiptResult">
+        <include refid="selectMgtCollectionInvoiceReceiptVo"/>
+        <where>
+            <if test="projectId != null ">and a.project_id = #{projectId}</if>
+            <if test="contractId != null ">and a.contract_id = #{contractId}</if>
+            <if test="invoiceType != null  and invoiceType != ''">and a.invoice_type = #{invoiceType}</if>
+            <if test="taxRate != null ">and a.tax_rate = #{taxRate}</if>
+            <if test="depositBank != null  and depositBank != ''">and a.deposit_bank = #{depositBank}</if>
+            <if test="openingBankAccount != null  and openingBankAccount != ''">and a.opening_bank_account =
+                #{openingBankAccount}
+            </if>
+            <if test="bankAddress != null  and bankAddress != ''">and a.bank_address = #{bankAddress}</if>
+            <if test="openingBankPhone != null  and openingBankPhone != ''">and a.opening_bank_phone =
+                #{openingBankPhone}
+            </if>
+            <if test="taxpayerIdentificationNumber != null  and taxpayerIdentificationNumber != ''">and
+                a.taxpayer_identification_number = #{taxpayerIdentificationNumber}
+            </if>
+            <if test="type != null  and type != ''">and a.type = #{type}</if>
+            <if test="dataStatus != null  and dataStatus != ''">and a.data_status = #{dataStatus}</if>
+            <if test="mgtProject != null and mgtProject.projectName != null and mgtProject.projectName != ''">
+                and p.project_name like concat('%', #{mgtProject.projectName}, '%')
+            </if>
+            <!-- 数据范围过滤 -->
+            ${params.dataScope}
+        </where>
+        ORDER BY a.create_time DESC
+    </select>
+
+    <select id="selectMgtCollectionInvoiceReceiptByReceiptId" parameterType="Long"
+            resultMap="MgtCollectionInvoiceReceiptResult">
+        <include refid="selectMgtCollectionInvoiceReceiptVo"/>
+        where a.receipt_id = #{receiptId}
+    </select>
+
+    <insert id="insertMgtCollectionInvoiceReceipt" parameterType="MgtCollectionInvoiceReceipt" useGeneratedKeys="true"
+            keyProperty="receiptId">
+        insert into mgt_collection_invoice_receipt
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="projectId != null">project_id,</if>
+            <if test="contractId != null">contract_id,</if>
+            <if test="contractType != null">contract_type,</if>
+            <if test="billingUnit != null">billing_unit,</if>
+            <if test="receiptUnit != null">receipt_unit,</if>
+            <if test="invoiceNumber != null">invoice_number,</if>
+            <if test="invoiceAmount != null">invoice_amount,</if>
+            <if test="completeInvoiceAmount != null">complete_invoice_amount,</if>
+            <if test="invoiceType != null">invoice_type,</if>
+            <if test="taxRate != null">tax_rate,</if>
+            <if test="depositBank != null">deposit_bank,</if>
+            <if test="openingBankAccount != null">opening_bank_account,</if>
+            <if test="bankAddress != null">bank_address,</if>
+            <if test="openingBankPhone != null">opening_bank_phone,</if>
+            <if test="taxpayerIdentificationNumber != null">taxpayer_identification_number,</if>
+            <if test="remarks != null">remarks,</if>
+            <if test="file != null">file,</if>
+            <if test="type != null">type,</if>
+            <if test="dataStatus != null">data_status,</if>
+            <if test="deptId != null">dept_id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="projectId != null">#{projectId},</if>
+            <if test="contractId != null">#{contractId},</if>
+            <if test="contractType != null">#{contractType},</if>
+            <if test="billingUnit != null">#{billingUnit},</if>
+            <if test="receiptUnit != null">#{receiptUnit},</if>
+            <if test="invoiceNumber != null">#{invoiceNumber},</if>
+            <if test="invoiceAmount != null">#{invoiceAmount},</if>
+            <if test="completeInvoiceAmount != null">#{completeInvoiceAmount},</if>
+            <if test="invoiceType != null">#{invoiceType},</if>
+            <if test="taxRate != null">#{taxRate},</if>
+            <if test="depositBank != null">#{depositBank},</if>
+            <if test="openingBankAccount != null">#{openingBankAccount},</if>
+            <if test="bankAddress != null">#{bankAddress},</if>
+            <if test="openingBankPhone != null">#{openingBankPhone},</if>
+            <if test="taxpayerIdentificationNumber != null">#{taxpayerIdentificationNumber},</if>
+            <if test="remarks != null">#{remarks},</if>
+            <if test="file != null">#{file},</if>
+            <if test="type != null">#{type},</if>
+            <if test="dataStatus != null">#{dataStatus},</if>
+            <if test="deptId != null">#{deptId},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateMgtCollectionInvoiceReceipt" parameterType="MgtCollectionInvoiceReceipt">
+        update mgt_collection_invoice_receipt
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="projectId != null">project_id = #{projectId},</if>
+            <if test="contractId != null">contract_id = #{contractId},</if>
+            <if test="contractType != null">contract_type = #{contractType},</if>
+            <if test="billingUnit != null">billing_unit = #{billingUnit},</if>
+            <if test="receiptUnit != null">receipt_unit = #{receiptUnit},</if>
+            <if test="invoiceNumber != null">invoice_number = #{invoiceNumber},</if>
+            <if test="invoiceAmount != null">invoice_amount = #{invoiceAmount},</if>
+            <if test="completeInvoiceAmount != null">complete_invoice_amount = #{completeInvoiceAmount},</if>
+            <if test="invoiceType != null">invoice_type = #{invoiceType},</if>
+            <if test="taxRate != null">tax_rate = #{taxRate},</if>
+            <if test="depositBank != null">deposit_bank = #{depositBank},</if>
+            <if test="openingBankAccount != null">opening_bank_account = #{openingBankAccount},</if>
+            <if test="bankAddress != null">bank_address = #{bankAddress},</if>
+            <if test="openingBankPhone != null">opening_bank_phone = #{openingBankPhone},</if>
+            <if test="taxpayerIdentificationNumber != null">taxpayer_identification_number =
+                #{taxpayerIdentificationNumber},
+            </if>
+            <if test="remarks != null">remarks = #{remarks},</if>
+            <if test="file != null">file = #{file},</if>
+            <if test="type != null">type = #{type},</if>
+            <if test="dataStatus != null">data_status = #{dataStatus},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where receipt_id = #{receiptId}
+    </update>
+
+    <delete id="deleteMgtCollectionInvoiceReceiptByReceiptId" parameterType="Long">
+        delete
+        from mgt_collection_invoice_receipt
+        where receipt_id = #{receiptId}
+    </delete>
+
+    <delete id="deleteMgtCollectionInvoiceReceiptByReceiptIds" parameterType="String">
+        delete from mgt_collection_invoice_receipt where receipt_id in
+        <foreach item="receiptId" collection="array" open="(" separator="," close=")">
+            #{receiptId}
+        </foreach>
+    </delete>
+
+    <select id="selectProjectById" parameterType="Long" resultType="MgtProject">
+        SELECT p.project_id,
+               p.pid,
+               p.project_name,
+               p.project_sn,
+               p.project_location,
+               p.guarantee_date,
+               p.defect_liability_date,
+               p.payment_method,
+               p.contracting_company,
+               p.construction_company,
+               p.survey_company,
+               p.design_company,
+               p.supervision_company,
+               p.contracting_mode,
+               p.settlement_status,
+               p.commencement_date,
+               p.completion_date,
+               p.status,
+               p.project_leader,
+               p.dept_id,
+               p.user_id,
+               p.create_by,
+               p.create_time,
+               p.update_by,
+               p.update_time
+        FROM mgt_project p
+        WHERE p.project_id = #{projectId}
+    </select>
+
+    <select id="selectProjectcontractsById" parameterType="map" resultType="Projectcontracts">
+        select
+        id,
+        project_name,
+        project_id,
+        projectmsg,
+        contracting_unit,
+        construction_unit,
+        project_status,
+        start_time,
+        ht_id,
+        ht_name,
+        project_date,
+        project_price,
+        j_contact,
+        j_phone,
+        y_contact,
+        y_phone,
+        warranty_peropd,
+        warranty_price,
+        performance_pay,
+        ht_file,
+        create_time,
+        user_id,
+        dept_id
+        <choose>
+            <when test="contractType == 0 ">
+                FROM projectcontracts
+            </when>
+            <otherwise>
+                FROM subcontract
+            </otherwise>
+        </choose>
+        WHERE id = #{contractId}
+    </select>
+
+</mapper>

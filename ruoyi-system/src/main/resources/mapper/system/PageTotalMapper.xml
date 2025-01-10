@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.PageTotalMapper">
+
+    <resultMap type="PageTotal" id="PageTotalResult">
+        <result property="id" column="id"/>
+        <result property="modelId" column="model_id"/>
+        <result property="projectId" column="project_id"/>
+        <result property="projectName" column="project_name"/>
+        <result property="top" column="top"/>
+        <result property="tem" column="tem"/>
+        <result property="item" column="item"/>
+        <result property="changeStatus" column="change_status"/>
+        <result property="userId" column="user_id"/>
+        <result property="deptId" column="dept_id"/>
+    </resultMap>
+
+    <sql id="selectPageTotalVo">
+        select d.id,
+               d.model_id,
+               d.project_id,
+               d.project_name,
+               d.top,
+               d.tem,
+               d.item,
+               d.change_status,
+               d.user_id,
+               d.dept_id
+        from page_total d
+    </sql>
+
+    <select id="selectPageTotalList" parameterType="PageTotal" resultMap="PageTotalResult">
+        <include refid="selectPageTotalVo"/>
+        <where>
+            <if test="modelId != null ">and d.model_id = #{modelId}</if>
+            <if test="projectId != null ">and d.project_id = #{projectId}</if>
+            <if test="top != null">and d.top = #{top}</if>
+        </where>
+    </select>
+
+    <select id="selectPageTotalById" parameterType="Long" resultMap="PageTotalResult">
+        <include refid="selectPageTotalVo"/>
+        where d.id = #{id}
+    </select>
+
+    <insert id="insertPageTotal" parameterType="PageTotal">
+        insert into page_total
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="modelId != null">model_id,</if>
+            <if test="projectId != null">project_id,</if>
+            <if test="projectName != null">project_name,</if>
+            <if test="top != null">top,</if>
+            <if test="tem != null">tem,</if>
+            <if test="item != null">item,</if>
+            <if test="changeStatus != null">change_status,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="deptId != null">dept_id,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="modelId != null">#{modelId},</if>
+            <if test="projectId != null">#{projectId},</if>
+            <if test="projectName != null">#{projectName},</if>
+            <if test="top != null">#{top},</if>
+            <if test="tem != null">#{tem},</if>
+            <if test="item != null">#{item},</if>
+            <if test="changeStatus != null">#{changeStatus},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="deptId != null">#{deptId},</if>
+        </trim>
+    </insert>
+
+    <update id="updatePageTotal" parameterType="PageTotal">
+        update page_total
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="modelId != null">model_id = #{modelId},</if>
+            <if test="projectId != null">project_id = #{projectId},</if>
+            <if test="projectName != null">project_name = #{projectName},</if>
+            <if test="top != null">top = #{top},</if>
+            <if test="tem != null">tem = #{tem},</if>
+            <if test="item != null">item = #{item},</if>
+            <if test="changeStatus != null">change_status = #{changeStatus},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deletePageTotalById" parameterType="Long">
+        delete
+        from page_total
+        where id = #{id}
+    </delete>
+
+    <delete id="deletePageTotalByIds" parameterType="String">
+        delete from page_total where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <update id="updateitem" parameterType="PageTotal">
+        update page_total
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="changeStatus != null">change_status = #{changeStatus},</if>
+        </trim>
+        where model_id = #{modelId}
+        and project_id = #{projectId}
+        and top = #{top}
+        and tem = #{tem}
+        and item = #{item}
+    </update>
+
+</mapper>

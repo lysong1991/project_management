@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.SelfCheckingMapper">
+
+    <resultMap type="SelfChecking" id="SelfCheckingResult">
+        <result property="id" column="id"/>
+        <result property="code" column="code"/>
+        <result property="projectId" column="project_id"/>
+        <result property="projectName" column="project_name"/>
+        <result property="projectAddress" column="project_address"/>
+        <result property="projectMode" column="project_mode"/>
+        <result property="projectStatus" column="project_status"/>
+        <result property="leaderDeptid" column="leader_deptid"/>
+        <result property="leaderDept" column="leader_dept"/>
+        <result property="leaderId" column="leader_id"/>
+        <result property="leader" column="leader"/>
+        <result property="uploadDate" column="upload_date"/>
+        <result property="repoter" column="repoter"/>
+        <result property="createTime" column="create_time"/>
+        <result property="changeStatus" column="change_status"/>
+        <result property="createUserdeptid" column="dept_id"/>
+        <result property="createUserid" column="user_id"/>
+        <result property="initFailed" column="init_failed"/>
+        <result property="total" column="total"/>
+        <result property="now" column="now"/>
+        <result property="failed" column="failed"/>
+        <result property="pass" column="pass"/>
+        <result property="changeDate" column="change_date"/>
+        <result property="endTime" column="end_time"/>
+        <result property="completionTime" column="completion_time"/>
+        <collection property="leaderUser" column="id" javaType="java.util.List" ofType="SysUserVo"
+                    select="selectLeaderUser"/>
+        <collection property="ccUser" column="id" javaType="java.util.List" ofType="SysUserVo"
+                    select="selectCcUser"/>
+    </resultMap>
+
+    <sql id="selectSelfCheckingVo">
+        select d.id,
+               d.code,
+               d.project_id,
+               d.project_name,
+               d.project_address,
+               d.project_mode,
+               d.project_status,
+               d.leader_deptid,
+               d.leader_dept,
+               d.leader_id,
+               d.leader,
+               d.upload_date,
+               d.repoter,
+               d.create_time,
+               d.change_status,
+               d.dept_id,
+               d.user_id,
+               d.total,
+               d.init_failed,
+               d.now,
+               d.failed,
+               d.pass,
+               d.change_date,
+               d.end_time,
+               d.completion_time,
+               d.type
+        from self_checking d
+                 LEFT JOIN mgt_project p ON p.project_id = d.project_id
+    </sql>
+
+    <select id="selectSelfCheckingList" parameterType="SelfChecking" resultMap="SelfCheckingResult">
+        <include refid="selectSelfCheckingVo"/>
+        <where>
+            <if test="projectId != null ">and d.project_id = #{projectId}</if>
+            <if test="id != null ">and d.id = #{id}</if>
+            <if test="endTime != null ">and d.end_time = #{endTime}</if>
+            <if test="code != null  and code != ''">and d.code like concat('%',#{code},'%')</if>
+            <if test="projectName != null  and projectName != ''">and p.project_name like concat('%',
+                #{projectName},'%')
+            </if>
+            <if test="changeStatus != null and changeStatus != ''">and d.change_status = #{changeStatus}</if>
+            <if test="params.status != null and params.status != ''">and d.change_status IN ('待整改', '整改中','待确认')
+                or
+                (d.change_status = '整改完成' AND d.init_failed != 0)
+            </if>
+            <if test="params.statusList != null and params.statusList.size > 0">
+                and d.change_status in
+                <foreach collection="params.statusList" item="statusItem" open="(" separator="," close=")">
+                    #{statusItem}
+                </foreach>
+            </if>
+            <!-- 大于开始时间 -->
+            <if test="params.beginEndTime != null and params.endEndTime == null">
+                AND d.end_time &gt;= #{params.beginEndTime}
+            </if>
+            <!-- 小于结束时间 -->
+            <if test="params.beginEndTime == null and params.endEndTime != null">
+                AND d.end_time &lt;= #{params.endEndTime}
+            </if>
+            <!-- 小于结束时间 -->
+            <if test="params.beginEndTime != null and params.endEndTime != null">
+                AND d.end_time between #{params.beginEndTime} and #{params.endEndTime}
+            </if>
+            ${params.dataScope}
+        </where>
+        ORDER BY d.end_time DESC
+    </select>
+
+    <select id="selectSelfCheckingById" parameterType="Long" resultMap="SelfCheckingResult">
+        <include refid="selectSelfCheckingVo"/>
+        where d.id = #{id}
+    </select>
+
+    <insert id="insertSelfChecking" parameterType="SelfChecking" useGeneratedKeys="true" keyProperty="id">
+        insert into self_checking
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="code != null">code,</if>
+            <if test="projectId != null">project_id,</if>
+            <if test="projectName != null">project_name,</if>
+            <if test="projectAddress != null">project_address,</if>
+            <if test="projectMode != null">project_mode,</if>
+            <if test="projectStatus != null">project_status,</if>
+            <if test="leaderDeptid != null">leader_deptid,</if>
+            <if test="leaderDept != null">leader_dept,</if>
+            <if test="leaderId != null">leader_id,</if>
+            <if test="leader != null">leader,</if>
+            <if test="uploadDate != null">upload_date,</if>
+            <if test="repoter != null">repoter,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="changeStatus != null">change_status,</if>
+            <if test="createUserdeptid != null">dept_id,</if>
+            <if test="createUserid != null">user_id,</if>
+            <if test="initFailed != null">init_failed,</if>
+            <if test="total != null">total,</if>
+            <if test="now != null">now,</if>
+            <if test="failed != null">failed,</if>
+            <if test="pass != null">pass,</if>
+            <if test="changeDate != null">change_date,</if>
+            <if test="endTime != null">end_time,</if>
+            <if test="completionTime != null">completion_time,</if>
+            <if test="type != null">type,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="code != null">#{code},</if>
+            <if test="projectId != null">#{projectId},</if>
+            <if test="projectName != null">#{projectName},</if>
+            <if test="projectAddress != null">#{projectAddress},</if>
+            <if test="projectMode != null">#{projectMode},</if>
+            <if test="projectStatus != null">#{projectStatus},</if>
+            <if test="leaderDeptid != null">#{leaderDeptid},</if>
+            <if test="leaderDept != null">#{leaderDept},</if>
+            <if test="leaderId != null">#{leaderId},</if>
+            <if test="leader != null">#{leader},</if>
+            <if test="uploadDate != null">#{uploadDate},</if>
+            <if test="repoter != null">#{repoter},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="changeStatus != null">#{changeStatus},</if>
+            <if test="createUserdeptid != null">#{createUserdeptid},</if>
+            <if test="createUserid != null">#{createUserid},</if>
+            <if test="initFailed != null">#{initFailed},</if>
+            <if test="total != null">#{total},</if>
+            <if test="now != null">#{now},</if>
+            <if test="failed != null">#{failed},</if>
+            <if test="pass != null">#{pass},</if>
+            <if test="changeDate != null">#{changeDate},</if>
+            <if test="endTime != null">#{endTime},</if>
+            <if test="completionTime != null">#{completionTime},</if>
+            <if test="type != null">#{type},</if>
+        </trim>
+    </insert>
+
+    <update id="updateSelfChecking" parameterType="SelfChecking">
+        update self_checking
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="code != null">code = #{code},</if>
+            <if test="projectId != null">project_id = #{projectId},</if>
+            <if test="projectName != null">project_name = #{projectName},</if>
+            <if test="projectAddress != null">project_address = #{projectAddress},</if>
+            <if test="projectMode != null">project_mode = #{projectMode},</if>
+            <if test="projectStatus != null">project_status = #{projectStatus},</if>
+            <if test="leaderDeptid != null">leader_deptid = #{leaderDeptid},</if>
+            <if test="leaderDept != null">leader_dept = #{leaderDept},</if>
+            <if test="leaderId != null">leader_id = #{leaderId},</if>
+            <if test="leader != null">leader = #{leader},</if>
+            <if test="uploadDate != null">upload_date = #{uploadDate},</if>
+            <if test="repoter != null">repoter = #{repoter},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="changeStatus != null">change_status = #{changeStatus},</if>
+            <if test="createUserdeptid != null">dept_id = #{createUserdeptid},</if>
+            <if test="createUserid != null">user_id = #{createUserid},</if>
+            <if test="initFailed != null">init_failed = #{initFailed},</if>
+            <if test="total != null">total = #{total},</if>
+            <if test="now != null">now = #{now},</if>
+            <if test="failed != null">failed = #{failed},</if>
+            <if test="pass != null">pass = #{pass},</if>
+            <if test="changeDate != null">change_date = #{changeDate},</if>
+            <if test="endTime != null">end_time = #{endTime},</if>
+            <if test="completionTime != null">completion_time = #{completionTime},</if>
+            <if test="type != null">type = #{type},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSelfCheckingById" parameterType="Long">
+        delete
+        from self_checking
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteSelfCheckingByIds" parameterType="String">
+        delete from self_checking where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectLeaderUser" resultType="SysUserVo">
+        select qfu.user_id, qfu.user_name
+        from quality_form_user qfu
+        where qfu.quality_form_id = #{id}
+          and qfu.user_type = 0
+          and qfu.type = 1
+    </select>
+
+    <select id="selectCcUser" resultType="SysUserVo">
+        select qfu.user_id, qfu.user_name
+        from quality_form_user qfu
+        where qfu.quality_form_id = #{id}
+          and qfu.user_type = 1
+          and qfu.type = 1
+    </select>
+
+</mapper>

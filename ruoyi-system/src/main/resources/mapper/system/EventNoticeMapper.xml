@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.EventNoticeMapper">
+
+    <resultMap type="EventNotice" id="EventNoticeResult">
+        <result property="id" column="id"/>
+        <result property="eventId" column="event_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="eventContent" column="event_content"/>
+        <result property="eventRawData" column="event_raw_data"/>
+        <result property="modelName" column="model_name"/>
+        <result property="modelId" column="model_id"/>
+        <result property="status" column="status"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+
+    <sql id="selectEventNoticeVo">
+        select id,
+               event_id,
+               user_id,
+               event_content,
+               event_raw_data,
+               model_name,
+               model_id,
+               status,
+               create_time
+        from event_notice
+    </sql>
+
+    <select id="selectEventNoticeList" parameterType="EventNotice" resultMap="EventNoticeResult">
+        <include refid="selectEventNoticeVo"/>
+        <where>
+            <if test="eventId != null  and eventId != ''">and event_id = #{eventId}</if>
+            <if test="userId != null ">and user_id = #{userId}</if>
+            <if test="eventContent != null  and eventContent != ''">and event_content like concat('%', #{eventContent},
+                '%')
+            </if>
+            <if test="modelName != null  and modelName != ''">and model_name like concat('%', #{modelName}, '%')</if>
+            <if test="modelId != null ">and model_id = #{modelId}</if>
+            <if test="status != null  and status != ''">and status = #{status}</if>
+        </where>
+    </select>
+
+    <select id="selectEventNoticeById" parameterType="Long" resultMap="EventNoticeResult">
+        <include refid="selectEventNoticeVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertEventNotice" parameterType="EventNotice">
+        insert into event_notice
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="eventId != null">event_id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="eventContent != null">event_content,</if>
+            <if test="eventRawData != null">event_raw_data,</if>
+            <if test="modelName != null">model_name,</if>
+            <if test="modelId != null">model_id,</if>
+            <if test="status != null">status,</if>
+            <if test="createTime != null">create_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="eventId != null">#{eventId},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="eventContent != null">#{eventContent},</if>
+            <if test="eventRawData != null">#{eventRawData},</if>
+            <if test="modelName != null">#{modelName},</if>
+            <if test="modelId != null">#{modelId},</if>
+            <if test="status != null">#{status},</if>
+            <if test="createTime != null">#{createTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateEventNotice" parameterType="EventNotice">
+        update event_notice
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="eventId != null">event_id = #{eventId},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="eventContent != null">event_content = #{eventContent},</if>
+            <if test="eventRawData != null">event_raw_data = #{eventRawData},</if>
+            <if test="modelName != null">model_name = #{modelName},</if>
+            <if test="modelId != null">model_id = #{modelId},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteEventNoticeById" parameterType="Long">
+        delete
+        from event_notice
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteEventNoticeByIds" parameterType="String">
+        delete from event_notice where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

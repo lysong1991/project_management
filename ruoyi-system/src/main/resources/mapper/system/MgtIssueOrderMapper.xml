@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.MgtIssueOrderMapper">
+
+    <resultMap type="MgtIssueOrder" id="MgtIssueOrderResult">
+        <result property="id" column="id"/>
+        <result property="fId" column="f_id"/>
+        <result property="jindieId" column="jindie_id"/>
+        <result property="fBillNo" column="f_bill_no"/>
+        <result property="fDate" column="f_date"/>
+        <result property="fbplProjectFname" column="fbpl_project_fname"/>
+        <result property="fbplTeameGroupName" column="fbpl_teame_group_name"/>
+        <result property="fMaterialIdFnumber" column="f_material_id_fnumber"/>
+        <result property="fMaterialName" column="f_material_name"/>
+        <result property="fMateriaModel" column="f_materia_model"/>
+        <result property="fUnitIdFname" column="f_unit_id_fname"/>
+        <result property="fStockIdFname" column="f_stock_id_fname"/>
+        <result property="fRealQty" column="f_real_qty"/>
+        <result property="fTaxPrice" column="f_tax_price"/>
+        <result property="fAmount" column="f_amount"/>
+        <result property="fEntryTaxAmount" column="f_entry_tax_amount"/>
+        <result property="fAllAmount" column="f_all_amount"/>
+        <result property="addTime" column="add_time"/>
+    </resultMap>
+
+    <sql id="selectMgtIssueOrderVo">
+        select id,
+               f_id,
+               f_bill_no,
+               f_date,
+               fbpl_project_fname,
+               fbpl_teame_group_name,
+               f_material_id_fnumber,
+               f_material_name,
+               f_materia_model,
+               f_unit_id_fname,
+               f_stock_id_fname,
+               f_real_qty,
+               f_tax_price,
+               f_amount,
+               f_entry_tax_amount,
+               f_all_amount,
+               add_time
+        from mgt_issue_order
+    </sql>
+
+    <select id="selectMgtIssueOrderList" parameterType="MgtIssueOrder" resultMap="MgtIssueOrderResult">
+        <include refid="selectMgtIssueOrderVo"/>
+        <where>
+            <if test="fBillNo != null  and fBillNo != ''">and f_bill_no like concat('%', #{fBillNo}, '%')</if>
+            <if test="params.beginFDate != null and params.beginFDate != '' and params.endFDate != null and params.endFDate != ''">
+                and f_date between #{params.beginFDate} and #{params.endFDate}
+            </if>
+            <if test="fbplProjectFname != null  and fbplProjectFname != ''">and fbpl_project_fname like concat('%',
+                #{fbplProjectFname}, '%')
+            </if>
+            <if test="fbplTeameGroupName != null  and fbplTeameGroupName != ''">and fbpl_teame_group_name like
+                concat('%', #{fbplTeameGroupName}, '%')
+            </if>
+            <if test="fMaterialIdFnumber != null ">and f_material_id_fnumber like concat('%', #{fMaterialIdFnumber},
+                '%')
+            </if>
+            <if test="fMaterialName != null  and fMaterialName != ''">and f_material_name like concat('%',
+                #{fMaterialName}, '%')
+            </if>
+            <if test="fMateriaModel != null  and fMateriaModel != ''">and f_materia_model like concat('%',
+                #{fMateriaModel}, '%')
+            </if>
+            <if test="fUnitIdFname != null  and fUnitIdFname != ''">and f_unit_id_fname like concat('%',
+                #{fUnitIdFname}, '%')
+            </if>
+            <if test="fStockIdFname != null  and fStockIdFname != ''">and f_stock_id_fname like concat('%',
+                #{fStockIdFname}, '%')
+            </if>
+            <if test="fRealQty != null  and fRealQty != ''">and f_real_qty like concat('%', #{fRealQty}, '%')</if>
+            <if test="fTaxPrice != null ">and f_tax_price = #{fTaxPrice}</if>
+            <if test="fAmount != null  and fAmount != ''">and f_amount = #{fAmount}</if>
+            <if test="fEntryTaxAmount != null ">and f_entry_tax_amount = #{fEntryTaxAmount}</if>
+            <if test="fAllAmount != null ">and f_all_amount = #{fAllAmount}</if>
+        </where>
+        ORDER BY add_time DESC
+    </select>
+
+    <select id="selectMgtIssueOrderById" parameterType="Integer" resultMap="MgtIssueOrderResult">
+        <include refid="selectMgtIssueOrderVo"/>
+        where id = #{id}
+    </select>
+
+    <!--    <select id="selectMgtIssueOrderByFbplProjectFname" parameterType="String" resultMap="MgtIssueOrderResult">-->
+    <!--        <include refid="selectMgtIssueOrderVo"/>-->
+    <!--        where fbpl_project_fname = #{fbplProjectFname}-->
+    <!--    </select>-->
+
+    <select id="selectMgtIssueOrderByJindieId" parameterType="Long" resultMap="MgtIssueOrderResult">
+        <include refid="selectMgtIssueOrderVo"/>
+        where jindie_id = #{jindieId}
+    </select>
+
+    <insert id="insertMgtIssueOrder" parameterType="MgtIssueOrder" useGeneratedKeys="true" keyProperty="id">
+        insert into mgt_issue_order
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="fBillNo != null">f_bill_no,</if>
+            <if test="fDate != null">f_date,</if>
+            <if test="fbplProjectFname != null">fbpl_project_fname,</if>
+            <if test="fbplTeameGroupName != null">fbpl_teame_group_name,</if>
+            <if test="fMaterialIdFnumber != null">f_material_id_fnumber,</if>
+            <if test="fMaterialName != null">f_material_name,</if>
+            <if test="fMateriaModel != null">f_materia_model,</if>
+            <if test="fUnitIdFname != null">f_unit_id_fname,</if>
+            <if test="fStockIdFname != null">f_stock_id_fname,</if>
+            <if test="fRealQty != null">f_real_qty,</if>
+            <if test="fTaxPrice != null">f_tax_price,</if>
+            <if test="fAmount != null">f_amount,</if>
+            <if test="fEntryTaxAmount != null">f_entry_tax_amount,</if>
+            <if test="fAllAmount != null">f_all_amount,</if>
+            <if test="addTime != null">add_time,</if>
+            <if test="fId != null">f_id,</if>
+            <if test="jindieId != null">jindie_id,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="fBillNo != null">#{fBillNo},</if>
+            <if test="fDate != null">#{fDate},</if>
+            <if test="fbplProjectFname != null">#{fbplProjectFname},</if>
+            <if test="fbplTeameGroupName != null">#{fbplTeameGroupName},</if>
+            <if test="fMaterialIdFnumber != null">#{fMaterialIdFnumber},</if>
+            <if test="fMaterialName != null">#{fMaterialName},</if>
+            <if test="fMateriaModel != null">#{fMateriaModel},</if>
+            <if test="fUnitIdFname != null">#{fUnitIdFname},</if>
+            <if test="fStockIdFname != null">#{fStockIdFname},</if>
+            <if test="fRealQty != null">#{fRealQty},</if>
+            <if test="fTaxPrice != null">#{fTaxPrice},</if>
+            <if test="fAmount != null">#{fAmount},</if>
+            <if test="fEntryTaxAmount != null">#{fEntryTaxAmount},</if>
+            <if test="fAllAmount != null">#{fAllAmount},</if>
+            <if test="addTime != null">#{addTime},</if>
+            <if test="fId != null">#{fId},</if>
+            <if test="jindieId != null">#{jindieId},</if>
+        </trim>
+    </insert>
+
+    <update id="updateMgtIssueOrder" parameterType="MgtIssueOrder">
+        update mgt_issue_order
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="fBillNo != null">f_bill_no = #{fBillNo},</if>
+            <if test="fDate != null">f_date = #{fDate},</if>
+            <if test="fbplProjectFname != null">fbpl_project_fname = #{fbplProjectFname},</if>
+            <if test="fbplTeameGroupName != null">fbpl_teame_group_name = #{fbplTeameGroupName},</if>
+            <if test="fMaterialIdFnumber != null">f_material_id_fnumber = #{fMaterialIdFnumber},</if>
+            <if test="fMaterialName != null">f_material_name = #{fMaterialName},</if>
+            <if test="fMateriaModel != null">f_materia_model = #{fMateriaModel},</if>
+            <if test="fUnitIdFname != null">f_unit_id_fname = #{fUnitIdFname},</if>
+            <if test="fStockIdFname != null">f_stock_id_fname = #{fStockIdFname},</if>
+            <if test="fRealQty != null">f_real_qty = #{fRealQty},</if>
+            <if test="fTaxPrice != null">f_tax_price = #{fTaxPrice},</if>
+            <if test="fAmount != null">f_amount = #{fAmount},</if>
+            <if test="fEntryTaxAmount != null">f_entry_tax_amount = #{fEntryTaxAmount},</if>
+            <if test="fAllAmount != null">f_all_amount = #{fAllAmount},</if>
+            <if test="addTime != null">add_time = #{addTime},</if>
+            <if test="fId != null">f_id = #{fId},</if>
+            <if test="jindieId != null">jindie_id = #{jindieId},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteMgtIssueOrderById" parameterType="Integer">
+        delete
+        from mgt_issue_order
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteMgtIssueOrderByIds" parameterType="String">
+        delete from mgt_issue_order where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

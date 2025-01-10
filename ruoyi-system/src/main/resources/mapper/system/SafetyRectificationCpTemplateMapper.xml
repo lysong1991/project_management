@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.SafetyRectificationCpTemplateMapper">
+
+    <resultMap type="SafetyRectificationCpTemplate" id="SafetyRectificationCpTemplateResult">
+        <result property="templateId" column="template_id"/>
+        <result property="templateName" column="template_name"/>
+        <result property="selfId" column="self_id"/>
+        <result property="deptId" column="dept_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <association property="safetyRectificationCp" column="self_id" javaType="SafetyRectificationCp"
+                     select="selectSafetyRectificationCp"/>
+    </resultMap>
+
+    <resultMap type="SafetyRectificationCpTemplateVo" id="SafetyRectificationCpTemplateVoResult">
+        <result property="templateName" column="template_name"/>
+        <collection property="safetyRectificationCpList" column="template_name" javaType="java.util.List"
+                    ofType="SafetyRectificationCp"
+                    select="selectSafetyRectificationCpList"/>
+    </resultMap>
+
+    <sql id="selectSafetyRectificationCpTemplateVo">
+        select template_id,
+               template_name,
+               self_id,
+               dept_id,
+               user_id,
+               create_by,
+               create_time,
+               update_by,
+               update_time
+        from safety_rectification_cp_template
+    </sql>
+
+    <select id="selectSafetyRectificationCpTemplateList" parameterType="SafetyRectificationCpTemplate"
+            resultMap="SafetyRectificationCpTemplateResult">
+        <include refid="selectSafetyRectificationCpTemplateVo"/>
+        <where>
+            <if test="templateName != null  and templateName != ''">and template_name like concat('%', #{templateName},
+                '%')
+            </if>
+            <if test="selfId != null ">and self_id = #{selfId}</if>
+            <if test="deptId != null ">and dept_id = #{deptId}</if>
+            <if test="userId != null ">and user_id = #{userId}</if>
+        </where>
+        ORDER BY create_time DESC
+    </select>
+
+    <select id="selectSafetyRectificationCpTemplateByTemplateId" parameterType="Long"
+            resultMap="SafetyRectificationCpTemplateResult">
+        <include refid="selectSafetyRectificationCpTemplateVo"/>
+        where template_id = #{templateId}
+    </select>
+
+    <insert id="insertSafetyRectificationCpTemplate" parameterType="SafetyRectificationCpTemplate"
+            useGeneratedKeys="true" keyProperty="templateId">
+        insert into safety_rectification_cp_template
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="templateName != null and templateName != ''">template_name,</if>
+            <if test="selfId != null">self_id,</if>
+            <if test="deptId != null">dept_id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="templateName != null and templateName != ''">#{templateName},</if>
+            <if test="selfId != null">#{selfId},</if>
+            <if test="deptId != null">#{deptId},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateSafetyRectificationCpTemplate" parameterType="SafetyRectificationCpTemplate">
+        update safety_rectification_cp_template
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="templateName != null and templateName != ''">template_name = #{templateName},</if>
+            <if test="selfId != null">self_id = #{selfId},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where template_id = #{templateId}
+    </update>
+
+    <delete id="deleteSafetyRectificationCpTemplateByTemplateId" parameterType="Long">
+        delete
+        from safety_rectification_cp_template
+        where template_id = #{templateId}
+    </delete>
+
+    <delete id="deleteSafetyRectificationCpTemplateByTemplateIds" parameterType="String">
+        delete from safety_rectification_cp_template where template_id in
+        <foreach item="templateId" collection="array" open="(" separator="," close=")">
+            #{templateId}
+        </foreach>
+    </delete>
+
+    <select id="selectTemplateList" parameterType="SafetyRectificationTemplate"
+            resultMap="SafetyRectificationCpTemplateVoResult">
+        select
+        dd.dict_type,
+        dd.dict_label as template_name
+        from sys_dict_data dd
+        <where>
+            and dd.dict_type = 'project_self'
+            <if test="templateName != null  and templateName != ''">and dd.dict_label like concat('%', #{templateName},
+                '%')
+            </if>
+        </where>
+    </select>
+
+    <select id="selectSafetyRectificationCp" resultType="SafetyRectificationCp">
+        SELECT *
+        FROM safety_rectification_cp
+        WHERE id = #{selfId}
+    </select>
+
+    <select id="selectSafetyRectificationCpList" resultType="SafetyRectificationCp">
+        SELECT a.*
+        FROM safety_rectification_cp a
+                 left JOIN safety_rectification_cp_template t on t.self_id = a.id
+        WHERE t.template_name = #{templateName}
+    </select>
+
+    <select id="getTemplateByTemplateName" resultType="SafetyRectificationCpTemplate">
+        select dd.dict_label as template_name
+        from sys_dict_data dd
+        where dd.dict_type = 'project_self'
+          and dd.dict_label = #{templateName}
+    </select>
+
+</mapper>

@@ -1,0 +1,357 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.SubcontractMapper">
+	
+	<resultMap type="Subcontract" id="SubcontractResult">
+		<result property="id" column="id" />
+		<result property="projectId" column="project_id" />
+		<result property="projectmsg" column="projectmsg" />
+		<result property="projectName" column="project_name" />
+		<result property="contractingUnit" column="contracting_unit" />
+		<result property="constructionUnit" column="construction_unit" />
+		<result property="projectStatus" column="project_status" />
+		<result property="startTime" column="start_time" />
+		<result property="endTime" column="end_time" />
+		<result property="htId" column="ht_id" />
+		<result property="htName" column="ht_name" />
+		<result property="projectDate" column="project_date" />
+		<result property="projectPrice" column="project_price" />
+		<result property="jContact" column="j_contact" />
+		<result property="jPhone" column="j_phone" />
+		<result property="yContact" column="y_contact" />
+		<result property="yPhone" column="y_phone" />
+		<result property="warrantyPeropd" column="warranty_peropd" />
+		<result property="warrantyPrice" column="warranty_price" />
+		<result property="performancePay" column="performance_pay" />
+		<result property="htFile" column="ht_file" />
+		<result property="createTime" column="create_time" />
+		<result property="createUserid" column="user_id" />
+		<result property="createUserdeptid" column="dept_id" />
+		
+		<association property="mgtProject" column="project_id" javaType="MgtProject"
+					 select="selectProject" />
+		
+		<collection property="mgtOaContracts" column="id" javaType="java.util.List"
+					ofType="MgtOaContracts"
+					select="selectMgtOaContracts" />
+		
+		<collection property="mgtOtherContracts" column="id" javaType="java.util.List"
+					ofType="MgtOtherContracts"
+					select="selectMgtOtherContracts" />
+	</resultMap>
+	
+	<resultMap type="MgtProject" id="MgtProjectResult">
+		<result property="projectId" column="project_id" />
+		<result property="pid" column="pid" />
+		<result property="projectName" column="project_name" />
+		<result property="projectSn" column="project_sn" />
+		<result property="projectLocation" column="project_location" />
+		<result property="guaranteeDate" column="guarantee_date" />
+		<result property="defectLiabilityDate" column="defect_liability_date" />
+		<result property="paymentMethod" column="payment_method" />
+		<result property="contractingCompany" column="contracting_company" />
+		<result property="constructionCompany" column="construction_company" />
+		<result property="surveyCompany" column="survey_company" />
+		<result property="designCompany" column="design_company" />
+		<result property="supervisionCompany" column="supervision_company" />
+		<result property="creatingExcellence" column="creating_excellence" />
+		<result property="contractingMode" column="contracting_mode" />
+		<result property="settlementStatus" column="settlement_status" />
+		<result property="commencementDate" column="commencement_date" />
+		<result property="completionDate" column="completion_date" />
+		<result property="status" column="status" />
+		<result property="projectLeader" column="project_leader" />
+		<result property="jindieProjectName" column="jindie_project_name" />
+		<result property="deptId" column="dept_id" />
+		<result property="userId" column="user_id" />
+		<result property="createBy" column="create_by" />
+		<result property="createTime" column="create_time" />
+		<result property="updateBy" column="update_by" />
+		<result property="updateTime" column="update_time" />
+		<result property="projectGroup" column="project_group" />
+		<association property="projectLeaderUser" column="project_leader" javaType="SysUserVo"
+					 select="selectProjectLeaderUserById" />
+	</resultMap>
+	
+	<resultMap type="SysUserVo" id="SysUserVoResult">
+		<id property="userId" column="user_id" />
+		<result property="deptId" column="dept_id" />
+		<result property="userName" column="user_name" />
+		<result property="deptName" column="dept_name" />
+		<result property="phonenumber" column="phonenumber" />
+	</resultMap>
+	
+	<sql id="selectSubcontractVo">
+		select d.id,
+			   d.project_id,
+			   d.projectmsg,
+			   d.project_name,
+			   d.contracting_unit,
+			   d.construction_unit,
+			   d.project_status,
+			   d.start_time,
+			   d.end_time,
+			   d.ht_id,
+			   d.ht_name,
+			   d.project_date,
+			   d.project_price,
+			   d.j_contact,
+			   d.j_phone,
+			   d.y_contact,
+			   d.y_phone,
+			   d.warranty_peropd,
+			   d.warranty_price,
+			   d.performance_pay,
+			   d.ht_file,
+			   d.create_time,
+			   d.user_id,
+			   d.dept_id
+		from subcontract d
+	</sql>
+	
+	<select id="selectSubcontractList" parameterType="Subcontract" resultMap="SubcontractResult">
+		<include refid="selectSubcontractVo" />
+		<where>
+			<if test="projectName != null  and projectName != ''">and d.project_name like concat('%', #{projectName},
+				'%')
+			</if>
+			<if test="projectId != null and projectId != ''">and d.project_id = #{projectId}</if>
+			<if test="projectmsg != null and projectmsg != ''">and d.projectmsg = #{projectmsg}</if>
+			<if test="projectDate != null">and d.project_date = #{projectDate}</if>
+			<if test="projectStatus != null  and projectStatus != ''">and d.project_status = #{projectStatus}</if>
+			<if test="params.beginProjectDate != null and params.beginProjectDate != '' and params.endProjectDate != null and params.endProjectDate != ''">
+				and d.project_date between #{params.beginProjectDate} and #{params.endProjectDate}
+			</if>
+			${params.dataScope}
+		</where>
+		ORDER BY d.create_time DESC
+	</select>
+	
+	<select id="selectSubcontractById" parameterType="Long" resultMap="SubcontractResult">
+		<include refid="selectSubcontractVo" />
+		where d.id = #{id}
+	</select>
+	
+	<select id="selectSubcontractListByProjectIds" parameterType="java.util.Set" resultMap="SubcontractResult">
+		<include refid="selectSubcontractVo" />
+		where d.project_id in
+		<foreach collection="projectIds" item="projectId" open="(" separator="," close=")">
+			#{projectId}
+		</foreach>
+	</select>
+	
+	<select id="selectSubcontractByProjectId" parameterType="Long" resultMap="SubcontractResult">
+		<include refid="selectSubcontractVo" />
+		where d.project_id = #{projectId}
+	</select>
+	
+	<select id="selectOneSubcontractByProjectId" parameterType="Long" resultMap="SubcontractResult">
+		<include refid="selectSubcontractVo" />
+		where d.project_id = #{projectId} limit 1
+	</select>
+	
+	<select id="getSubcontractByProjectId" parameterType="Long" resultMap="SubcontractResult">
+		<include refid="selectSubcontractVo" />
+		where d.project_id = #{projectId}
+	</select>
+	
+	<insert id="insertSubcontract" parameterType="Subcontract" useGeneratedKeys="true" keyProperty="id">
+		insert into subcontract
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="projectId != null">project_id,</if>
+			<if test="projectmsg != null">projectmsg,</if>
+			<if test="projectName != null">project_name,</if>
+			<if test="contractingUnit != null">contracting_unit,</if>
+			<if test="constructionUnit != null">construction_unit,</if>
+			<if test="projectStatus != null">project_status,</if>
+			<if test="startTime != null">start_time,</if>
+			<if test="endTime != null">end_time,</if>
+			<if test="htId != null">ht_id,</if>
+			<if test="htName != null">ht_name,</if>
+			<if test="projectDate != null">project_date,</if>
+			<if test="projectPrice != null">project_price,</if>
+			<if test="jContact != null">j_contact,</if>
+			<if test="jPhone != null">j_phone,</if>
+			<if test="yContact != null">y_contact,</if>
+			<if test="yPhone != null">y_phone,</if>
+			<if test="warrantyPeropd != null">warranty_peropd,</if>
+			<if test="warrantyPrice != null">warranty_price,</if>
+			<if test="performancePay != null">performance_pay,</if>
+			<if test="htFile != null">ht_file,</if>
+			<if test="createTime != null">create_time,</if>
+			<if test="createUserid != null">user_id,</if>
+			<if test="createUserdeptid != null">dept_id,</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="projectId != null">#{projectId},</if>
+			<if test="projectmsg != null">#{projectmsg},</if>
+			<if test="projectName != null">#{projectName},</if>
+			<if test="contractingUnit != null">#{contractingUnit},</if>
+			<if test="constructionUnit != null">#{constructionUnit},</if>
+			<if test="projectStatus != null">#{projectStatus},</if>
+			<if test="startTime != null">#{startTime},</if>
+			<if test="endTime != null">#{endTime},</if>
+			<if test="htId != null">#{htId},</if>
+			<if test="htName != null">#{htName},</if>
+			<if test="projectDate != null">#{projectDate},</if>
+			<if test="projectPrice != null">#{projectPrice},</if>
+			<if test="jContact != null">#{jContact},</if>
+			<if test="jPhone != null">#{jPhone},</if>
+			<if test="yContact != null">#{yContact},</if>
+			<if test="yPhone != null">#{yPhone},</if>
+			<if test="warrantyPeropd != null">#{warrantyPeropd},</if>
+			<if test="warrantyPrice != null">#{warrantyPrice},</if>
+			<if test="performancePay != null">#{performancePay},</if>
+			<if test="htFile != null">#{htFile},</if>
+			<if test="createTime != null">#{createTime},</if>
+			<if test="createUserid != null">#{createUserid},</if>
+			<if test="createUserdeptid != null">#{createUserdeptid},</if>
+		</trim>
+	</insert>
+	
+	<update id="updateSubcontract" parameterType="Subcontract">
+		update subcontract
+		<trim prefix="SET" suffixOverrides=",">
+			<if test="projectId != null">project_id = #{projectId},</if>
+			<if test="projectmsg != null">projectmsg = #{projectmsg},</if>
+			<if test="projectName != null">project_name = #{projectName},</if>
+			<if test="contractingUnit != null">contracting_unit = #{contractingUnit},</if>
+			<if test="constructionUnit != null">construction_unit = #{constructionUnit},</if>
+			<if test="projectStatus != null">project_status = #{projectStatus},</if>
+			<if test="startTime != null">start_time = #{startTime},</if>
+			<if test="endTime != null">end_time = #{endTime},</if>
+			<if test="htId != null">ht_id = #{htId},</if>
+			<if test="htName != null">ht_name = #{htName},</if>
+			<if test="projectDate != null">project_date = #{projectDate},</if>
+			<if test="projectPrice != null">project_price = #{projectPrice},</if>
+			<if test="jContact != null">j_contact = #{jContact},</if>
+			<if test="jPhone != null">j_phone = #{jPhone},</if>
+			<if test="yContact != null">y_contact = #{yContact},</if>
+			<if test="yPhone != null">y_phone = #{yPhone},</if>
+			<if test="warrantyPeropd != null">warranty_peropd = #{warrantyPeropd},</if>
+			<if test="warrantyPrice != null">warranty_price = #{warrantyPrice},</if>
+			<if test="performancePay != null">performance_pay = #{performancePay},</if>
+			<if test="htFile != null">ht_file = #{htFile},</if>
+			<if test="createTime != null">create_time = #{createTime},</if>
+			<if test="createUserid != null">user_id = #{createUserid},</if>
+			<if test="createUserdeptid != null">dept_id = #{createUserdeptid},</if>
+		</trim>
+		where id = #{id}
+	</update>
+	
+	<delete id="deleteSubcontractById" parameterType="Long">
+		delete
+		from subcontract
+		where id = #{id}
+	</delete>
+	
+	<delete id="deleteSubcontractByIds" parameterType="String">
+		delete from subcontract where id in
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+	
+	<!--查询当天 本周 本月合同-->
+	
+	<select id="countToday" parameterType="Subcontract" resultMap="SubcontractResult">
+		<include refid="selectSubcontractVo" />
+		<where>
+			${params.dataScope}
+		</where>
+	</select>
+	
+	
+	<select id="countThisWeek" parameterType="Subcontract" resultMap="SubcontractResult">
+		<include refid="selectSubcontractVo" />
+		<where>
+			YEAR (d.warranty_peropd) = YEAR (CURDATE())
+			${params.dataScope}
+		</where>
+	</select>
+	
+	
+	<select id="countThisMonth" parameterType="Subcontract" resultMap="SubcontractResult">
+		<include refid="selectSubcontractVo" />
+		<where>
+			YEAR (d.warranty_peropd) = YEAR (CURDATE())
+			AND MONTH (d.warranty_peropd) = MONTH (CURDATE())
+			${params.dataScope}
+		</where>
+	</select>
+	
+	<!--查询所有的合同金额-->
+	<select id="countPrice" parameterType="Subcontract" resultMap="SubcontractResult">
+		<include refid="selectSubcontractVo" />
+		<where>
+			${params.dataScope}
+		</where>
+	</select>
+	
+	<select id="endToday" parameterType="Subcontract" resultMap="SubcontractResult">
+		<include refid="selectSubcontractVo" />
+		<where>
+			YEAR (d.warranty_peropd) = YEAR (CURDATE())
+			AND MONTH (d.warranty_peropd) = MONTH (CURDATE())
+			${params.dataScope}
+		</where>
+	</select>
+	
+	<select id="endThisMonth" parameterType="Subcontract" resultMap="SubcontractResult">
+		<include refid="selectSubcontractVo" />
+		<where>
+			YEAR (d.warranty_peropd) = YEAR (CURDATE())
+			${params.dataScope}
+		</where>
+	</select>
+	
+	<select id="getTotalSubcontractAmount" resultType="BigDecimal">
+		SELECT SUM(a.project_price)
+		FROM subcontract a
+		WHERE 1=1
+		<if test="query.projectIds != null and !query.projectIds.isEmpty()">
+			AND a.project_id IN
+			<foreach item="id" index="index" collection="query.projectIds" open="(" separator="," close=")">
+				#{id}
+			</foreach>
+		</if>
+	</select>
+	
+	<select id="selectMgtOaContracts" resultType="MgtOaContracts">
+		select oa.*
+		from mgt_oa_contracts oa
+		where oa.project_contract_types = 1
+		  and oa.project_contract_id = #{id}
+	</select>
+	
+	<select id="selectMgtOtherContracts" resultType="MgtOtherContracts">
+		select ot.*
+		from mgt_other_contracts ot
+		where ot.project_contract_types = 1
+		  and ot.project_contract_id = #{id}
+	</select>
+	
+	<select id="selectProject" parameterType="Long" resultType="MgtProject" resultMap="MgtProjectResult">
+		SELECT p.*
+		FROM mgt_project p
+		WHERE p.project_id = #{projectId}
+	</select>
+	
+	<select id="selectProjectLeaderUserById" parameterType="Long" resultType="SysUserVo"
+			resultMap="SysUserVoResult">
+		select u.user_id, u.dept_id, u.nick_name as user_name, u.phonenumber, d.dept_name
+		from sys_user u
+				 left join sys_dept d on u.dept_id = d.dept_id
+		WHERE u.user_id = #{projectLeader}
+	</select>
+	
+	<select id="selectSubcontractListByProjectId" parameterType="Long" resultMap="SubcontractResult">
+		SELECT sc.*
+		FROM subcontract sc
+				 JOIN mgt_project p ON sc.project_id = p.project_id
+		WHERE p.pid = #{projectId}
+	</select>
+
+</mapper>

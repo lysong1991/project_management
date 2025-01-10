@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.ProjectcontractsMapper">
+	
+	<resultMap type="Projectcontracts" id="ProjectcontractsResult">
+		<result property="id" column="id" />
+		<result property="projectName" column="project_name" />
+		<result property="projectId" column="project_id" />
+		<result property="projectmsg" column="projectmsg" />
+		<result property="contractingUnit" column="contracting_unit" />
+		<result property="constructionUnit" column="construction_unit" />
+		<result property="projectStatus" column="project_status" />
+		<result property="startTime" column="start_time" />
+		<result property="endTime" column="end_time" />
+		<result property="htId" column="ht_id" />
+		<result property="htName" column="ht_name" />
+		<result property="projectDate" column="project_date" />
+		<result property="projectPrice" column="project_price" />
+		<result property="jContact" column="j_contact" />
+		<result property="jPhone" column="j_phone" />
+		<result property="yContact" column="y_contact" />
+		<result property="yPhone" column="y_phone" />
+		<result property="warrantyPeropd" column="warranty_peropd" />
+		<result property="warrantyPrice" column="warranty_price" />
+		<result property="performancePay" column="performance_pay" />
+		<result property="htFile" column="ht_file" />
+		<result property="createTime" column="create_time" />
+		<result property="createUserid" column="user_id" />
+		<result property="createDeptid" column="dept_id" />
+		<result property="projectConfirmPrice" column="project_confirm_price" />
+		
+		<association property="mgtProject" column="project_id" javaType="MgtProject"
+					 select="selectProject" />
+		
+		<collection property="mgtOaContracts" column="id" javaType="java.util.List"
+					ofType="MgtOaContracts"
+					select="selectMgtOaContracts" />
+		
+		<collection property="mgtOtherContracts" column="id" javaType="java.util.List"
+					ofType="MgtOtherContracts"
+					select="selectMgtOtherContracts" />
+	
+	</resultMap>
+	
+	<sql id="selectProjectcontractsVo">
+		select d.id,
+			   d.project_name,
+			   d.project_id,
+			   d.projectmsg,
+			   d.contracting_unit,
+			   d.construction_unit,
+			   d.project_status,
+			   d.start_time,
+			   d.end_time,
+			   d.ht_id,
+			   d.ht_name,
+			   d.project_date,
+			   d.project_price,
+			   d.j_contact,
+			   d.j_phone,
+			   d.y_contact,
+			   d.y_phone,
+			   d.warranty_peropd,
+			   d.warranty_price,
+			   d.performance_pay,
+			   d.ht_file,
+			   d.create_time,
+			   d.user_id,
+			   d.dept_id,
+			   d.project_confirm_price
+		from projectcontracts d
+	</sql>
+	
+	<select id="selectProjectcontractsList" parameterType="Projectcontracts" resultMap="ProjectcontractsResult">
+		<include refid="selectProjectcontractsVo" />
+		<where>
+			<if test="projectId != null ">and d.project_id = #{projectId}</if>
+			<if test="projectIds != null and !projectIds.isEmpty()">
+				and d.project_id in
+				<foreach item="id" collection="projectIds" open="(" separator="," close=")">
+					#{id}
+				</foreach>
+			</if>
+			<if test="projectmsg != null and projectmsg != ''">and d.projectmsg = #{projectmsg}</if>
+			<if test="projectDate != null">and d.project_date = #{projectDate}</if>
+			<if test="projectName != null  and projectName != ''">and d.project_name like concat('%', #{projectName},
+				'%')
+			</if>
+			<if test="projectStatus != null  and projectStatus != ''">and d.project_status = #{projectStatus}</if>
+			<if test="params.beginProjectDate != null and params.beginProjectDate != '' and params.endProjectDate != null and params.endProjectDate != ''">
+				and d.project_date between #{params.beginProjectDate} and #{params.endProjectDate}
+			</if>
+			${params.dataScope}
+		</where>
+	</select>
+	
+	<select id="selectProjectcontractsById" parameterType="Long" resultMap="ProjectcontractsResult">
+		<include refid="selectProjectcontractsVo" />
+		where d.id = #{id}
+	</select>
+	
+	<select id="selectProjectcontractsListByProjectIds" parameterType="java.util.Set"
+			resultMap="ProjectcontractsResult">
+		<include refid="selectProjectcontractsVo" />
+		<where>
+			<if test="projectIds != null and !projectIds.isEmpty()">
+				and d.project_id in
+				<foreach collection="projectIds" item="projectId" open="(" separator="," close=")">
+					#{projectId}
+				</foreach>
+			</if>
+		</where>
+	</select>
+	
+	<select id="selectProjectcontractsByProjectId" parameterType="Long" resultMap="ProjectcontractsResult">
+		<include refid="selectProjectcontractsVo" />
+		where d.project_id = #{projectId}
+	</select>
+	
+	<insert id="insertProjectcontracts" parameterType="Projectcontracts" useGeneratedKeys="true" keyProperty="id">
+		insert into projectcontracts
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="projectName != null and projectName != ''">project_name,</if>
+			<if test="projectId != null and projectId != ''">project_id,</if>
+			<if test="projectmsg != null">projectmsg,</if>
+			<if test="contractingUnit != null and contractingUnit != ''">contracting_unit,</if>
+			<if test="constructionUnit != null and constructionUnit != ''">construction_unit,</if>
+			<if test="projectStatus != null and projectStatus != ''">project_status,</if>
+			<if test="startTime != null">start_time,</if>
+			<if test="endTime != null">end_time,</if>
+			<if test="htId != null and htId != ''">ht_id,</if>
+			<if test="htName != null and htName != ''">ht_name,</if>
+			<if test="projectDate != null">project_date,</if>
+			<if test="projectPrice != null">project_price,</if>
+			<if test="jContact != null and jContact != ''">j_contact,</if>
+			<if test="jPhone != null and jPhone != ''">j_phone,</if>
+			<if test="yContact != null and yContact != ''">y_contact,</if>
+			<if test="yPhone != null and yPhone != ''">y_phone,</if>
+			<if test="warrantyPeropd != null">warranty_peropd,</if>
+			<if test="warrantyPrice != null">warranty_price,</if>
+			<if test="performancePay != null">performance_pay,</if>
+			<if test="htFile != null">ht_file,</if>
+			<if test="createTime != null">create_time,</if>
+			<if test="createUserid != null">user_id,</if>
+			<if test="createDeptid != null">dept_id,</if>
+			<if test="projectConfirmPrice != null">project_confirm_price,</if>
+		
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="projectName != null and projectName != ''">#{projectName},</if>
+			<if test="projectId != null and projectId != ''">#{projectId},</if>
+			<if test="projectmsg != null">#{projectmsg},</if>
+			<if test="contractingUnit != null and contractingUnit != ''">#{contractingUnit},</if>
+			<if test="constructionUnit != null and constructionUnit != ''">#{constructionUnit},</if>
+			<if test="projectStatus != null and projectStatus != ''">#{projectStatus},</if>
+			<if test="startTime != null">#{startTime},</if>
+			<if test="endTime != null">#{endTime},</if>
+			<if test="htId != null and htId != ''">#{htId},</if>
+			<if test="htName != null and htName != ''">#{htName},</if>
+			<if test="projectDate != null">#{projectDate},</if>
+			<if test="projectPrice != null">#{projectPrice},</if>
+			<if test="jContact != null and jContact != ''">#{jContact},</if>
+			<if test="jPhone != null and jPhone != ''">#{jPhone},</if>
+			<if test="yContact != null and yContact != ''">#{yContact},</if>
+			<if test="yPhone != null and yPhone != ''">#{yPhone},</if>
+			<if test="warrantyPeropd != null">#{warrantyPeropd},</if>
+			<if test="warrantyPrice != null">#{warrantyPrice},</if>
+			<if test="performancePay != null">#{performancePay},</if>
+			<if test="htFile != null">#{htFile},</if>
+			<if test="createTime != null">#{createTime},</if>
+			<if test="createUserid != null">#{createUserid},</if>
+			<if test="createDeptid != null">#{createDeptid},</if>
+			<if test="projectConfirmPrice != null">#{projectConfirmPrice},</if>
+		</trim>
+	</insert>
+	
+	<update id="updateProjectcontracts" parameterType="Projectcontracts">
+		update projectcontracts
+		<trim prefix="SET" suffixOverrides=",">
+			<if test="projectName != null and projectName != ''">project_name = #{projectName},</if>
+			<if test="projectId != null and projectId != ''">project_id = #{projectId},</if>
+			<if test="projectmsg != null">projectmsg = #{projectmsg},</if>
+			<if test="contractingUnit != null and contractingUnit != ''">contracting_unit = #{contractingUnit},</if>
+			<if test="constructionUnit != null and constructionUnit != ''">construction_unit = #{constructionUnit},</if>
+			<if test="projectStatus != null and projectStatus != ''">project_status = #{projectStatus},</if>
+			<if test="startTime != null">start_time = #{startTime},</if>
+			<if test="endTime != null">end_time = #{endTime},</if>
+			<if test="htId != null and htId != ''">ht_id = #{htId},</if>
+			<if test="htName != null and htName != ''">ht_name = #{htName},</if>
+			<if test="projectDate != null">project_date = #{projectDate},</if>
+			<if test="projectPrice != null">project_price = #{projectPrice},</if>
+			<if test="jContact != null and jContact != ''">j_contact = #{jContact},</if>
+			<if test="jPhone != null and jPhone != ''">j_phone = #{jPhone},</if>
+			<if test="yContact != null and yContact != ''">y_contact = #{yContact},</if>
+			<if test="yPhone != null and yPhone != ''">y_phone = #{yPhone},</if>
+			<if test="warrantyPeropd != null">warranty_peropd = #{warrantyPeropd},</if>
+			<if test="warrantyPrice != null">warranty_price = #{warrantyPrice},</if>
+			<if test="performancePay != null">performance_pay = #{performancePay},</if>
+			<if test="htFile != null">ht_file = #{htFile},</if>
+			<if test="createTime != null">create_time = #{createTime},</if>
+			<if test="createUserid != null">user_id = #{createUserid},</if>
+			<if test="createDeptid != null">dept_id = #{createDeptid},</if>
+			<if test="projectConfirmPrice != null">project_confirm_price = #{projectConfirmPrice},</if>
+		</trim>
+		where id = #{id}
+	</update>
+	
+	<delete id="deleteProjectcontractsById" parameterType="Long">
+		delete
+		from projectcontracts
+		where id = #{id}
+	</delete>
+	
+	<delete id="deleteProjectcontractsByIds" parameterType="String">
+		delete from projectcontracts where id in
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+	<!--查询当天 本周 本月合同-->
+	
+	<select id="countToday" parameterType="Projectcontracts" resultMap="ProjectcontractsResult">
+		<include refid="selectProjectcontractsVo" />
+		<where>
+			${params.dataScope}
+		</where>
+	</select>
+	
+	
+	<select id="countThisWeek" parameterType="Projectcontracts" resultMap="ProjectcontractsResult">
+		<include refid="selectProjectcontractsVo" />
+		<where>
+			YEAR (d.warranty_peropd) = YEAR (CURDATE())
+			${params.dataScope}
+		</where>
+	</select>
+	
+	
+	<select id="countThisMonth" resultType="Projectcontracts" resultMap="ProjectcontractsResult">
+		<include refid="selectProjectcontractsVo" />
+		<where>
+			YEAR (d.warranty_peropd) = YEAR (CURDATE())
+			AND MONTH (d.warranty_peropd) = MONTH (CURDATE())
+			${params.dataScope}
+		</where>
+	</select>
+	
+	<!--查询所有的合同金额-->
+	<select id="countPrice" resultType="Projectcontracts" resultMap="ProjectcontractsResult">
+		<include refid="selectProjectcontractsVo" />
+		<where>
+			${params.dataScope}
+		</where>
+	</select>
+	
+	<select id="endToday" resultType="Projectcontracts" resultMap="ProjectcontractsResult">
+		<include refid="selectProjectcontractsVo" />
+		<where>
+			YEAR (d.warranty_peropd) = YEAR (CURDATE())
+			AND MONTH (d.warranty_peropd) = MONTH (CURDATE())
+			${params.dataScope}
+		</where>
+	</select>
+	
+	<select id="endThisMonth" resultType="Projectcontracts" resultMap="ProjectcontractsResult">
+		<include refid="selectProjectcontractsVo" />
+		<where>
+			YEAR (d.warranty_peropd) = YEAR (CURDATE())
+			${params.dataScope}
+		</where>
+	</select>
+	
+	
+	<select id="getTotalContractAmount" resultType="BigDecimal">
+		SELECT SUM(a.project_price)
+		FROM projectcontracts a
+		WHERE 1=1
+		<if test="query.projectIds != null and !query.projectIds.isEmpty()">
+			AND a.project_id IN
+			<foreach item="id" index="index" collection="query.projectIds" open="(" separator="," close=")">
+				#{id}
+			</foreach>
+		</if>
+		<if test="query.startProjectDate == null and query.endProjectDate != null ">
+			AND a.project_date &lt;= #{query.endProjectDate}
+		</if>
+		<if test="query.startProjectDate != null and query.endProjectDate != null ">
+			and a.project_date between #{query.startProjectDate} and #{query.endProjectDate}
+		</if>
+	</select>
+	
+	<select id="selectMgtOaContracts" resultType="MgtOaContracts">
+		select oa.*
+		from mgt_oa_contracts oa
+		where oa.project_contract_types = 0
+		  and oa.project_contract_id = #{id}
+	</select>
+	
+	<select id="selectMgtOtherContracts" resultType="MgtOtherContracts">
+		select ot.*
+		from mgt_other_contracts ot
+		where ot.project_contract_types = 0
+		  and ot.project_contract_id = #{id}
+	</select>
+	
+	<select id="selectProject" parameterType="Long" resultType="MgtProject">
+		SELECT p.*
+		FROM mgt_project p
+		WHERE p.project_id = #{projectId}
+	</select>
+
+</mapper>

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.QualityInspectionMapper">
+
+    <resultMap type="QualityInspection" id="QualityInspectionResult">
+        <result property="id" column="id"/>
+        <result property="label" column="label"/>
+        <result property="term" column="term"/>
+        <result property="punish" column="punish"/>
+        <result property="project" column="project"/>
+        <result property="templateName" column="template_name"/>
+    </resultMap>
+
+    <sql id="selectQualityInspectionVo">
+        select a.id,
+               a.label,
+               a.term,
+               a.punish,
+               a.project
+        from quality_inspection a
+    </sql>
+
+    <select id="selectQualityInspectionList" parameterType="QualityInspection" resultMap="QualityInspectionResult">
+        <include refid="selectQualityInspectionVo"/>
+        <where>
+            <if test="label != null  and label != ''">and a.label like concat('%', #{label},'%')</if>
+            <if test="term != null  and term != ''">and a.term like concat('%', #{term},'%')</if>
+        </where>
+        ORDER BY a.label DESC
+    </select>
+
+    <select id="selectQualityInspectionById" parameterType="Long" resultMap="QualityInspectionResult">
+        <include refid="selectQualityInspectionVo"/>
+        where a.id = #{id}
+    </select>
+
+    <insert id="insertQualityInspection" parameterType="QualityInspection" useGeneratedKeys="true" keyProperty="id">
+        insert into quality_inspection
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="label != null">label,</if>
+            <if test="term != null">term,</if>
+            <if test="punish != null">punish,</if>
+            <if test="project != null">project,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="label != null">#{label},</if>
+            <if test="term != null">#{term},</if>
+            <if test="punish != null">#{punish},</if>
+            <if test="project != null">#{project},</if>
+        </trim>
+    </insert>
+
+    <update id="updateQualityInspection" parameterType="QualityInspection">
+        update quality_inspection
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="label != null">label = #{label},</if>
+            <if test="term != null">term = #{term},</if>
+            <if test="punish != null">punish = #{punish},</if>
+            <if test="project != null">project = #{project},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteQualityInspectionById" parameterType="Long">
+        delete
+        from quality_inspection
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteQualityInspectionByIds" parameterType="String">
+        delete from quality_inspection where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectQualityInspectionListByTemplate" parameterType="QualityInspectionTemplate"
+            resultMap="QualityInspectionResult">
+        select
+        a.id,
+        a.label,
+        a.term,
+        a.punish,
+        a.project,
+        t.template_name
+        from quality_inspection a
+        INNER JOIN quality_inspection_template t on t.quality_id = a.id
+        <where>
+            <if test="templateName != null  and templateName != ''">and t.template_name = #{templateName}</if>
+        </where>
+    </select>
+
+</mapper>

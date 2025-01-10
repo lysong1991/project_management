@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.MarginManagerMapper">
+
+    <resultMap type="MarginManager" id="MarginManagerResult">
+        <result property="id" column="id"/>
+        <result property="projectId" column="project_id"/>
+        <result property="projectName" column="project_name"/>
+        <result property="projectMode" column="project_mode"/>
+        <result property="contractUnit" column="contract_unit"/>
+        <result property="constructionUnit" column="construction_unit"/>
+        <result property="projectStatus" column="project_status"/>
+        <result property="marginStatus" column="margin_status"/>
+        <result property="payMargin" column="pay_margin"/>
+        <result property="payDate" column="pay_date"/>
+        <result property="payBank" column="pay_bank"/>
+        <result property="payAccount" column="pay_account"/>
+        <result property="mask" column="mask"/>
+        <result property="file" column="file"/>
+        <result property="createUserid" column="user_id"/>
+        <result property="createDeptid" column="dept_id"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+
+    <sql id="selectMarginManagerVo">
+        select d.id,
+               d.project_id,
+               d.project_name,
+               d.project_mode,
+               d.contract_unit,
+               d.construction_unit,
+               d.project_status,
+               d.margin_status,
+               d.pay_margin,
+               d.pay_date,
+               d.pay_bank,
+               d.pay_account,
+               d.mask,
+               d.file,
+               d.user_id,
+               d.dept_id,
+               d.create_time
+        from margin_manager d
+    </sql>
+
+    <select id="selectMarginManagerList" parameterType="MarginManager" resultMap="MarginManagerResult">
+        <include refid="selectMarginManagerVo"/>
+        <where>
+            <if test="projectName != null  and projectName != ''">and d.project_name like concat('%', #{projectName},
+                '%')
+            </if>
+            <if test="contractUnit != null  and contractUnit != ''">and d.contract_unit like concat('%', #{contractUnit},
+                '%')
+            </if>
+            <if test="constructionUnit != null  and constructionUnit != ''">and d.construction_unit like concat('%',
+                #{constructionUnit}, '%')
+            </if>
+        </where>
+    </select>
+
+    <select id="selectMarginManagerById" parameterType="Long" resultMap="MarginManagerResult">
+        <include refid="selectMarginManagerVo"/>
+        where d.id = #{id}
+    </select>
+
+    <insert id="insertMarginManager" parameterType="MarginManager" useGeneratedKeys="true" keyProperty="id">
+        insert into margin_manager
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="projectId != null">project_id,</if>
+            <if test="projectName != null">project_name,</if>
+            <if test="projectMode != null">project_mode,</if>
+            <if test="contractUnit != null">contract_unit,</if>
+            <if test="constructionUnit != null">construction_unit,</if>
+            <if test="projectStatus != null">project_status,</if>
+            <if test="marginStatus != null">margin_status,</if>
+            <if test="payMargin != null">pay_margin,</if>
+            <if test="payDate != null">pay_date,</if>
+            <if test="payBank != null">pay_bank,</if>
+            <if test="payAccount != null">pay_account,</if>
+            <if test="mask != null">mask,</if>
+            <if test="file != null">file,</if>
+            <if test="createUserid != null">user_id,</if>
+            <if test="createDeptid != null">dept_id,</if>
+            <if test="createTime != null">create_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="projectId != null">#{projectId},</if>
+            <if test="projectName != null">#{projectName},</if>
+            <if test="projectMode != null">#{projectMode},</if>
+            <if test="contractUnit != null">#{contractUnit},</if>
+            <if test="constructionUnit != null">#{constructionUnit},</if>
+            <if test="projectStatus != null">#{projectStatus},</if>
+            <if test="marginStatus != null">#{marginStatus},</if>
+            <if test="payMargin != null">#{payMargin},</if>
+            <if test="payDate != null">#{payDate},</if>
+            <if test="payBank != null">#{payBank},</if>
+            <if test="payAccount != null">#{payAccount},</if>
+            <if test="mask != null">#{mask},</if>
+            <if test="file != null">#{file},</if>
+            <if test="createUserid != null">#{createUserid},</if>
+            <if test="createDeptid != null">#{createDeptid},</if>
+            <if test="createTime != null">#{createTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateMarginManager" parameterType="MarginManager">
+        update margin_manager
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="projectId != null">project_id = #{projectId},</if>
+            <if test="projectName != null">project_name = #{projectName},</if>
+            <if test="projectMode != null">project_mode = #{projectMode},</if>
+            <if test="contractUnit != null">contract_unit = #{contractUnit},</if>
+            <if test="constructionUnit != null">construction_unit = #{constructionUnit},</if>
+            <if test="projectStatus != null">project_status = #{projectStatus},</if>
+            <if test="marginStatus != null">margin_status = #{marginStatus},</if>
+            <if test="payMargin != null">pay_margin = #{payMargin},</if>
+            <if test="payDate != null">pay_date = #{payDate},</if>
+            <if test="payBank != null">pay_bank = #{payBank},</if>
+            <if test="payAccount != null">pay_account = #{payAccount},</if>
+            <if test="mask != null">mask = #{mask},</if>
+            <if test="file != null">file = #{file},</if>
+            <if test="createUserid != null">user_id = #{createUserid},</if>
+            <if test="createDeptid != null">dept_id = #{createDeptid},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteMarginManagerById" parameterType="Long">
+        delete
+        from margin_manager
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteMarginManagerByIds" parameterType="String">
+        delete from margin_manager where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

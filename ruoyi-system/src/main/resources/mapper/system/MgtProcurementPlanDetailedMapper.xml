@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.MgtProcurementPlanDetailedMapper">
+
+    <resultMap type="MgtProcurementPlanDetailed" id="MgtProcurementPlanDetailedResult">
+        <result property="detailedId" column="detailed_id"/>
+        <result property="projectId" column="project_id"/>
+        <result property="budgetDetailedId" column="budget_detailed_id"/>
+        <result property="planId" column="plan_id"/>
+        <result property="materialId" column="material_id"/>
+        <result property="name" column="name"/>
+        <result property="features" column="features"/>
+        <result property="quantity" column="quantity"/>
+        <result property="unit" column="unit"/>
+        <result property="unitPrice" column="unit_price"/>
+        <result property="totalPrice" column="total_price"/>
+        <result property="file" column="file"/>
+        <result property="deptId" column="dept_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <sql id="selectMgtProcurementPlanDetailedVo">
+        select a.detailed_id,
+               a.project_id,
+               a.budget_detailed_id,
+               a.plan_id,
+               a.material_id,
+               a.name,
+               a.features,
+               a.quantity,
+               a.unit,
+               a.unit_price,
+               a.total_price,
+               a.file,
+               a.dept_id,
+               a.user_id,
+               a.create_by,
+               a.create_time,
+               a.update_by,
+               a.update_time
+        from mgt_procurement_plan_detailed a
+    </sql>
+
+    <select id="selectMgtProcurementPlanDetailedList" parameterType="MgtProcurementPlanDetailed"
+            resultMap="MgtProcurementPlanDetailedResult">
+        <include refid="selectMgtProcurementPlanDetailedVo"/>
+        <where>
+            <if test="projectId != null ">and a.project_id = #{projectId}</if>
+            <if test="budgetDetailedId != null ">and a.budget_detailed_id = #{budgetDetailedId}</if>
+            <if test="planId != null ">and a.plan_id = #{planId}</if>
+            <if test="name != null  and name != ''">and a.name like concat('%', #{name}, '%')</if>
+        </where>
+        ORDER BY a.create_time DESC
+    </select>
+
+    <select id="selectMgtProcurementPlanDetailedByDetailedId" parameterType="Long"
+            resultMap="MgtProcurementPlanDetailedResult">
+        <include refid="selectMgtProcurementPlanDetailedVo"/>
+        where a.detailed_id = #{detailedId}
+    </select>
+
+    <select id="selectMgtProcurementPlanDetailedByDetailedIds" parameterType="long[]"
+            resultMap="MgtProcurementPlanDetailedResult">
+        <include refid="selectMgtProcurementPlanDetailedVo"/>
+        where a.detailed_id in
+        <foreach item="detailedId" collection="array" open="(" separator="," close=")">
+            #{detailedId}
+        </foreach>
+    </select>
+
+    <insert id="insertMgtProcurementPlanDetailed" parameterType="MgtProcurementPlanDetailed" useGeneratedKeys="true"
+            keyProperty="detailedId">
+        insert into mgt_procurement_plan_detailed
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="projectId != null">project_id,</if>
+            <if test="budgetDetailedId != null">budget_detailed_id,</if>
+            <if test="planId != null">plan_id,</if>
+            <if test="materialId != null">material_id,</if>
+            <if test="name != null">name,</if>
+            <if test="features != null">features,</if>
+            <if test="quantity != null">quantity,</if>
+            <if test="unit != null">unit,</if>
+            <if test="unitPrice != null">unit_price,</if>
+            <if test="totalPrice != null">total_price,</if>
+            <if test="file != null">file,</if>
+            <if test="deptId != null">dept_id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="projectId != null">#{projectId},</if>
+            <if test="budgetDetailedId != null">#{budgetDetailedId},</if>
+            <if test="planId != null">#{planId},</if>
+            <if test="materialId != null">#{materialId},</if>
+            <if test="name != null">#{name},</if>
+            <if test="features != null">#{features},</if>
+            <if test="quantity != null">#{quantity},</if>
+            <if test="unit != null">#{unit},</if>
+            <if test="unitPrice != null">#{unitPrice},</if>
+            <if test="totalPrice != null">#{totalPrice},</if>
+            <if test="file != null">#{file},</if>
+            <if test="deptId != null">#{deptId},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateMgtProcurementPlanDetailed" parameterType="MgtProcurementPlanDetailed">
+        update mgt_procurement_plan_detailed
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="projectId != null">project_id = #{projectId},</if>
+            <if test="budgetDetailedId != null">budget_detailed_id = #{budgetDetailedId},</if>
+            <if test="planId != null">plan_id = #{planId},</if>
+            <if test="materialId != null">material_id = #{materialId},</if>
+            <if test="name != null">name = #{name},</if>
+            <if test="features != null">features = #{features},</if>
+            <if test="quantity != null">quantity = #{quantity},</if>
+            <if test="unit != null">unit = #{unit},</if>
+            <if test="unitPrice != null">unit_price = #{unitPrice},</if>
+            <if test="totalPrice != null">total_price = #{totalPrice},</if>
+            <if test="file != null">file = #{file},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where detailed_id = #{detailedId}
+    </update>
+
+    <delete id="deleteMgtProcurementPlanDetailedByDetailedId" parameterType="Long">
+        delete
+        from mgt_procurement_plan_detailed
+        where detailed_id = #{detailedId}
+    </delete>
+
+    <delete id="deleteMgtProcurementPlanDetailedByDetailedIds" parameterType="String">
+        delete from mgt_procurement_plan_detailed where detailed_id in
+        <foreach item="detailedId" collection="array" open="(" separator="," close=")">
+            #{detailedId}
+        </foreach>
+    </delete>
+
+    <delete id="deleteMgtProcurementPlanDetailedByPlanIds" parameterType="String">
+        delete from mgt_procurement_plan_detailed where plan_id in
+        <foreach item="planId" collection="array" open="(" separator="," close=")">
+            #{planId}
+        </foreach>
+    </delete>
+
+    <delete id="deleteMgtProcurementPlanDetailedByPlanId" parameterType="Long">
+        delete
+        from mgt_procurement_plan_detailed
+        where plan_id = #{planId}
+    </delete>
+
+    <insert id="batchMgtProcurementPlanDetailed">
+        insert into mgt_procurement_plan_detailed( detailed_id, project_id, budget_detailed_id, plan_id,material_id,
+        name, features,
+        quantity, unit, unit_price, total_price, file, dept_id, user_id, create_by, create_time, update_by, update_time)
+        values
+        <foreach item="item" index="index" collection="list" separator=",">
+            ( #{item.detailedId}, #{item.projectId}, #{item.budgetDetailedId}, #{item.planId},#{item.materialId},
+            #{item.name},
+            #{item.features}, #{item.quantity}, #{item.unit}, #{item.unitPrice}, #{item.totalPrice}, #{item.file},
+            #{item.deptId}, #{item.userId}, #{item.createBy}, #{item.createTime}, #{item.updateBy}, #{item.updateTime})
+        </foreach>
+    </insert>
+</mapper>

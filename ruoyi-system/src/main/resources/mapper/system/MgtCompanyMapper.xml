@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.MgtCompanyMapper">
+	
+	<resultMap type="MgtCompany" id="MgtCompanyResult">
+		<result property="companyId" column="company_id" />
+		<result property="companyName" column="company_name" />
+		<result property="companyLegalPerson" column="company_legal_person" />
+		<result property="companyContacts" column="company_contacts" />
+		<result property="companyContactNumber" column="company_contact_number" />
+		<result property="companyBusinessScope" column="company_business_scope" />
+		<result property="remarks" column="remarks" />
+		<result property="qualification" column="qualification" />
+		<result property="file" column="file" />
+		<result property="type" column="type" />
+		<result property="deptId" column="dept_id" />
+		<result property="userId" column="user_id" />
+		<result property="createBy" column="create_by" />
+		<result property="createTime" column="create_time" />
+		<result property="updateBy" column="update_by" />
+		<result property="updateTime" column="update_time" />
+	</resultMap>
+	
+	<sql id="selectMgtCompanyVo">
+		select company_id,
+			   company_name,
+			   company_legal_person,
+			   company_contacts,
+			   company_contact_number,
+			   company_business_scope,
+			   remarks,
+			   qualification,
+			   file,
+			   type,
+			   dept_id,
+			   user_id,
+			   create_by,
+			   create_time,
+			   update_by,
+			   update_time
+		from mgt_company
+	</sql>
+	
+	<select id="selectMgtCompanyList" parameterType="MgtCompany" resultMap="MgtCompanyResult">
+		<include refid="selectMgtCompanyVo" />
+		<where>
+			<if test="companyName != null  and companyName != ''">and company_name like concat('%', #{companyName}, '%')</if>
+			<if test="companyLegalPerson != null  and companyLegalPerson != ''">and company_legal_person = #{companyLegalPerson}</if>
+			<if test="companyContacts != null  and companyContacts != ''">and company_contacts = #{companyContacts}</if>
+			<if test="companyContactNumber != null ">and company_contact_number = #{companyContactNumber}</if>
+			<if test="companyBusinessScope != null  and companyBusinessScope != ''">and company_business_scope = #{companyBusinessScope}</if>
+			<if test="remarks != null  and remarks != ''">and remarks = #{remarks}</if>
+			<if test="qualification != null  and qualification != ''">and qualification = #{qualification}</if>
+			<if test="file != null  and file != ''">and file = #{file}</if>
+			<if test="type != null  and type != ''">and type = #{type}</if>
+			<if test="deptId != null ">and dept_id = #{deptId}</if>
+			<if test="userId != null ">and user_id = #{userId}</if>
+		</where>
+	</select>
+	
+	<select id="selectMgtCompanyByCompanyId" parameterType="Long" resultMap="MgtCompanyResult">
+		<include refid="selectMgtCompanyVo" />
+		where company_id = #{companyId}
+	</select>
+	
+	<insert id="insertMgtCompany" parameterType="MgtCompany" useGeneratedKeys="true" keyProperty="companyId">
+		insert into mgt_company
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="companyName != null">company_name,</if>
+			<if test="companyLegalPerson != null">company_legal_person,</if>
+			<if test="companyContacts != null">company_contacts,</if>
+			<if test="companyContactNumber != null">company_contact_number,</if>
+			<if test="companyBusinessScope != null">company_business_scope,</if>
+			<if test="remarks != null">remarks,</if>
+			<if test="qualification != null">qualification,</if>
+			<if test="file != null">file,</if>
+			<if test="type != null">type,</if>
+			<if test="deptId != null">dept_id,</if>
+			<if test="userId != null">user_id,</if>
+			<if test="createBy != null">create_by,</if>
+			<if test="createTime != null">create_time,</if>
+			<if test="updateBy != null">update_by,</if>
+			<if test="updateTime != null">update_time,</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="companyName != null">#{companyName},</if>
+			<if test="companyLegalPerson != null">#{companyLegalPerson},</if>
+			<if test="companyContacts != null">#{companyContacts},</if>
+			<if test="companyContactNumber != null">#{companyContactNumber},</if>
+			<if test="companyBusinessScope != null">#{companyBusinessScope},</if>
+			<if test="remarks != null">#{remarks},</if>
+			<if test="qualification != null">#{qualification},</if>
+			<if test="file != null">#{file},</if>
+			<if test="type != null">#{type},</if>
+			<if test="deptId != null">#{deptId},</if>
+			<if test="userId != null">#{userId},</if>
+			<if test="createBy != null">#{createBy},</if>
+			<if test="createTime != null">#{createTime},</if>
+			<if test="updateBy != null">#{updateBy},</if>
+			<if test="updateTime != null">#{updateTime},</if>
+		</trim>
+	</insert>
+	
+	<update id="updateMgtCompany" parameterType="MgtCompany">
+		update mgt_company
+		<trim prefix="SET" suffixOverrides=",">
+			<if test="companyName != null">company_name = #{companyName},</if>
+			<if test="companyLegalPerson != null">company_legal_person = #{companyLegalPerson},</if>
+			<if test="companyContacts != null">company_contacts = #{companyContacts},</if>
+			<if test="companyContactNumber != null">company_contact_number = #{companyContactNumber},</if>
+			<if test="companyBusinessScope != null">company_business_scope = #{companyBusinessScope},</if>
+			<if test="remarks != null">remarks = #{remarks},</if>
+			<if test="qualification != null">qualification = #{qualification},</if>
+			<if test="file != null">file = #{file},</if>
+			<if test="type != null">type = #{type},</if>
+			<if test="deptId != null">dept_id = #{deptId},</if>
+			<if test="userId != null">user_id = #{userId},</if>
+			<if test="createBy != null">create_by = #{createBy},</if>
+			<if test="createTime != null">create_time = #{createTime},</if>
+			<if test="updateBy != null">update_by = #{updateBy},</if>
+			<if test="updateTime != null">update_time = #{updateTime},</if>
+		</trim>
+		where company_id = #{companyId}
+	</update>
+	
+	<delete id="deleteMgtCompanyByCompanyId" parameterType="Long">
+		delete
+		from mgt_company
+		where company_id = #{companyId}
+	</delete>
+	
+	<delete id="deleteMgtCompanyByCompanyIds" parameterType="String">
+		delete from mgt_company where company_id in
+		<foreach item="companyId" collection="array" open="(" separator="," close=")">
+			#{companyId}
+		</foreach>
+	</delete>
+</mapper>

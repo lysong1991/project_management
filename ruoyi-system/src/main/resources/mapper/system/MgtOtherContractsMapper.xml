@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.MgtOtherContractsMapper">
+
+    <resultMap type="MgtOtherContracts" id="MgtOtherContractsResult">
+        <result property="contractId" column="contract_id"/>
+        <result property="projectId" column="project_id"/>
+        <result property="projectContractId" column="project_contract_id"/>
+        <result property="materialsContractId" column="materials_contract_id"/>
+        <result property="projectContractTypes" column="project_contract_types"/>
+        <result property="contractTitle" column="contract_title"/>
+        <result property="deptCode" column="dept_code"/>
+        <result property="contractSn" column="contract_sn"/>
+        <result property="applicant" column="applicant"/>
+        <result property="applicantDept" column="applicant_dept"/>
+        <result property="applicationDate" column="application_date"/>
+        <result property="projectName" column="project_name"/>
+        <result property="newSupplier" column="new_supplier"/>
+        <result property="signingDate" column="signing_date"/>
+        <result property="contractType" column="contract_type"/>
+        <result property="signingAmount" column="signing_amount"/>
+        <result property="signingAmountStr" column="signing_amount_str"/>
+        <result property="ourContractingUnit" column="our_contracting_unit"/>
+        <result property="ourPerson" column="our_person"/>
+        <result property="ourPersonMobile" column="our_person_mobile"/>
+        <result property="otherContractingUnit" column="other_contracting_unit"/>
+        <result property="otherPerson" column="other_person"/>
+        <result property="otherPersonMobile" column="other_person_mobile"/>
+        <result property="contractOverview" column="contract_overview"/>
+        <result property="remarks" column="remarks"/>
+        <result property="contractFile" column="contract_file"/>
+        <result property="crteatetime" column="crteatetime"/>
+    </resultMap>
+
+    <sql id="selectMgtOtherContractsVo">
+        select contract_id,
+               project_id,
+               project_contract_id,
+               project_contract_types,
+               contract_title,
+               dept_code,
+               contract_sn,
+               applicant,
+               applicant_dept,
+               application_date,
+               project_name,
+               new_supplier,
+               signing_date,
+               contract_type,
+               signing_amount,
+               signing_amount_str,
+               our_contracting_unit,
+               our_person,
+               our_person_mobile,
+               other_contracting_unit,
+               other_person,
+               other_person_mobile,
+               contract_overview,
+               remarks,
+               contract_file,
+               crteatetime
+        from mgt_other_contracts
+    </sql>
+
+    <select id="selectMgtOtherContractsList" parameterType="MgtOtherContracts" resultMap="MgtOtherContractsResult">
+        <include refid="selectMgtOtherContractsVo"/>
+        <where>
+            <if test="projectId != null ">and project_id = #{projectId}</if>
+            <if test="projectContractId != null ">and project_contract_id = #{projectContractId}</if>
+            <if test="materialsContractId != null ">and materials_contract_id = #{materialsContractId}</if>
+            <if test="projectContractTypes != null  and projectContractTypes != ''">and project_contract_types =
+                #{projectContractTypes}
+            </if>
+            <if test="contractTitle != null  and contractTitle != ''">and contract_title = #{contractTitle}</if>
+            <if test="deptCode != null  and deptCode != ''">and dept_code = #{deptCode}</if>
+            <if test="contractSn != null  and contractSn != ''">and contract_sn = #{contractSn}</if>
+            <if test="applicant != null  and applicant != ''">and applicant = #{applicant}</if>
+            <if test="applicantDept != null  and applicantDept != ''">and applicant_dept = #{applicantDept}</if>
+            <if test="applicationDate != null ">and application_date = #{applicationDate}</if>
+            <if test="projectName != null  and projectName != ''">and project_name like concat('%', #{projectName},
+                '%')
+            </if>
+            <if test="newSupplier != null  and newSupplier != ''">and new_supplier = #{newSupplier}</if>
+            <if test="signingDate != null ">and signing_date = #{signingDate}</if>
+            <if test="contractType != null  and contractType != ''">and contract_type = #{contractType}</if>
+            <if test="signingAmount != null  and signingAmount != ''">and signing_amount = #{signingAmount}</if>
+            <if test="signingAmountStr != null  and signingAmountStr != ''">and signing_amount_str =
+                #{signingAmountStr}
+            </if>
+            <if test="ourContractingUnit != null  and ourContractingUnit != ''">and our_contracting_unit =
+                #{ourContractingUnit}
+            </if>
+            <if test="ourPerson != null  and ourPerson != ''">and our_person = #{ourPerson}</if>
+            <if test="ourPersonMobile != null  and ourPersonMobile != ''">and our_person_mobile = #{ourPersonMobile}
+            </if>
+            <if test="otherContractingUnit != null  and otherContractingUnit != ''">and other_contracting_unit =
+                #{otherContractingUnit}
+            </if>
+            <if test="otherPerson != null  and otherPerson != ''">and other_person = #{otherPerson}</if>
+            <if test="otherPersonMobile != null  and otherPersonMobile != ''">and other_person_mobile =
+                #{otherPersonMobile}
+            </if>
+            <if test="contractOverview != null  and contractOverview != ''">and contract_overview =
+                #{contractOverview}
+            </if>
+            <if test="remarks != null  and remarks != ''">and remarks = #{remarks}</if>
+            <if test="contractFile != null  and contractFile != ''">and contract_file = #{contractFile}</if>
+            <if test="crteatetime != null ">and crteatetime = #{crteatetime}</if>
+        </where>
+        ORDER BY crteatetime desc
+    </select>
+
+    <select id="selectMgtOtherContractsByContractId" parameterType="Long" resultMap="MgtOtherContractsResult">
+        <include refid="selectMgtOtherContractsVo"/>
+        where contract_id = #{contractId}
+    </select>
+
+    <insert id="insertMgtOtherContracts" parameterType="MgtOtherContracts">
+        insert into mgt_other_contracts
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="contractId != null">contract_id,</if>
+            <if test="projectId != null">project_id,</if>
+            <if test="projectContractId != null">project_contract_id,</if>
+            <if test="materialsContractId != null">materials_contract_id,</if>
+            <if test="projectContractTypes != null">project_contract_types,</if>
+            <if test="contractTitle != null">contract_title,</if>
+            <if test="deptCode != null">dept_code,</if>
+            <if test="contractSn != null">contract_sn,</if>
+            <if test="applicant != null">applicant,</if>
+            <if test="applicantDept != null">applicant_dept,</if>
+            <if test="applicationDate != null">application_date,</if>
+            <if test="projectName != null">project_name,</if>
+            <if test="newSupplier != null">new_supplier,</if>
+            <if test="signingDate != null">signing_date,</if>
+            <if test="contractType != null">contract_type,</if>
+            <if test="signingAmount != null">signing_amount,</if>
+            <if test="signingAmountStr != null">signing_amount_str,</if>
+            <if test="ourContractingUnit != null">our_contracting_unit,</if>
+            <if test="ourPerson != null">our_person,</if>
+            <if test="ourPersonMobile != null">our_person_mobile,</if>
+            <if test="otherContractingUnit != null">other_contracting_unit,</if>
+            <if test="otherPerson != null">other_person,</if>
+            <if test="otherPersonMobile != null">other_person_mobile,</if>
+            <if test="contractOverview != null">contract_overview,</if>
+            <if test="remarks != null">remarks,</if>
+            <if test="contractFile != null">contract_file,</if>
+            <if test="crteatetime != null">crteatetime,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="contractId != null">#{contractId},</if>
+            <if test="projectId != null">#{projectId},</if>
+            <if test="projectContractId != null">#{projectContractId},</if>
+            <if test="materialsContractId != null">#{materialsContractId},</if>
+            <if test="projectContractTypes != null">#{projectContractTypes},</if>
+            <if test="contractTitle != null">#{contractTitle},</if>
+            <if test="deptCode != null">#{deptCode},</if>
+            <if test="contractSn != null">#{contractSn},</if>
+            <if test="applicant != null">#{applicant},</if>
+            <if test="applicantDept != null">#{applicantDept},</if>
+            <if test="applicationDate != null">#{applicationDate},</if>
+            <if test="projectName != null">#{projectName},</if>
+            <if test="newSupplier != null">#{newSupplier},</if>
+            <if test="signingDate != null">#{signingDate},</if>
+            <if test="contractType != null">#{contractType},</if>
+            <if test="signingAmount != null">#{signingAmount},</if>
+            <if test="signingAmountStr != null">#{signingAmountStr},</if>
+            <if test="ourContractingUnit != null">#{ourContractingUnit},</if>
+            <if test="ourPerson != null">#{ourPerson},</if>
+            <if test="ourPersonMobile != null">#{ourPersonMobile},</if>
+            <if test="otherContractingUnit != null">#{otherContractingUnit},</if>
+            <if test="otherPerson != null">#{otherPerson},</if>
+            <if test="otherPersonMobile != null">#{otherPersonMobile},</if>
+            <if test="contractOverview != null">#{contractOverview},</if>
+            <if test="remarks != null">#{remarks},</if>
+            <if test="contractFile != null">#{contractFile},</if>
+            <if test="crteatetime != null">#{crteatetime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateMgtOtherContracts" parameterType="MgtOtherContracts">
+        update mgt_other_contracts
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="projectId != null">project_id = #{projectId},</if>
+            <if test="projectContractId != null">project_contract_id = #{projectContractId},</if>
+            <if test="materialsContractId != null">project_contract_id = #{materialsContractId},</if>
+            <if test="projectContractTypes != null">project_contract_types = #{projectContractTypes},</if>
+            <if test="contractTitle != null">contract_title = #{contractTitle},</if>
+            <if test="deptCode != null">dept_code = #{deptCode},</if>
+            <if test="contractSn != null">contract_sn = #{contractSn},</if>
+            <if test="applicant != null">applicant = #{applicant},</if>
+            <if test="applicantDept != null">applicant_dept = #{applicantDept},</if>
+            <if test="applicationDate != null">application_date = #{applicationDate},</if>
+            <if test="projectName != null">project_name = #{projectName},</if>
+            <if test="newSupplier != null">new_supplier = #{newSupplier},</if>
+            <if test="signingDate != null">signing_date = #{signingDate},</if>
+            <if test="contractType != null">contract_type = #{contractType},</if>
+            <if test="signingAmount != null">signing_amount = #{signingAmount},</if>
+            <if test="signingAmountStr != null">signing_amount_str = #{signingAmountStr},</if>
+            <if test="ourContractingUnit != null">our_contracting_unit = #{ourContractingUnit},</if>
+            <if test="ourPerson != null">our_person = #{ourPerson},</if>
+            <if test="ourPersonMobile != null">our_person_mobile = #{ourPersonMobile},</if>
+            <if test="otherContractingUnit != null">other_contracting_unit = #{otherContractingUnit},</if>
+            <if test="otherPerson != null">other_person = #{otherPerson},</if>
+            <if test="otherPersonMobile != null">other_person_mobile = #{otherPersonMobile},</if>
+            <if test="contractOverview != null">contract_overview = #{contractOverview},</if>
+            <if test="remarks != null">remarks = #{remarks},</if>
+            <if test="contractFile != null">contract_file = #{contractFile},</if>
+            <if test="crteatetime != null">crteatetime = #{crteatetime},</if>
+        </trim>
+        where contract_id = #{contractId}
+    </update>
+
+    <delete id="deleteMgtOtherContractsByContractId" parameterType="Long">
+        delete
+        from mgt_other_contracts
+        where contract_id = #{contractId}
+    </delete>
+
+    <delete id="deleteMgtOtherContractsByContractIds" parameterType="String">
+        delete from mgt_other_contracts where contract_id in
+        <foreach item="contractId" collection="array" open="(" separator="," close=")">
+            #{contractId}
+        </foreach>
+    </delete>
+</mapper>

@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.MgtDesignChangeMapper">
+
+    <resultMap type="MgtDesignChange" id="MgtDesignChangeResult">
+        <result property="changeId" column="change_id"/>
+        <result property="projectId" column="project_id"/>
+        <result property="fillingDate" column="filling_date"/>
+        <result property="changeAmount" column="change_amount"/>
+        <result property="changeContent" column="change_content"/>
+        <result property="describeContent" column="describe_content"/>
+        <result property="constructionConfirmation" column="construction_confirmation"/>
+        <result property="supervisionConfirmation" column="supervision_confirmation"/>
+        <result property="designConfirmation" column="design_confirmation"/>
+        <result property="partyConfirms" column="party_confirms"/>
+        <result property="file" column="file"/>
+        <result property="dataStatus" column="data_status"/>
+        <result property="deptId" column="dept_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <association property="mgtProject" column="project_id" javaType="MgtProject"
+                     select="selectProjectById"/>
+    </resultMap>
+
+    <sql id="selectMgtDesignChangeVo">
+        select a.change_id,
+               a.project_id,
+               a.filling_date,
+               a.change_amount,
+               a.change_content,
+               a.describe_content,
+               a.construction_confirmation,
+               a.supervision_confirmation,
+               a.design_confirmation,
+               a.party_confirms,
+               a.file,
+               a.data_status,
+               a.dept_id,
+               a.user_id,
+               a.create_by,
+               a.create_time,
+               a.update_by,
+               a.update_time
+        from mgt_design_change a
+                 LEFT JOIN mgt_project p ON a.project_id = p.project_id
+    </sql>
+
+    <select id="selectMgtDesignChangeList" parameterType="MgtDesignChange" resultMap="MgtDesignChangeResult">
+        <include refid="selectMgtDesignChangeVo"/>
+        <where>
+            <if test="projectId != null ">and a.project_id = #{projectId}</if>
+            <if test="mgtProject != null and mgtProject.projectName != null and mgtProject.projectName != ''">
+                and p.project_name like concat('%', #{mgtProject.projectName}, '%')
+            </if>
+            <!-- 数据范围过滤 -->
+            ${params.dataScope}
+        </where>
+        ORDER BY a.create_time DESC
+    </select>
+
+    <select id="selectMgtDesignChangeByChangeId" parameterType="Long" resultMap="MgtDesignChangeResult">
+        <include refid="selectMgtDesignChangeVo"/>
+        where a.change_id = #{changeId}
+    </select>
+
+    <insert id="insertMgtDesignChange" parameterType="MgtDesignChange" useGeneratedKeys="true" keyProperty="changeId">
+        insert into mgt_design_change
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="projectId != null">project_id,</if>
+            <if test="fillingDate != null">filling_date,</if>
+            <if test="changeAmount != null">change_amount,</if>
+            <if test="changeContent != null">change_content,</if>
+            <if test="describeContent != null">describe_content,</if>
+            <if test="constructionConfirmation != null">construction_confirmation,</if>
+            <if test="supervisionConfirmation != null">supervision_confirmation,</if>
+            <if test="designConfirmation != null">design_confirmation,</if>
+            <if test="partyConfirms != null">party_confirms,</if>
+            <if test="file != null">file,</if>
+            <if test="dataStatus != null">data_status,</if>
+            <if test="deptId != null">dept_id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="projectId != null">#{projectId},</if>
+            <if test="fillingDate != null">#{fillingDate},</if>
+            <if test="changeAmount != null">#{changeAmount},</if>
+            <if test="changeContent != null">#{changeContent},</if>
+            <if test="describeContent != null">#{describeContent},</if>
+            <if test="constructionConfirmation != null">#{constructionConfirmation},</if>
+            <if test="supervisionConfirmation != null">#{supervisionConfirmation},</if>
+            <if test="designConfirmation != null">#{designConfirmation},</if>
+            <if test="partyConfirms != null">#{partyConfirms},</if>
+            <if test="file != null">#{file},</if>
+            <if test="dataStatus != null">#{dataStatus},</if>
+            <if test="deptId != null">#{deptId},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateMgtDesignChange" parameterType="MgtDesignChange">
+        update mgt_design_change
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="projectId != null">project_id = #{projectId},</if>
+            <if test="fillingDate != null">filling_date = #{fillingDate},</if>
+            <if test="changeAmount != null">change_amount = #{changeAmount},</if>
+            <if test="changeContent != null">change_content = #{changeContent},</if>
+            <if test="describeContent != null">describe_content = #{describeContent},</if>
+            <if test="constructionConfirmation != null">construction_confirmation = #{constructionConfirmation},</if>
+            <if test="supervisionConfirmation != null">supervision_confirmation = #{supervisionConfirmation},</if>
+            <if test="designConfirmation != null">design_confirmation = #{designConfirmation},</if>
+            <if test="partyConfirms != null">party_confirms = #{partyConfirms},</if>
+            <if test="file != null">file = #{file},</if>
+            <if test="dataStatus != null">data_status = #{dataStatus},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where change_id = #{changeId}
+    </update>
+
+    <delete id="deleteMgtDesignChangeByChangeId" parameterType="Long">
+        delete
+        from mgt_design_change
+        where change_id = #{changeId}
+    </delete>
+
+    <delete id="deleteMgtDesignChangeByChangeIds" parameterType="String">
+        delete from mgt_design_change where change_id in
+        <foreach item="changeId" collection="array" open="(" separator="," close=")">
+            #{changeId}
+        </foreach>
+    </delete>
+
+    <select id="selectProjectById" parameterType="Long" resultType="MgtProject">
+        SELECT p.*
+        FROM mgt_project p
+        WHERE p.project_id = #{projectId}
+    </select>
+</mapper>

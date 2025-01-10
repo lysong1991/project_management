@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.MgtProcurementPlanMapper">
+
+    <resultMap type="MgtProcurementPlan" id="MgtProcurementPlanResult">
+        <result property="planId" column="plan_id"/>
+        <result property="projectId" column="project_id"/>
+        <result property="budgetId" column="budget_id"/>
+        <result property="name" column="name"/>
+        <result property="totalPrice" column="total_price"/>
+        <result property="file" column="file"/>
+        <result property="procurementPlanStatus" column="procurement_plan_status"/>
+        <result property="deptId" column="dept_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <association property="mgtProject" column="project_id" javaType="MgtProject"
+                     select="selectProjectById"/>
+        <association property="mgtProjectBudget" column="budget_id" javaType="MgtProjectBudget"
+                     select="selectMgtProjectBudgetById"/>
+        <collection property="mgtProcurementPlanDetailedList" column="plan_id" javaType="java.util.List"
+                    ofType="MgtProcurementPlanDetailed"
+                    select="selectMgtProcurementPlanDetailedList"/>
+    </resultMap>
+
+    <resultMap type="MgtProcurementPlanDetailed" id="MgtProcurementPlanDetailedResult">
+        <result property="detailedId" column="detailed_id"/>
+        <result property="projectId" column="project_id"/>
+        <result property="budgetDetailedId" column="budget_detailed_id"/>
+        <result property="planId" column="plan_id"/>
+        <result property="materialId" column="material_id"/>
+        <result property="name" column="name"/>
+        <result property="features" column="features"/>
+        <result property="quantity" column="quantity"/>
+        <result property="unit" column="unit"/>
+        <result property="unitPrice" column="unit_price"/>
+        <result property="totalPrice" column="total_price"/>
+        <result property="file" column="file"/>
+        <result property="deptId" column="dept_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <association property="basicMaterial" column="material_id" javaType="BasicMaterial"
+                     select="selectBasicMaterialById"/>
+        <association property="mgtProjectBudgetDetailed" column="budget_detailed_id" javaType="MgtProjectBudgetDetailed"
+                     select="selectMgtProjectBudgetDetailedById"/>
+    </resultMap>
+
+    <resultMap type="MgtProjectBudgetDetailed" id="MgtProjectBudgetDetailedResult">
+        <result property="detailedId" column="detailed_id"/>
+        <result property="projectId" column="project_id"/>
+        <result property="budgetId" column="budget_id"/>
+        <result property="code" column="code"/>
+        <result property="name" column="name"/>
+        <result property="features" column="features"/>
+        <result property="unit" column="unit"/>
+        <result property="quantity" column="quantity"/>
+        <result property="actualQuantity" column="actual_quantity"/>
+        <result property="detailedType" column="detailed_type"/>
+        <result property="dataType" column="data_type"/>
+        <association property="zbPrices" column="detailed_id" javaType="MgtProjectBudgetPrices"
+                     select="selectZbPrices"/>
+    </resultMap>
+
+    <sql id="selectMgtProcurementPlanVo">
+        select a.plan_id,
+               a.jindie_id,
+               a.jindie_number,
+               a.project_id,
+               a.budget_id,
+               a.name,
+               a.total_price,
+               a.file,
+               a.procurement_plan_status,
+               a.dept_id,
+               a.user_id,
+               a.create_by,
+               a.create_time,
+               a.update_by,
+               a.update_time
+        from mgt_procurement_plan a
+                 LEFT JOIN mgt_project p ON a.project_id = p.project_id
+    </sql>
+
+    <select id="selectMgtProcurementPlanList" parameterType="MgtProcurementPlan" resultMap="MgtProcurementPlanResult">
+        <include refid="selectMgtProcurementPlanVo"/>
+        <where>
+            <if test="projectId != null ">and a.project_id = #{projectId}</if>
+            <if test="budgetId != null ">and a.budget_id = #{budgetId}</if>
+            <if test="name != null  and name != ''">and a.name like concat('%', #{name}, '%')</if>
+            <if test="procurementPlanStatus != null  and procurementPlanStatus != ''">and a.procurement_plan_status =
+                #{procurementPlanStatus}
+            </if>
+            <if test="mgtProject != null and mgtProject.projectName != null and mgtProject.projectName != ''">
+                and p.project_name like concat('%', #{mgtProject.projectName}, '%')
+            </if>
+            <if test="mgtProject != null and mgtProject.contractingMode != null and mgtProject.contractingMode != ''">
+                and p.contracting_mode = #{mgtProject.contractingMode}
+            </if>
+            <if test="mgtProject != null and mgtProject.settlementStatus != null and mgtProject.settlementStatus != ''">
+                and p.settlement_status = #{mgtProject.settlementStatus}
+            </if>
+            <!-- 数据范围过滤 -->
+            ${params.dataScope}
+        </where>
+        ORDER BY a.create_time DESC
+    </select>
+
+    <select id="selectMgtProcurementPlanByPlanId" parameterType="Long" resultMap="MgtProcurementPlanResult">
+        <include refid="selectMgtProcurementPlanVo"/>
+        where a.plan_id = #{planId}
+    </select>
+
+    <select id="selectMgtProcurementPlanByProjectId" parameterType="Long" resultMap="MgtProcurementPlanResult">
+        <include refid="selectMgtProcurementPlanVo"/>
+        where a.project_id = #{projectId}
+    </select>
+
+    <insert id="insertMgtProcurementPlan" parameterType="MgtProcurementPlan" useGeneratedKeys="true"
+            keyProperty="planId">
+        insert into mgt_procurement_plan
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="projectId != null">project_id,</if>
+            <if test="budgetId != null">budget_id,</if>
+            <if test="name != null">name,</if>
+            <if test="totalPrice != null">total_price,</if>
+            <if test="file != null">file,</if>
+            <if test="procurementPlanStatus != null">procurement_plan_status,</if>
+            <if test="deptId != null">dept_id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+
+            <if test="jindieId != null">jindie_id,</if>
+            <if test="jindieNumber != null">jindie_number,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="projectId != null">#{projectId},</if>
+            <if test="budgetId != null">#{budgetId},</if>
+            <if test="name != null">#{name},</if>
+            <if test="totalPrice != null">#{totalPrice},</if>
+            <if test="file != null">#{file},</if>
+            <if test="procurementPlanStatus != null">#{procurementPlanStatus},</if>
+            <if test="deptId != null">#{deptId},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+
+            <if test="jindieId != null">#{jindieId},</if>
+            <if test="jindieNumber != null">#{jindieNumber},</if>
+
+        </trim>
+    </insert>
+
+    <update id="updateMgtProcurementPlan" parameterType="MgtProcurementPlan">
+        update mgt_procurement_plan
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="projectId != null">project_id = #{projectId},</if>
+            <if test="budgetId != null">budget_id = #{budgetId},</if>
+            <if test="name != null">name = #{name},</if>
+            <if test="totalPrice != null">total_price = #{totalPrice},</if>
+            <if test="file != null">file = #{file},</if>
+            <if test="procurementPlanStatus != null">procurement_plan_status = #{procurementPlanStatus},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+
+            <if test="jindieId != null">jindie_id = #{jindieId},</if>
+            <if test="jindieNumber != null">jindie_number = #{jindieNumber},</if>
+        </trim>
+        where plan_id = #{planId}
+    </update>
+
+    <delete id="deleteMgtProcurementPlanByPlanId" parameterType="Long">
+        delete
+        from mgt_procurement_plan
+        where plan_id = #{planId}
+    </delete>
+
+    <delete id="deleteMgtProcurementPlanByPlanIds" parameterType="String">
+        delete from mgt_procurement_plan where plan_id in
+        <foreach item="planId" collection="array" open="(" separator="," close=")">
+            #{planId}
+        </foreach>
+    </delete>
+
+    <select id="selectProjectById" parameterType="Long" resultType="MgtProject">
+        SELECT p.*
+        FROM mgt_project p
+        WHERE p.project_id = #{projectId}
+    </select>
+
+    <select id="selectMgtProjectBudgetById" parameterType="Long" resultType="MgtProjectBudget">
+        SELECT b.*
+        FROM mgt_project_budget b
+        WHERE b.budget_id = #{budgetId}
+    </select>
+
+    <select id="selectMgtProcurementPlanDetailedList" resultType="MgtProcurementPlanDetailed"
+            resultMap="MgtProcurementPlanDetailedResult">
+        select b.*
+        from mgt_procurement_plan_detailed b
+        where b.plan_id = #{planId}
+    </select>
+
+    <select id="selectBasicMaterialById" parameterType="Long" resultType="BasicMaterial">
+        SELECT *
+        from basic_material
+        WHERE id = #{materialId}
+    </select>
+
+    <select id="selectMgtProjectBudgetDetailedById" parameterType="Long" resultType="MgtProjectBudgetDetailed"
+            resultMap="MgtProjectBudgetDetailedResult">
+        SELECT *
+        from mgt_project_budget_detailed
+        WHERE detailed_id = #{budgetDetailedId}
+    </select>
+
+    <select id="selectZbPrices" parameterType="Long" resultType="MgtProjectBudgetPrices">
+        SELECT p.*
+        FROM mgt_project_budget_prices p
+        WHERE p.detailed_id = #{detailedId}
+          and p.price_type = 0 LIMIT 1
+    </select>
+
+</mapper>
